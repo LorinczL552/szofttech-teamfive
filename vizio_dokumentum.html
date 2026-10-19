@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Stonehold – Vízió dokumentum</title>
+</head>
+<body>
+
+<h1>Stonehold – Vízió dokumentum</h1>
+
+<p>
+Csapattagok: Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)<br>
+Miskolci Egyetem, Informatikai Intézet
+</p>
+
+<h2>Tartalomjegyzék</h2>
+
+<ul>
+<li><a href="#f1">1. Bevezetés</a>
+</li>
+<li><a href="#f2">2. Az alkalmazás helye</a>
+<ul>
+<li><a href="#f2-1">2.1 Üzleti lehetőségek</a></li>
+<li><a href="#f2-2">2.2 A probléma megfogalmazása</a></li>
+<li><a href="#f2-3">2.3 Az elkészült termék helye</a></li>
+</ul></li>
+<li><a href="#f3">3. Érintettek és felhasználók</a>
+<ul>
+<li><a href="#f3-1">3.1. Az érintettek összefoglalása</a></li>
+<li><a href="#f3-2">3.2. A felhasználók összefoglalása</a></li>
+<li><a href="#f3-3">3.3. Felhasználói környezet</a></li>
+<li><a href="#f3-4">3.4. Illetékesek adatai</a></li>
+<li><a href="#f3-5">3.5. Felhasználók adatai</a></li>
+</ul></li>
+<li><a href="#f4">4. A végtermék áttekintése</a>
+<ul>
+<li><a href="#f4-1">4.1 A termék kapcsolatai</a></li>
+<li><a href="#f4-2">4.2 A termék használatának előnyei</a></li>
+<li><a href="#f4-3">4.3 Feltételezések és függőségek</a></li>
+<li><a href="#f4-4">4.4 Költségbecslés</a></li>
+<li><a href="#f4-5">4.5 Installáció</a></li>
+</ul></li>
+<li><a href="#f5">5. A végtermék jellemzői, biztosított szolgáltatások</a>
+</li>
+<li><a href="#f6">6. Korlátozások</a>
+</li>
+<li><a href="#f7">7. Minőségi elvárások</a>
+</li>
+<li><a href="#f8">8. Dokumentációkkal kapcsolatos követelmények</a>
+</li>
+<li><a href="#f9">9. Kockázat lista</a>
+</li>
+<li><a href="#f10">10. Szótár</a>
+</li>
+</ul>
+
+<hr>
+
+<h1 id="f1">1. Bevezetés</h1>
+
+<p>
+Ez a dokumentum a <b>Stonehold</b> munkacímen futó szoftverprojektünket mutatja be. Egy kétdimenziós, valós idejű stratégiai játékot (RTS) fejlesztünk. Nem használunk kész játékmotort. A programot alapoktól, saját C++ és SDL2 alapú keretrendszerre építjük fel, így a játék gyengébb gépeken is gyorsan és akadozásmentesen fut majd. A játékmenet tervezésekor olyan klasszikusokból merítettünk ihletet, mint az <i>Age of Empires II</i>, a <i>Warcraft III</i> és a <i>Stronghold Crusader</i>.
+</p>
+
+<p>
+A cél egyszerű: felépíteni egy működő bázist, és legyőzni az ellenfelet egy felülnézeti térképen. Ehhez a játékosnak három területet kell kézben tartania:
+</p>
+
+<ul>
+	<li>
+		<p><b>Gazdaság és építkezés:</b> A nyersanyagokat – például a fát és az aranyat – folyamatosan ki kell termelni és be kell osztani. A játékos különféle épületeket húz fel, miközben a technológiafán előrehaladva új fejlesztéseket old fel.</p>
+	</li>
+	<li>
+		<p><b>Harcrendszer:</b> A bázis védelméhez és a támadáshoz hadsereg kell. A felhasználó eltérő harci értékekkel rendelkező egységeket képez ki, majd valós időben irányítja őket a csatatéren.</p>
+	</li>
+	<li>
+		<p><b>Gépi ellenfél (MI):</b> A térképen nem vagyunk egyedül. Egy önálló mesterséges intelligencia játszik ellenünk, amely saját bázist épít, nyersanyagot gyűjt, és folyamatosan keresi a védelmünk gyenge pontjait.</p>
+	</li>
+</ul>
+
+<p>
+A gördülékeny irányításról egy letisztult kezelőfelület gondoskodik. Az építési menük, a nyersanyag-számlálók és a kistérkép (minimap) mind kézre állnak, az egységeket pedig egérrel és billentyűzettel lehet vezényelni. Egy stabil, jól kiegyensúlyozott stratégiai játékot készítünk, amely valódi taktikai kihívást nyújt.
+</p>
+
+<h1 id="f2">2. Az alkalmazás helye</h1>
+
+<p>
+Ebben a fejezetben azt vizsgáljuk meg, hol helyezkedik el a <b>Stonehold</b> a játékpiacon, milyen problémára kínál megoldást, kiknek szól, és hogyan illeszkedik a már meglévő hasonló alkalmazások közé.
+</p>
+
+<h2 id="f2-1">2.1 Üzleti lehetőségek</h2>
+
+<p>
+A valós idejű stratégiai játékok (RTS) régóta népszerűek, a műfaj klasszikusai pedig ma is hatalmas közösséggel rendelkeznek. Az <i>Age of Empires II</i>, a <i>Warcraft III</i> és a <i>Stronghold Crusader</i> évtizedek után is aktívan játszott címek, miközben a piacon kevés az olyan új, kisebb méretű játék, amely ezt a hangulatot modern, gyorsan induló formában kínálja.
+</p>
+
+<p>
+Ebből a helyzetből több lehetőség is adódik:
+</p>
+
+<ul>
+	<li>
+		<p><b>Gyengébb gépek közönsége:</b> A nagy stratégiai játékok jellemzően erős hardvert igényelnek. Mivel a Stonehold saját, könnyű C++ és SDL2 alapú keretrendszerre épül, régebbi számítógépeken és laptopokon is akadozásmentesen fut. Ez olyan játékosokat is elér, akiknek a kínálat nagy része eddig nem volt elérhető.</p>
+	</li>
+	<li>
+		<p><b>Kis méret, gyors indulás:</b> Nincs szükség nagy játékmotor telepítésére, így a játék kis méretű, gyorsan letölthető és gyorsan indítható. Ez különösen vonzó azoknak, akik rövid időre szeretnének leülni egy-egy meccsre.</p>
+	</li>
+	<li>
+		<p><b>Alacsony fejlesztési költség:</b> Mivel nem használunk kereskedelmi játékmotort, nem kell licencdíjat fizetnünk. A költségek lényegében a fejlesztők munkaidejére korlátozódnak.</p>
+	</li>
+	<li>
+		<p><b>Bővíthetőség:</b> A saját keretrendszer lehetővé teszi, hogy később új egységekkel, épületekkel, térképekkel és játékmódokkal bővítsük a játékot, ezzel hosszabb távon is fenntartva a játékosok érdeklődését.</p>
+	</li>
+</ul>
+
+<p>
+A termék így szűk, de jól körülhatárolható rést tölthet be: egy gyors, stabil és kiegyensúlyozott stratégiai játékot kínál azoknak, akik szeretik a klasszikus RTS-ek játékmenetét, de nem akarnak (vagy nem tudnak) nagy teljesítményű gépet használni.
+</p>
+
+<h2 id="f2-2">2.2 A probléma megfogalmazása</h2>
+
+<p>
+A problémát a következő táblázat foglalja össze.
+</p>
+
+<table border="1" cellpadding="6">
+	<tr>
+		<td><b>A probléma</b></td>
+		<td>A klasszikus stílusú valós idejű stratégiai játékok kínálata szűk, az újabb címek pedig gyakran nagy hardverigényűek, nehézkesen telepíthetők és hosszú tanulási idővel járnak.</td>
+	</tr>
+	<tr>
+		<td><b>Érinti</b></td>
+		<td>A stratégiai játékokat kedvelő játékosokat, különösen azokat, akik régebbi vagy gyengébb számítógépet használnak.</td>
+	</tr>
+	<tr>
+		<td><b>Hatása</b></td>
+		<td>A játékosok vagy nem találnak megfelelő játékot, vagy akadozó, lassú futással kénytelenek játszani, ami rontja az élményt.</td>
+	</tr>
+	<tr>
+		<td><b>Egy sikeres megoldás</b></td>
+		<td>Egy gyorsan futó, letisztult kezelőfelületű, jól kiegyensúlyozott játék, amely valódi taktikai kihívást nyújt egy gépi ellenfél ellen, és kis erőforrásigényű.</td>
+	</tr>
+</table>
+
+<p>
+A probléma megoldásában érdekelt felek (stakeholders) és a rendszer használói a következők:
+</p>
+
+<ul>
+	<li>
+		<p><b>Játékosok (felhasználók):</b> Ők használják közvetlenül a játékot. Számukra a legfontosabb, hogy a program gyors, stabil és élvezetes legyen, az irányítás pedig kényelmes.</p>
+	</li>
+	<li>
+		<p><b>Fejlesztők:</b> A csapat tagjai, akik a játékot megtervezik, megvalósítják és karbantartják. Számukra fontos, hogy a kód áttekinthető és később jól bővíthető legyen.</p>
+	</li>
+	<li>
+		<p><b>Megrendelő (oktató):</b> Az a személy, aki a projekt céljait és követelményeit meghatározza, és értékeli az elkészült munkát.</p>
+	</li>
+</ul>
+
+<p>
+A megoldás legfontosabb hatásai (elsősorban haszna): a játék elérhetővé válik gyengébb gépeken is, a játékosok egy teljes értékű stratégiai élményt kapnak rövid indulási idővel, a fejlesztők pedig egy saját, jól ismert keretrendszert építenek, amelyre későbbi projektek is épülhetnek.
+</p>
+
+<h2 id="f2-3">2.3 Az elkészült termék helye</h2>
+
+<p>
+A Stonehold egy önállóan futtatható asztali játék, amely nem igényel internetkapcsolatot és nem épül külső játékmotorra. A játékos egyedül játszik egy mesterséges intelligencia által vezérelt ellenfél ellen.
+</p>
+
+<p>
+A hasonló alkalmazások között a következőképpen helyezkedik el:
+</p>
+
+<ul>
+	<li>
+		<p><b>Age of Empires II:</b> Hasonló a gazdaság- és hadseregépítés, a technológiafa és a kistérkép használata. A Stonehold ennél egyszerűbb, kisebb léptékű, és jóval kevesebb erőforrást használ.</p>
+	</li>
+	<li>
+		<p><b>Warcraft III:</b> A kisebb, jól irányítható seregek és az egységek valós idejű vezénylése áll közel hozzánk. A mi játékunkban nincsenek hősegységek és bonyolult varázslatok, a hangsúly az építkezésen és a taktikán van.</p>
+	</li>
+	<li>
+		<p><b>Stronghold Crusader:</b> A bázisépítés és a védelem hangulata hasonló. A Stonehold ezt gyorsabb, letisztultabb formában kínálja.</p>
+	</li>
+</ul>
+
+<p>
+A termék nem kíván a nagy költségvetésű címekkel versenyezni tartalom mennyiségében vagy látványban. Az elsődleges előnye a kis méret, a gyors futás gyengébb gépeken, valamint az áttekinthető, kiegyensúlyozott játékmenet. A későbbiekben a keretrendszer bővítésével további tartalmakkal és játékmódokkal egészíthető ki.
+</p>
+
+<h1 id="f3">3. Érintettek és felhasználók</h1>
+
+<h2 id="f3-1">3.1. Az érintettek összefoglalása</h2>
+<ul>
+  <li>
+    <strong>Fejlesztőcsapat</strong>
+    <ul>
+      <li>Tagok: Lőrincz Loránd László, Pozsgai Marcell, Kiss Balázs, Molnár Levente, Martis Milán</li>
+      <li>Kapcsolat: A szoftver tervezői, fejlesztői, tesztelői és dokumentálói.</li>
+      <li>Szerep: Teljes felelősség a játékmotor, a gazdaság, a harc, az AI és a UI megírásáért.</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Gyakorlatvezető / Oktatók</strong>
+    <ul>
+      <li>Kapcsolat: Ellenőrzik a haladást, értékelik a mérföldköveket és a dokumentációt.</li>
+      <li>Szerep: Megrendelői felügyelet, elvárják a határidők és követelmények betartását.</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Végfelhasználók (Játékosok)</strong>
+    <ul>
+      <li>Kapcsolat: A 2D RTS játék célközönsége.</li>
+      <li>Szerep: Bázist építenek, nyersanyagot gyűjtenek, egységeket irányítanak a gép ellen.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="f3-2">3.2. A felhasználók összefoglalása</h2>
+<ul>
+  <li>
+    <strong>Stratégiai Játékos</strong>
+    <ul>
+      <li>Leírás: Asztali gépet használó játékos, aki kedveli a klasszikus RTS műfajt.</li>
+      <li>Célok: Gazdaságmenedzsment, építkezés, egységirányítás és az AI legyőzése.</li>
+      <li>Elvárások: Letisztult UI/HUD, stabil futás, átlátható irányítás.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="f3-3">3.3. Felhasználói környezet</h2>
+<ul>
+  <li>Platform: PC / Laptop (Windows OS)</li>
+  <li>Bemenet/Kimenet: Egér, billentyűzet és standard kijelző.</li>
+  <li>Technológia: C++ nyelven írt, SDL2 alapú 2D játékmotor (külső motor nélkül).</li>
+  <li>Hálózat: Nem szükséges internetkapcsolat (egyjátékos, single-player).</li>
+</ul>
+
+<h2 id="f3-4">3.4. Illetékesek adatai</h2>
+<ul>
+  <li>Lőrincz Loránd László (B2BW8K): Csapatvezető, architektúra</li>
+  <li>Pozsgai Marcell (KVM857): Gazdaság, technológiafa</li>
+  <li>Kiss Balázs (NQO45X): Harcrendszer, AI</li>
+  <li>Molnár Levente (DCTSXC): Use case-ek, tesztelés</li>
+  <li>Martis Milán (ZYFITZ): UI, prezentációk</li>
+  <li>Gyakorlatvezető: Miskolci Egyetem IIT (értékelés, felügyelet)</li>
+</ul>
+<h2 id="f3-5">3.5. Felhasználók adatai</h2>
+<ul>
+  <li>Felhasználói kör: névtelen, egyéni játékosok, a játék nem kér regisztrációt, és személyes adatot nem tárol.</li>
+  <li>Életkor: elsősorban 14 év feletti játékosok, a játék nem tartalmaz korhatáros tartalmat.</li>
+  <li>Számítógépes ismeretek: alapszintű (fájl kicsomagolása, program indítása, egér és billentyűzet használata).</li>
+  <li>Szakterületi ismeretek: RTS-játékokban szerzett tapasztalat előny, de nem feltétel, az alapok néhány mérkőzés alatt elsajátíthatók.</li>
+  <li>Használat gyakorisága: alkalmi, egy mérkőzés várhatóan 20–40 perc.</li>
+</ul>
+
+<h1 id="f4">4. A végtermék áttekintése</h1>
+
+<p>A végtermék egy Windows rendszeren futó, egyjátékos, valós idejű stratégiai (RTS) játék, amelyben a játékos nyersanyagokat gyűjt, épületeket emel, egységeket képez, és egy számítógép által irányított (AI) ellenféllel szemben próbálja megnyerni a mérkőzést. A játék C++ nyelven, saját fejlesztésű, SDL2 alapú 2D keretrendszerre épül, kész játékmotor használata nélkül. A játékmenet a klasszikus RTS-ek (Age of Empires II, Warcraft III, Stronghold Crusader) alapelveit követi, egyszerűsített, egy félév alatt megvalósítható terjedelemben.</p>
+
+<h2 id="f4-1">4.1 A termék kapcsolatai</h2>
+
+<p>A játék önálló, offline alkalmazás: nem igényel internetkapcsolatot, szervert, felhasználói fiókot vagy más külső szolgáltatást. Működéséhez az alábbi elemekkel áll kapcsolatban:</p>
+
+<table border="1" cellpadding="6">
+  <tr><th>Kapcsolódó elem</th><th>A kapcsolat jellege</th></tr>
+  <tr><td>Operációs rendszer (Windows 10/11, 64 bit)</td><td>Az ablakkezelést, a fájlrendszert és a hardverelérést az SDL2 könyvtáron keresztül veszi igénybe.</td></tr>
+  <tr><td>SDL2 könyvtár</td><td>Platformközi réteg a megjelenítéshez (renderelés), az ablakkezeléshez, a bemenetek (egér, billentyűzet) kezeléséhez és az időzítéshez. A saját keretrendszer erre épül.</td></tr>
+  <tr><td>Grafikus hardver</td><td>A képkockák kirajzolása az SDL2 hardveresen gyorsított renderelőjén keresztül történik.</td></tr>
+  <tr><td>Beviteli eszközök</td><td>Egér (kijelölés, egységmozgatás, építés) és billentyűzet (kameramozgatás, gyorsbillentyűk).</td></tr>
+  <tr><td>Erőforrásfájlok (assets)</td><td>Képek, sprite-ok, betűtípusok és konfigurációs fájlok, amelyeket a játék induláskor a saját mappájából tölt be.</td></tr>
+  <tr><td>Felhasználó</td><td>A játékos a felhasználói felületen (menük, HUD, minimap, építési menü) keresztül irányítja a játékot.</td></tr>
+</table>
+
+<p>A játékon belül a fő alrendszerek szorosan egymásra épülnek: a motor (játékhurok, renderelés, bemenetkezelés) biztosítja az alapot, erre épül a gazdasági rendszer és a technológiafa, majd a harcrendszer és az útvonalkeresés, végül az AI-ellenfél és a felhasználói felület, amely mindegyik alrendszer állapotát megjeleníti.</p>
+
+<h2 id="f4-2">4.2 A termék használatának előnyei</h2>
+
+<ul>
+  <li><strong>Könnyűsúlyú és gyors:</strong> a saját, minimális keretrendszernek köszönhetően a játék kis méretű, gyorsan indul, és gyengébb (például irodai vagy régebbi) számítógépeken is folyamatosan fut.</li>
+  <li><strong>Egyszerű telepítés:</strong> nincs szükség telepítőre, rendszergazdai jogosultságra vagy külön futtatókörnyezetre; a játék kicsomagolás után azonnal indítható.</li>
+  <li><strong>Offline használat:</strong> internetkapcsolat, regisztráció vagy fiók nélkül játszható, adatot nem küld és nem gyűjt.</li>
+  <li><strong>Egyjátékos élmény AI-ellenféllel:</strong> a játékosnak nincs szüksége emberi ellenfélre, a számítógép bázist épít és támad.</li>
+  <li><strong>Könnyen tanulható:</strong> a jól ismert RTS-elemekre (nyersanyaggyűjtés, építkezés, egységképzés) épülő, egyszerűsített játékmenet a műfajjal most ismerkedők számára is gyorsan elsajátítható.</li>
+  <li><strong>Ingyenes:</strong> a játék és a felhasznált eszközök használata díjmentes.</li>
+  <li><strong>Átlátható, bővíthető felépítés:</strong> a moduláris architektúra és az UML-ben dokumentált tervek miatt a kód könnyen érthető, karbantartható és később bővíthető (például új egységtípusokkal vagy pályákkal).</li>
+</ul>
+
+<h2 id="f4-3">4.3 Feltételezések és függőségek</h2>
+
+<p><strong>Feltételezések</strong></p>
+<ul>
+  <li>A felhasználó számítógépén 64 bites Windows 10 vagy Windows 11 fut.</li>
+  <li>A számítógép rendelkezik az SDL2 hardveres renderelését támogató grafikus vezérlővel, valamint egérrel és billentyűzettel.</li>
+  <li>A kijelző felbontása legalább 1280×720 képpont.</li>
+  <li>A felhasználó ismeri a számítógép alapvető kezelését (fájl kicsomagolása, program indítása).</li>
+  <li>A csapat mind az öt tagja a félév során folyamatosan rendelkezésre áll, és a vállalt feladatait a mérföldkövek határidejéig elvégzi.</li>
+  <li>A funkciók köre a MoSCoW priorizálás szerint alakul: időhiány esetén a „Could have” és „Won’t have” kategóriájú funkciók elhagyhatók, a „Must have” funkciók viszont minden esetben elkészülnek.</li>
+</ul>
+
+<p><strong>Függőségek</strong></p>
+<ul>
+  <li><strong>SDL2 könyvtár:</strong> a játék működése teljes mértékben erre épül. Licence (zlib) lehetővé teszi az ingyenes felhasználást és a játékkal együtt történő terjesztést.</li>
+  <li><strong>C++ fordító és fejlesztőeszközök:</strong> a fordításhoz Windowsra elérhető C++ fordító, a fejlesztéshez VS Code, a verziókezeléshez Git és GitHub szükséges.</li>
+  <li><strong>Tervezőeszközök:</strong> az UML diagramok elkészítése a StarUML vagy a draw.io elérhetőségétől függ.</li>
+  <li><strong>Grafikai erőforrások:</strong> a játékhoz szükséges sprite-ok és ikonok saját készítésűek vagy szabad felhasználású forrásból származnak.</li>
+  <li><strong>Belső függőségek a mérföldkövek között:</strong> a gazdasági rendszer (M2) a motor alapjaira (M1), a harcrendszer (M3) az egységmozgatásra (M2), az AI (M4) pedig a gazdasági és a harcrendszerre (M2, M3) épül. Egy korábbi mérföldkő csúszása ezért a későbbieket is késlelteti.</li>
+</ul>
+
+<h2 id="f4-4">4.4 Költségbecslés</h2>
+
+<p>A projekt költségének túlnyomó részét a csapattagok munkaideje adja. A becslés a mérföldkövek, a dokumentáció és a bemutatók munkaigényén alapul. A forintosított értéket egy pályakezdő (junior) fejlesztő feltételezett, 6 000 Ft/óra bruttó órabérével számoltuk; mivel egyetemi projektről van szó, ez nem tényleges kifizetés, hanem a ráfordított munka piaci értékének becslése.</p>
+
+<table border="1" cellpadding="6">
+  <tr><th>Feladat</th><th>Munkaóra</th><th>Költség (Ft)</th></tr>
+  <tr><td>M1 – Motor alapok (renderelés, játékhurok, bemenetkezelés)</td><td>70</td><td>420 000</td></tr>
+  <tr><td>M2 – Gazdaság és mechanikák (építkezés, nyersanyagok, egységmozgatás)</td><td>60</td><td>360 000</td></tr>
+  <tr><td>M3 – Harcrendszer (egységtípusok, útvonalkeresés, sebzésszámítás)</td><td>70</td><td>420 000</td></tr>
+  <tr><td>M4 – AI és UI (AI-ellenfél, menük, HUD, minimap)</td><td>80</td><td>480 000</td></tr>
+  <tr><td>M5 – Polírozás (hibajavítás, optimalizálás, játékegyensúly)</td><td>50</td><td>300 000</td></tr>
+  <tr><td>Dokumentáció (projektterv, vízió, SRS, UML, záródokumentáció)</td><td>60</td><td>360 000</td></tr>
+  <tr><td>Megbeszélések, heti beszámolók, 5 demó előkészítése</td><td>40</td><td>240 000</td></tr>
+  <tr><td>Összesen</td><td>430</td><td>2 580 000</td></tr>
+</table>
+
+<p>Ez öt fős csapat esetén fejenként átlagosan kb. 86 munkaórát jelent a félév során, ami nagyjából heti 6–7 óra ráfordításnak felel meg.</p>
+
+<p><strong>Egyéb költségek:</strong> a felhasznált szoftverek és szolgáltatások (SDL2, VS Code, Git, GitHub, draw.io) ingyenesek, a StarUML ingyenes kiértékelő változata elegendő a feladathoz. A fejlesztéshez a csapattagok saját számítógépeit használjuk, így hardverköltség nem merül fel. A projekt teljes becsült költsége tehát a munkaidő értéke: <strong>430 munkaóra, kb. 2 580 000 Ft</strong>.</p>
+
+<h2 id="f4-5">4.5 Installáció</h2>
+
+<p>A játék kizárólag Windows operációs rendszerre készül, és nem igényel hagyományos telepítést. A kész programot egyetlen ZIP-archívumként adjuk le, amely tartalmazza a futtatható állományt (<code>.exe</code>), a szükséges SDL2 dinamikus könyvtárat (<code>SDL2.dll</code>) és a játék erőforrásait tartalmazó mappát.</p>
+
+<p><strong>Minimális rendszerkövetelmények</strong></p>
+<table border="1" cellpadding="6">
+  <tr><th>Összetevő</th><th>Követelmény</th></tr>
+  <tr><td>Operációs rendszer</td><td>Windows 10 vagy 11, 64 bit</td></tr>
+  <tr><td>Processzor</td><td>Kétmagos, 2 GHz</td></tr>
+  <tr><td>Memória</td><td>2 GB RAM</td></tr>
+  <tr><td>Grafika</td><td>Hardveres gyorsítást támogató grafikus vezérlő (integrált is megfelelő)</td></tr>
+  <tr><td>Tárhely</td><td>200 MB szabad hely</td></tr>
+  <tr><td>Kijelző</td><td>Legalább 1280×720 felbontás</td></tr>
+  <tr><td>Bevitel</td><td>Egér és billentyűzet</td></tr>
+</table>
+
+<p><strong>A telepítés lépései</strong></p>
+<ol>
+  <li>A ZIP-archívum letöltése a leadási csatornáról.</li>
+  <li>Az archívum kicsomagolása egy tetszőleges mappába (például az Asztalra vagy a <code>Dokumentumok</code> mappába).</li>
+  <li>A játék indítása a kicsomagolt mappában található <code>.exe</code> fájlra duplán kattintva.</li>
+</ol>
+
+<p>A telepítéshez nincs szükség rendszergazdai jogosultságra, és a játék nem módosítja a rendszerbeállításokat. Fontos, hogy az <code>.exe</code>, az <code>SDL2.dll</code> és az erőforrásmappa ugyanabban a mappában maradjon, különben a játék nem indul el. Ha a Windows SmartScreen figyelmeztetést jelenít meg (mivel a program nincs digitálisan aláírva), a „További információ”, majd a „Futtatás mindenképp” lehetőséggel indítható.</p>
+
+<p><strong>Eltávolítás:</strong> a játék a kicsomagolt mappa törlésével maradéktalanul eltávolítható.</p>
+
+<p><strong>Fordítás forráskódból:</strong> a forráskód a projekt GitHub-tárolójából klónozható. A fordításhoz C++ fordító és az SDL2 fejlesztői csomagja szükséges; a pontos lépéseket a tároló <code>README</code> fájlja tartalmazza.</p>
+
+<h1 id="f5">5. A végtermék jellemzői, biztosított szolgáltatások</h1>
+
+<p>
+Ebben a fejezetben a felhasználó szemszögéből soroljuk fel, mit fog tudni a kész játék. A szolgáltatásokat a MoSCoW-elv szerint rangsoroltuk, és mindegyiknél jelöltük, melyik mérföldkőben (M1–M5) készül el. A „Must have” szolgáltatások nélkül a játék nem tekinthető késznek, a „Should have” elemeket a félév végéig szintén meg kívánjuk valósítani, a „Could have” elemek pedig csak akkor kerülnek be, ha marad rá idő. A részletes szabályokat (például a pontos sebzésszámítást) az SRS dokumentum tartalmazza.
+</p>
+
+<table border="1" cellpadding="6">
+	<tr>
+		<th>Szolgáltatás</th>
+		<th>Leírás</th>
+		<th>Prioritás</th>
+		<th>Mérföldkő</th>
+	</tr>
+	<tr>
+		<td>Főmenü</td>
+		<td>Indításkor megjelenő menü, ahonnan új játék indítható, a beállítások elérhetők, és a programból ki lehet lépni.</td>
+		<td>Must have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Térkép és kamera</td>
+		<td>Felülnézeti, kétdimenziós térkép, amelyet a játékos egérrel (a képernyő szélére húzva) és billentyűzettel görgethet.</td>
+		<td>Must have</td>
+		<td>M1</td>
+	</tr>
+	<tr>
+		<td>Egységek kijelölése és irányítása</td>
+		<td>Egységek kijelölése kattintással vagy kijelölő kerettel, majd mozgatásuk a térkép egy pontjára jobb kattintással.</td>
+		<td>Must have</td>
+		<td>M2</td>
+	</tr>
+	<tr>
+		<td>Nyersanyaggyűjtés</td>
+		<td>A munkások a térképen található lelőhelyekről nyersanyagot (fát és aranyat) termelnek ki, és a bázisra szállítják.</td>
+		<td>Must have</td>
+		<td>M2</td>
+	</tr>
+	<tr>
+		<td>Építkezés</td>
+		<td>A játékos az építési menüből épületet választ, elhelyezi a térképen, a munkások pedig felépítik. Az építés nyersanyagba és időbe kerül.</td>
+		<td>Must have</td>
+		<td>M2</td>
+	</tr>
+	<tr>
+		<td>Egységképzés</td>
+		<td>Az épületekben új egységek képezhetők ki (munkás és több katonatípus), nyersanyagért cserébe, meghatározott idő alatt.</td>
+		<td>Must have</td>
+		<td>M2–M3</td>
+	</tr>
+	<tr>
+		<td>Harcrendszer</td>
+		<td>Az egységek megtámadják az ellenséges egységeket és épületeket. Minden egységtípus eltérő életerővel, sebzéssel és hatótávval rendelkezik.</td>
+		<td>Must have</td>
+		<td>M3</td>
+	</tr>
+	<tr>
+		<td>Útvonalkeresés</td>
+		<td>Az egységek maguktól megtalálják a célhoz vezető utat, és kikerülik az épületeket és a tereptárgyakat.</td>
+		<td>Must have</td>
+		<td>M3</td>
+	</tr>
+	<tr>
+		<td>Gépi ellenfél (MI)</td>
+		<td>Számítógép által vezérelt ellenfél, amely saját bázist épít, nyersanyagot gyűjt, sereget képez, és megtámadja a játékost.</td>
+		<td>Must have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Kezelőfelület (HUD)</td>
+		<td>Nyersanyag-számlálók, építési menü, a kijelölt egység vagy épület adatai, valamint a kistérkép (minimap), amelyre kattintva a kamera az adott helyre ugrik.</td>
+		<td>Must have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Győzelem és vereség</td>
+		<td>A mérkőzés akkor ér véget, ha az egyik fél összes épülete megsemmisült. A játék ezt kijelzi, és visszatérhetünk a főmenübe.</td>
+		<td>Must have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Technológiafa</td>
+		<td>Egymásra épülő fejlesztések: bizonyos épületek és egységek csak akkor érhetők el, ha a korábbi épületek már állnak, vagy a szükséges fejlesztést megvásároltuk.</td>
+		<td>Should have</td>
+		<td>M2</td>
+	</tr>
+	<tr>
+		<td>Szüneteltetés</td>
+		<td>A játék bármikor megállítható, és a szünet alatt elérhető a játékmenü (folytatás, kilépés a főmenübe).</td>
+		<td>Should have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Gyorsbillentyűk</td>
+		<td>A gyakori parancsok (építés, egységképzés, egységcsoportok kijelölése) billentyűzetről is elérhetők.</td>
+		<td>Should have</td>
+		<td>M4</td>
+	</tr>
+	<tr>
+		<td>Nehézségi szintek</td>
+		<td>A gépi ellenfél legalább két nehézségi szinten (például könnyű és normál) választható.</td>
+		<td>Should have</td>
+		<td>M5</td>
+	</tr>
+	<tr>
+		<td>Több térkép</td>
+		<td>Új játék indításakor több előre elkészített térkép közül lehet választani.</td>
+		<td>Could have</td>
+		<td>M5</td>
+	</tr>
+	<tr>
+		<td>Hangeffektusok és zene</td>
+		<td>Hangjelzések a fontosabb eseményekhez (épület elkészült, támadás ér minket), valamint háttérzene.</td>
+		<td>Could have</td>
+		<td>M5</td>
+	</tr>
+	<tr>
+		<td>Mentés és betöltés</td>
+		<td>A félbehagyott mérkőzés elmenthető, és később onnan folytatható.</td>
+		<td>Could have</td>
+		<td>M5</td>
+	</tr>
+</table>
+
+<p>
+A félévben tudatosan <b>nem</b> valósítjuk meg („Won't have”) a következőket: többjátékos (hálózati) mód, történetre épülő kampány, hősegységek és varázslatok, valamint pályaszerkesztő. Ezek a keretrendszer bővíthetősége miatt később hozzáadhatók, de a jelenlegi projekt keretébe nem férnek bele.
+</p>
+
+<p>
+Egy tipikus mérkőzés menete a következő: a játékos a főmenüből új játékot indít, néhány munkással és egy főépülettel kezd. A munkásokkal fát és aranyat gyűjt, ebből újabb épületeket emel, és katonákat képez. Közben a gépi ellenfél ugyanezt teszi a térkép másik oldalán. A játékos a kistérképen figyeli a helyzetet, megvédi a bázisát a támadásoktól, majd a seregével lerombolja az ellenfél épületeit. Egy mérkőzés várhatóan 20–40 percig tart.
+</p>
+
+<h1 id="f6">6. Korlátozások</h1>
+
+<p>
+Az alábbiakban azokat a korlátokat soroljuk fel, amelyek meghatározzák, mit tud és mit nem tud a kész termék, illetve milyen keretek között készül. Egy részük technikai, más részük a projekt egyetemi jellegéből adódik.
+</p>
+
+<p><b>Technikai korlátozások</b></p>
+
+<ul>
+	<li>
+		<p><b>Platform:</b> A játék kizárólag 64 bites Windows 10 és Windows 11 rendszeren fut. Linux, macOS, mobil és böngészős változat nem készül, bár az SDL2 ezt később lehetővé tenné.</p>
+	</li>
+	<li>
+		<p><b>Csak egyjátékos mód:</b> A játékos kizárólag a gépi ellenfél ellen játszhat. Hálózati vagy azonos gépen játszható többjátékos mód nincs.</p>
+	</li>
+	<li>
+		<p><b>Kétdimenziós megjelenítés:</b> A grafika 2D, felülnézeti. Háromdimenziós megjelenítést, forgatható kamerát és nagyítást (zoom) nem tervezünk.</p>
+	</li>
+	<li>
+		<p><b>Saját keretrendszer:</b> A játék kizárólag a C++ nyelvre és az SDL2 könyvtárra épül. Kész játékmotort (például Unity, Unreal, Godot) nem használhatunk, ezért minden alapfunkciót (renderelés, bemenetkezelés, útvonalkeresés) magunknak kell megírnunk. Emiatt a grafikai effektek és az animációk egyszerűbbek lesznek, mint a kereskedelmi játékokban.</p>
+	</li>
+	<li>
+		<p><b>Egységszám:</b> A gyengébb gépeken is elvárt sima futás érdekében a térképen egyszerre jelen lévő egységek száma felső korláttal rendelkezik. A pontos értéket a tesztelés alapján az SRS-ben rögzítjük.</p>
+	</li>
+	<li>
+		<p><b>Kijelző és bevitel:</b> A játék legalább 1280×720 képpontos felbontást igényel, és egérrel és billentyűzettel irányítható. Érintőképernyőt és játékvezérlőt (kontrollert) nem támogatunk.</p>
+	</li>
+	<li>
+		<p><b>Nyelv:</b> A kezelőfelület egy nyelven, magyarul készül. Többnyelvűség nem tervezett.</p>
+	</li>
+	<li>
+		<p><b>Aláíratlan program:</b> A futtatható állomány nincs digitálisan aláírva, ezért a Windows első indításkor figyelmeztetést jeleníthet meg (lásd 4.5. fejezet).</p>
+	</li>
+</ul>
+
+<p><b>Projekt jellegű korlátozások</b></p>
+
+<ul>
+	<li>
+		<p><b>Időkeret:</b> A fejlesztésre egyetlen félév áll rendelkezésre, a végleges változatot a 13. hétre le kell adnunk. A tartalom terjedelmét (egységtípusok, épületek, térképek száma) ehhez igazítjuk.</p>
+	</li>
+	<li>
+		<p><b>Csapatméret:</b> A munkát öt fő végzi, a becsült ráfordítás összesen kb. 430 munkaóra (lásd 4.4. fejezet).</p>
+	</li>
+	<li>
+		<p><b>Költség:</b> Csak ingyenes eszközöket és szabad felhasználású grafikai erőforrásokat használhatunk, fizetős szoftvert vagy licencet nem vásárolunk.</p>
+	</li>
+	<li>
+		<p><b>Dokumentáció:</b> Minden dokumentum HTML formátumban, a programkóddal közös Git tárolóban készül (lásd 8. fejezet).</p>
+	</li>
+</ul>
+
+<h1 id="f7">7. Minőségi elvárások</h1>
+
+<p>
+Ebben a fejezetben rögzítjük, milyen minőségi szintet várunk el a kész játéktól. Ahol lehet, mérhető célértéket adunk meg, hogy a tesztelés során egyértelműen eldönthető legyen, teljesült-e az elvárás. A célértékek a 4.5. fejezetben megadott minimális rendszerkövetelményeknek megfelelő gépre vonatkoznak.
+</p>
+
+<table border="1" cellpadding="6">
+	<tr>
+		<th>Jellemző</th>
+		<th>Elvárás</th>
+		<th>Ellenőrzés módja</th>
+	</tr>
+	<tr>
+		<td>Teljesítmény</td>
+		<td>A játék átlagos terhelés mellett (kb. 100 egység a térképen) legalább 60 FPS-sel fut, és a képkockasebesség csúcsterhelés alatt sem esik 30 FPS alá.</td>
+		<td>Beépített FPS-kijelzés, mérés a minimális konfigurációnak megfelelő gépen.</td>
+	</tr>
+	<tr>
+		<td>Indulási idő</td>
+		<td>A főmenü az indítástól számítva legfeljebb 5 másodperc alatt megjelenik, egy új mérkőzés legfeljebb 10 másodperc alatt betölt.</td>
+		<td>Stopperrel mért indítás több gépen.</td>
+	</tr>
+	<tr>
+		<td>Erőforrásigény</td>
+		<td>A játék memóriahasználata egy teljes mérkőzés alatt sem lépi túl az 500 MB-ot, a telepített méret pedig 200 MB alatt marad.</td>
+		<td>Windows Feladatkezelő, a kicsomagolt mappa mérete.</td>
+	</tr>
+	<tr>
+		<td>Stabilitás</td>
+		<td>Egy legalább 60 perces mérkőzés során a játék nem omlik össze és nem fagy le, a memóriahasználat nem nő folyamatosan (nincs memóriaszivárgás).</td>
+		<td>Hosszú tesztjátékok, memóriafigyelés az M5 mérföldkőben.</td>
+	</tr>
+	<tr>
+		<td>Válaszidő</td>
+		<td>A játék minden egér- és billentyűzetparancsra azonnal (érezhető késés nélkül) reagál, a kijelölés és a parancs kiadása vizuális visszajelzést ad.</td>
+		<td>Use case walkthrough-k során végzett ellenőrzés.</td>
+	</tr>
+	<tr>
+		<td>Könnyű kezelhetőség</td>
+		<td>Egy RTS-játékokban jártas felhasználó leírás nélkül, legfeljebb 10 perc alatt megtanulja az alapvető irányítást. A kezelés a műfajban megszokott módon működik (bal gomb: kijelölés, jobb gomb: parancs).</td>
+		<td>Tesztelés a csapaton kívüli játékosokkal.</td>
+	</tr>
+	<tr>
+		<td>Átláthatóság</td>
+		<td>A nyersanyagok, a kijelölt egység adatai és az egységek életereje mindig láthatók, a fontos eseményekről (támadás, elkészült épület) a játék értesítést ad.</td>
+		<td>Felhasználói felület átnézése, walkthrough-k.</td>
+	</tr>
+	<tr>
+		<td>Játékegyensúly</td>
+		<td>Nincs olyan egységtípus vagy stratégia, amely minden helyzetben biztos győzelmet hoz. A normál nehézségű gépi ellenfelet egy átlagos játékos néhány próbálkozás után le tudja győzni.</td>
+		<td>Tesztjátékok, az értékek finomhangolása az M5 mérföldkőben.</td>
+	</tr>
+	<tr>
+		<td>Karbantarthatóság</td>
+		<td>A kód modulokra tagolt (motor, gazdaság, harc, MI, kezelőfelület), a modulok közötti kapcsolatokat UML-diagramok írják le. Az egységek és épületek értékei konfigurációs fájlban vannak, nem a kódban.</td>
+		<td>Kereszt-review, az UML tervek és a kód összevetése.</td>
+	</tr>
+	<tr>
+		<td>Hordozhatóság</td>
+		<td>A program telepítés nélkül, a kicsomagolt mappából bármely támogatott Windows gépen elindul, rendszergazdai jogosultság nélkül.</td>
+		<td>Indítás legalább három különböző gépen.</td>
+	</tr>
+	<tr>
+		<td>Adatvédelem</td>
+		<td>A játék nem gyűjt és nem küld adatot, nem igényel regisztrációt, internetkapcsolatot nem használ.</td>
+		<td>Kódátnézés.</td>
+	</tr>
+</table>
+
+<p>
+A minőség biztosításában a kereszt-review elvét követjük: minden kódrészletet és dokumentumot egy másik csapattag néz át a véglegesítés előtt. A hibákat a GitHub hibakövető (Issues) felületén rögzítjük, és a mérföldkövek bemutatása előtt a kritikus hibákat (összeomlás, a játékot megakasztó hiba) mindig kijavítjuk. A tesztelés fő eszközei a felhasználói esetek gyakorlati végigpróbálása (use case walkthrough) és a teljes mérkőzéseken alapuló tesztjátékok.
+</p>
+
+<h1 id="f8">8. Dokumentációkkal kapcsolatos követelmények</h1>
+
+<p>
+A projekt során minden dokumentumot elektronikus úton, szabványos HTML formátumban készítünk el. Nem használunk zárt formátumú szövegszerkesztőket. Ez a megközelítés azért előnyös, mert a dokumentációt bármilyen böngészőben azonnal meg lehet nyitni, a fájlokat pedig a programkóddal együtt, ugyanabban a Git tárolóban (GitHubon) kezeljük. Így a csapattagok párhuzamosan is tudnak dolgozni a szövegeken. Minden egyes módosítás nyomon követhető, és szükség esetén bármelyik korábbi állapotot egyetlen paranccsal visszaállíthatjuk.
+</p>
+
+<p>
+A félév során öt fő dokumentumot szállítunk le a megadott határidőkre:
+</p>
+
+<ul>
+	<li>
+		<p><b>Projektterv (3. hét):</b> Lefekteti az együttműködés alapjait. Tartalmazza a csapattagok pontos feladatkörét (az architektúrától a gazdasági és harcrendszeren át a tesztelésig), a választott fejlesztőeszközöket (C++, SDL2, VS Code), valamint az öt fejlesztési mérföldkő ütemezését.</p>
+	</li>
+	<li>
+		<p><b>Vízió dokumentum (6. hét):</b> Ez a jelenlegi dokumentum. A felhasználó szemszögéből, közérthető nyelvezettel mutatja be a készülő stratégiai játékot, az érintettek körét, a megoldandó problémát és a szoftver legfontosabb szolgáltatásait.</p>
+	</li>
+	<li>
+		<p><b>SRS – Követelményspecifikáció (8. hét):</b> Itt konkretizáljuk a terveket. Ez a dokumentum tartalmazza a MoSCoW-elv szerint priorizált funkcionális és nem funkcionális követelményeket, a részletes felhasználói eseteket (use case-eket), valamint a játékmechanikák (nyersanyaggyűjtés, építkezés, sebzésszámítás) pontos szabályait.</p>
+	</li>
+	<li>
+		<p><b>UML tervezési dokumentum (11. hét):</b> A rendszer technikai tervrajza. Ebben rögzítjük a saját 2D motorunk és a játéklogika felépítését. A folyamatokat és a modulok közötti kapcsolatokat a StarUML és a draw.io programokkal készített osztály-, szekvencia- és állapotdiagramokkal szemléltetjük.</p>
+	</li>
+	<li>
+		<p><b>Záródokumentáció és értékelési táblázat (13. hét):</b> A projekt lezárása. Összegzi a fejlesztés során elért eredményeket, a gyakorlati tesztelések (use case walkthrough-k) tapasztalatait, az esetleges eltéréseket az eredeti tervekhez képest, valamint a csapattagok egyéni munkájának értékelését.</p>
+	</li>
+</ul>
+
+<p>
+A játékosok munkáját egy rövid, áttekinthető felhasználói útmutatóval (README fájllal) segítjük, amely leírja a program indítását, valamint az alapvető egér- és billentyűzetkiosztást.
+</p>
+
+<p>
+Bevezettük a kereszt-review (keresztellenőrzés) elvét: egyetlen dokumentumot sem adunk le úgy, hogy azt csak a saját szerzője látta. Minden elkészült fejezetet egy másik csapattag néz át tartalmi és szakmai szempontból. Folyamatosan ellenőrizzük a konzisztenciát is, vagyis azt, hogy az újabb leírások (és maga a programkód) nem mondanak-e ellent a korábban rögzített Vízió vagy SRS dokumentumoknak. A véglegesítés előtt minden fájlon kötelező helyesírás- és hivatkozás-ellenőrzést futtatunk, majd az elkészült csomagot a gyakorlatvezetővel előre egyeztetett csatornán adjuk át.
+</p>
+
+<h1 id="f9">9. Kockázat lista</h1>
+
+<p>
+Egy saját motorra épülő, valós idejű stratégiai játék fejlesztése komoly technikai és szervezési kihívásokkal jár. Az alábbi listában összegyűjtöttük és súlyosságuk szerint rangsoroltuk azokat az előre látható kockázatokat, amelyek veszélyeztethetik a projekt határidőre történő befejezését vagy a szoftver minőségét, valamint rögzítettük a megelőzésükre szolgáló lépéseket.
+</p>
+
+<ul>
+	<li>
+		<p><b>Saját 2D keretrendszer fejlesztésének elhúzódása (Magas kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> Kész játékmotor helyett saját C++ és SDL2 alapú keretrendszert írunk. Ha az alapvető renderelés vagy a fő játékhurok (game loop) fejlesztése elakad az első mérföldkőnél, az az összes többi modul (gazdaság, harc, UI) csúszását okozza.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> A motor funkcionalitását a legszükségesebb minimumra szorítjuk. Nem írunk általános célú játékmotort, kizárólag azokat a grafikai és bemenetkezelési elemeket implementáljuk, amelyekre a mi játékunknak közvetlenül szüksége van.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Útvonalkeresés (pathfinding) és a gépi ellenfél (MI) komplexitása (Magas kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> Egy RTS-ben sok egység mozog egyszerre a térképen. Az útvonalkereső algoritmus és az önállóan építkező, támadó mesterséges intelligencia megírása számításigényes és bonyolult feladat, ami könnyen teljesítményromláshoz vagy logikai hibákhoz vezethet.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> Fokozatos fejlesztést alkalmazunk. Először egy egyszerűbb, de stabilan működő útvonalkeresést és egy alapvető, szabályalapú (szkriptelt) MI-t készítünk el. A bonyolultabb döntési logikát csak akkor építjük be, ha az alaprendszer már hibátlanul fut.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Memóriaszivárgás és C++ futásidejű hibák (Közepes kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> A C++ nyelv közvetlen memóriakezelést igényel. A folyamatosan létrejövő és elpusztuló egységek, épületek miatt memóriaszivárgás (memory leak) vagy érvénytelen mutatók (pointerek) léphetnek fel, amelyek a játék váratlan összeomlását okozhatják.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> A kódot folyamatosan ellenőrizzük kereszt-review keretében. A kritikus részeknél modern C++ eszközöket (például okosmutatókat) használunk, az ötödik mérföldkőnél pedig külön időt szánunk a memóriaszivárgások célzott tesztelésére és javítására.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Túltervezés (Scope creep) és időhiány (Közepes kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> A referenciajátékok (<i>Age of Empires II</i>, <i>Warcraft III</i>, <i>Stronghold Crusader</i>) hatalmas tartalommal bírnak. Fennáll a veszélye, hogy túl sok egységtípust, épületet vagy bonyolult technológiafát akarunk megvalósítani a félév végéig, így az alapfunkciók félkészek maradnak.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> Szigorúan tartjuk magunkat a MoSCoW priorizáláshoz és a kéthetes, scrum-szerű ütemezéshez. Először a kötelező („Must have”) alapmechanikákat készítjük el, és csak a fennmaradó időben bővítjük a játékot extra tartalommal.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Modulok közötti integrációs problémák (Közepes kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> A csapattagok egymástól jól elkülönülő részeken – motor, gazdaság, harcrendszer, MI, felhasználói felület – dolgoznak. Ha a komponensek közötti interfészeket nem rögzítjük pontosan, a részek összeillesztésekor súlyos kompatibilitási hibák léphetnek fel.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> A fejlesztés előtt részletes UML diagramokkal (osztály- és szekvenciadiagramokkal) tervezzük meg az architektúrát. A heti megbeszéléseken folyamatosan egyeztetünk, a Git/GitHub segítségével pedig gyakran integráljuk a részkódokat, így az eltérések azonnal kiderülnek.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Játékegyensúly hiánya (Alacsony kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> Előfordulhat, hogy egyes egységek túl erősek lesznek, a nyersanyagok túl gyorsan vagy túl lassan gyűlnek, vagy a gépi ellenfél legyőzhetetlenné, esetleg túl gyengévé válik, ami rontja a játékélményt.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> Az egységek és épületek statisztikáit (költség, életerő, sebzés) könnyen módosítható formában tároljuk, nem égetjük be őket a programkódba. A gyakorlati tesztelések (use case walkthrough-k) és az 5. mérföldköves polírozási fázis során ezeket az értékeket a teszteredmények alapján finomhangoljuk.</p></li>
+		</ul>
+	</li>
+	<li>
+		<p><b>Csapattagok kiesése vagy egyenetlen terhelése (Alacsony kockázat):</b></p>
+		<ul>
+			<li><p><i>Kockázat:</i> Betegség vagy egyéb egyetemi elfoglaltságok miatt egy-egy csapattag átmenetileg kieshet a munkából, ami megakaszthatja a rá épülő feladatokat.</p></li>
+			<li><p><i>Megelőzés és kezelés:</i> A kereszt-review és a közös Git tároló miatt mindenki rálát a többiek kódjára és dokumentációjára. Szükség esetén a csapatvezető átcsoportosítja a feladatokat, így egyetlen modul sem áll le teljesen.</p></li>
+		</ul>
+	</li>
+</ul>
+
+<h1 id="f10">10. Szótár</h1>
+
+<p>
+Itt adjuk meg a szövegben előforduló szakterületi kifejezések (és kivételesen az elkerülhetetlen informatikai szakkifejezések) definícióját vagy magyarázatát közérthető formában, hogy a fejlesztők és a dokumentum olvasói között elkerüljük a félreértéseket.
+</p>
+
+<dl>
+	<dt><b>AI (Artificial Intelligence)</b></dt>
+	<dd>Lásd: Gépi ellenfél (MI).</dd>
+
+	<dt><b>Asztali játék</b></dt>
+	<dd>Számítógépre telepített, önállóan futó játék, amelyhez nem kell böngésző.</dd>
+
+	<dt><b>Bázis</b></dt>
+	<dd>A játékos épületeinek összessége a térképen.</dd>
+
+	<dt><b>Bővíthetőség</b></dt>
+	<dd>A játék azon tulajdonsága, hogy később új egységekkel, épületekkel, térképekkel és játékmódokkal egészíthető ki.</dd>
+
+	<dt><b>C++</b></dt>
+	<dd>Nagy teljesítményű programozási nyelv, amelyen a játék kódját írjuk. Közvetlen hozzáférést enged a számítógép erőforrásaihoz, így gyors működést biztosít.</dd>
+
+	<dt><b>draw.io / StarUML</b></dt>
+	<dd>Grafikus tervezőprogramok, amelyekkel a szoftver szerkezetét és folyamatait bemutató UML ábrákat rajzoljuk meg.</dd>
+
+	<dt><b>Egység</b></dt>
+	<dd>A játékos által irányítható szereplő a térképen, például munkás vagy katona.</dd>
+
+	<dt><b>Erőforrásfájlok (assets)</b></dt>
+	<dd>A játék képei, sprite-jai, betűtípusai és konfigurációs fájljai, amelyeket a program induláskor betölt.</dd>
+
+	<dt><b>Épület</b></dt>
+	<dd>A játékos bázisán felépített szerkezet.</dd>
+
+	<dt><b>Érdekelt (stakeholder)</b></dt>
+	<dd>Bárki, akit érint a projekt, vagy akinek érdeke fűződik hozzá, például a felhasználók, a fejlesztők és a megrendelő.</dd>
+
+	<dt><b>Felhasználó (játékos)</b></dt>
+	<dd>Az a személy, aki a játékot használja, vagyis játszik vele.</dd>
+
+	<dt><b>Fő játékhurok (game loop)</b></dt>
+	<dd>A játék központi ciklusa, amely a program futása alatt másodpercenként sokszor lefut. Három dolgot csinál folyamatosan: beolvassa a játékos irányítását (egér, billentyűzet), kiszámolja a játéktér változásait (például az egységek mozgását és a harcot), majd frissíti a képernyőt.</dd>
+
+	<dt><b>FPS (képkocka/másodperc)</b></dt>
+	<dd>Azt mutatja, hányszor rajzolja újra a játék a képernyőt egy másodperc alatt. Minél nagyobb, annál simább a mozgás; 60 FPS felett a játék folyamatosnak hat.</dd>
+
+	<dt><b>Gazdaság</b></dt>
+	<dd>A játékban a termelés és a költés rendszere: amit a játékos megszerez, azt építésre és egységek kiképzésére használja fel.</dd>
+
+	<dt><b>Gépi ellenfél (MI, AI)</b></dt>
+	<dd>Számítógép által vezérelt játékos, aki a felhasználó ellen játszik. Előre megírt szabályok alapján önállóan épít bázist, gyűjt nyersanyagot, és támadja a felhasználó egységeit. A neve „mesterséges intelligencia” (MI), angolul „artificial intelligence” (AI).</dd>
+
+	<dt><b>Git / GitHub</b></dt>
+	<dd>Verziókezelő rendszer és internetes tárhely. Segítségével a csapattagok egyszerre tudnak dolgozni a programkódon és a dokumentumokon anélkül, hogy felülírnák egymás munkáját, a korábbi állapotok pedig bármikor visszaállíthatók.</dd>
+
+	<dt><b>Gyorsbillentyű</b></dt>
+	<dd>Billentyű vagy billentyűkombináció, amellyel egy parancs (például építés vagy egységképzés) a menü használata nélkül kiadható.</dd>
+
+	<dt><b>Hardver</b></dt>
+	<dd>A számítógép fizikai alkatrészei. A gyengébb gép kisebb teljesítményű hardverrel rendelkezik.</dd>
+
+	<dt><b>Hősegység</b></dt>
+	<dd>Különleges, a többinél erősebb egység, amelyet más stratégiai játékok használnak. A Stonehold nem tartalmaz ilyet.</dd>
+
+	<dt><b>HTML</b></dt>
+	<dd>Szabványos leírónyelv, amellyel internetes böngészőkben megnyitható, formázott szöveges dokumentumokat és weboldalakat készítünk.</dd>
+
+	<dt><b>Interfész (határfelület)</b></dt>
+	<dd>Két különálló programrész (például a gazdasági rendszer és a kezelőfelület) közötti kapcsolódási pont. Meghatározza, hogyan kommunikálnak egymással az egyes modulok.</dd>
+
+	<dt><b>Játékegyensúly (game balance)</b></dt>
+	<dd>A játékbeli egységek, épületek és nyersanyagok értékeinek olyan beállítása, amely biztosítja, hogy egyik játékelem se legyen aránytalanul erős vagy gyenge a többihez képest.</dd>
+
+	<dt><b>Játékmenet</b></dt>
+	<dd>Az a mód, ahogyan a játék működik, és amit a játékos a játék közben csinál.</dd>
+
+	<dt><b>Játékmód</b></dt>
+	<dd>A játék egy változata saját szabályokkal, például az, hogy a játékos egy gépi ellenfél ellen játszik.</dd>
+
+	<dt><b>Játékmotor</b></dt>
+	<dd>Kész programrész, amely a játékok általános feladatait (megjelenítés, hang, mozgás) végzi el. A Stonehold nem használ ilyet, helyette saját keretrendszerre épül.</dd>
+
+	<dt><b>Karbantartás</b></dt>
+	<dd>A kész játék javítása és frissítése a fejlesztők által.</dd>
+
+	<dt><b>Kereszt-review (keresztellenőrzés)</b></dt>
+	<dd>Minőségbiztosítási szabály. Lényege, hogy az elkészült programkódot vagy dokumentumot sosem a saját írója, hanem egy másik csapattag nézi át és hagyja jóvá a véglegesítés előtt.</dd>
+
+	<dt><b>Keretrendszer</b></dt>
+	<dd>A játék alapjául szolgáló programrészek gyűjteménye, amely a kétdimenziós képek kirajzolását, valamint az egér és a billentyűzet kezelését végzi. A Stonehold esetén ezt mi írjuk meg C++ és SDL2 segítségével.</dd>
+
+	<dt><b>Kezelőfelület (UI, HUD)</b></dt>
+	<dd>A képernyőn megjelenő információs és irányító elemek összessége, amelyeken keresztül a játékos irányítja a programot. Ide tartoznak a menük, a gombok, a nyersanyag-számlálók és a kistérkép. A HUD a játéktér fölött, játék közben látható kijelzők összessége.</dd>
+
+	<dt><b>Kistérkép (minimap)</b></dt>
+	<dd>A képernyő sarkában elhelyezkedő, lekicsinyített áttekintő térkép, amelyen a játékos egyetlen pillantással látja az egész csatateret, a saját bázisát és az egységek helyzetét.</dd>
+
+	<dt><b>Kód</b></dt>
+	<dd>A programozó által megírt utasítások összessége, amely a programot működteti.</dd>
+
+	<dt><b>Konfigurációs fájl</b></dt>
+	<dd>Szöveges fájl, amely a játék beállításait és értékeit (például az egységek életerejét, sebzését és költségét) tárolja. Módosításához nem kell a kódot újrafordítani.</dd>
+
+	<dt><b>Licencdíj</b></dt>
+	<dd>Díj, amelyet egy kész programrész (például játékmotor) használatáért kell fizetni a készítőjének.</dd>
+
+	<dt><b>Memóriaszivárgás (memory leak)</b></dt>
+	<dd>Programozási hiba, amely akkor fordul elő, ha a szoftver a már nem használt adatokat (például egy csatában elpusztult egységet) nem törli ki a számítógép memóriájából. Hosszú távon a program lelassulását vagy leállását okozhatja.</dd>
+
+	<dt><b>Mérföldkő (milestone, M1–M5)</b></dt>
+	<dd>A fejlesztési időszak előre kijelölt ellenőrzőpontjai, amelyekhez konkrét, bemutatható részeredmények (például elkészült alapmotor vagy működő harcrendszer) tartoznak.</dd>
+
+	<dt><b>MoSCoW priorizálás</b></dt>
+	<dd>Fontossági sorrendet felállító módszer. A tervezett funkciókat négy csoportba sorolja: kötelezően megvalósítandó (<i>Must have</i>), fontos, de nem kritikus (<i>Should have</i>), kiegészítő jellegű (<i>Could have</i>), és a jelenlegi félévben elhagyható (<i>Won't have</i>) elemekre.</dd>
+
+	<dt><b>Mutató (pointer) és okosmutató</b></dt>
+	<dd>C++ nyelvi elemek, amelyek a számítógép memóriájában tárolt adatok pontos helyére mutatnak. Az okosmutatók automatikusan felszabadítják a memóriát, ha az adatra már nincs szükség, így segítenek elkerülni a memóriaszivárgást.</dd>
+
+	<dt><b>README fájl</b></dt>
+	<dd>Rövid, közérthető szöveges útmutató, amely a szoftver elindításához, telepítéséhez és alapvető irányításához szükséges tudnivalókat tartalmazza.</dd>
+
+	<dt><b>Renderelés</b></dt>
+	<dd>Az a folyamat, amikor a számítógép a memóriában lévő adatokból (az épületek és egységek helyzetéből) összeállítja és kirajzolja a monitoron látható képet.</dd>
+
+	<dt><b>RTS (real-time strategy, valós idejű stratégiai játék)</b></dt>
+	<dd>Olyan stratégiai játékműfaj, amelyben a játékosok nem felváltva, körökre osztva lépnek, hanem az események (építkezés, nyersanyaggyűjtés, csata) folyamatosan, egy időben zajlanak.</dd>
+
+	<dt><b>Scrum-szerű ütemezés</b></dt>
+	<dd>Agilis munkaszervezési módszer. A fejlesztést rövid, esetünkben kéthetes szakaszokra bontjuk, amelyek végén működő részeredményeket mutatunk be, és megbeszéljük a következő időszak feladatait.</dd>
+
+	<dt><b>SDL2 (Simple DirectMedia Layer)</b></dt>
+	<dd>Ingyenes C/C++ programkönyvtár, amely a képernyő, a hang, az egér és a billentyűzet kezelését végzi. A játék erre épül.</dd>
+
+	<dt><b>Sprite</b></dt>
+	<dd>Kétdimenziós kép, amely egy egységet, épületet vagy tereptárgyat ábrázol a játékban. Az animációk több egymást követő sprite-ból állnak.</dd>
+
+	<dt><b>SRS (Software Requirements Specification, követelményspecifikáció)</b></dt>
+	<dd>A Vízió dokumentumra épülő részletes műszaki leírás, amely pontosan rögzíti a szoftverrel szemben támasztott összes funkcionális és minőségi elvárást.</dd>
+
+	<dt><b>Taktikai kihívás</b></dt>
+	<dd>Olyan helyzet a játékban, amelyben a felhasználónak ügyes tervezéssel, az egységek gondos irányításával kell legyőznie a gépi ellenfelet.</dd>
+
+	<dt><b>Technológiafa (tech tree)</b></dt>
+	<dd>Az egymásra épülő fejlesztések rendszere. Az újabb épületek és erősebb egységek csak akkor érhetők el, ha a korábbi fejlettségi szinteket már elértük.</dd>
+
+	<dt><b>Térkép</b></dt>
+	<dd>A játékterület, amelyen a bázisok és az egységek találhatók.</dd>
+
+	<dt><b>Túltervezés (scope creep)</b></dt>
+	<dd>Az a jelenség, amikor a fejlesztés során túl sok új ötletet és funkciót próbálunk beépíteni a programba, ami miatt a projekt kicsúszik a rendelkezésre álló időből.</dd>
+
+	<dt><b>UML (Unified Modeling Language)</b></dt>
+	<dd>Szabványos vizuális modellező nyelv. Különböző ábrák (osztály-, szekvencia- és állapotdiagramok) segítségével szemlélteti a program belső felépítését és működési folyamatait a kódolás megkezdése előtt.</dd>
+
+	<dt><b>Use case (felhasználói eset) és use case walkthrough</b></dt>
+	<dd>A <i>use case</i> egy konkrét használati folyamat leírása a játékos szemszögéből (például: „a játékos kijelöl egy munkást, és felépít egy kaszárnyát”). A <i>walkthrough</i> ennek a folyamatnak a gyakorlati végigpróbálása a tesztelés során.</dd>
+
+	<dt><b>Útvonalkeresés (pathfinding)</b></dt>
+	<dd>Algoritmus (például A*), amely kiszámolja, hogyan juthat el egy egység a térkép egyik pontjából a másikba úgy, hogy közben kikerülje a tereptárgyakat és az épületeket.</dd>
+
+	<dt><b>VS Code (Visual Studio Code)</b></dt>
+	<dd>Kódszerkesztő program, amelyben a játék C++ forráskódját és a HTML dokumentációkat írjuk.</dd>
+</dl>
+
+</body>
+</html>
