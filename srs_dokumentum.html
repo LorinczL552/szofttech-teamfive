@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Stonehold - SRS dokumentum</title>
+</head>
+<body>
+
+<h1>Stonehold - SRS dokumentum</h1>
+
+<p>
+Követelményspecifikáció (Software Requirements Specification)<br>
+Csapattagok: Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)<br>
+Miskolci Egyetem, Informatikai Intézet
+</p>
+
+<h2>Történet</h2>
+
+<table border="1" cellpadding="6">
+<tr><th>Dátum</th><th>Verzió</th><th>Leírás</th><th>Szerző</th></tr>
+<tr><td>2026.10.26-28.</td><td>0.1</td><td>A fejezetek megírása külön fájlokban a feladatkörök szerint</td><td>Mindenki</td></tr>
+<tr><td>2026.10.28.</td><td>0.2</td><td>Összefésülés</td><td>Lőrincz Loránd László</td></tr>
+<tr><td>2026.10.28.</td><td>1.0</td><td>Áttekintés után leadott változat</td><td>Mindenki</td></tr>
+</table>
+
+<h2>Tartalomjegyzék</h2>
+
+<ul>
+<li><a href="#f1">1. Bevezetés</a>
+</li>
+<li><a href="#f2">2. Áttekintés</a>
+<ul>
+<li><a href="#f2-1">2.1. A termék környezete</a></li>
+<li><a href="#f2-2">2.2. A legfontosabb funkciók</a></li>
+<li><a href="#f2-3">2.3. A felhasználók jellemzői</a></li>
+<li><a href="#f2-4">2.4. Korlátozások</a></li>
+<li><a href="#f2-5">2.5. Feltételezések és függőségek</a></li>
+<li><a href="#f2-6">2.6. A követelmények csoportosítása</a></li>
+</ul></li>
+<li><a href="#f3">3. A rendszer funkciói</a>
+<ul>
+<li><a href="#f3-1">3.1. Motor alapok</a></li>
+<li><a href="#f3-2">3.2. Menük, kamera és kezelőfelület</a></li>
+<li><a href="#f3-3">3.3. Nyersanyagok és gyűjtés</a></li>
+<li><a href="#f3-4">3.4. Építkezési mechanikák</a></li>
+<li><a href="#f3-5">3.5. Technológiafa és fejlődési szintek</a></li>
+<li><a href="#f3-6">3.6. Egységek és harc</a></li>
+<li><a href="#f3-7">3.7. Útvonalkeresés (pathfinding)</a></li>
+<li><a href="#f3-8">3.8. Gépi ellenfél</a></li>
+<li><a href="#f3-9">3.9. Felhasználói esetek (use case-ek)</a></li>
+</ul></li>
+<li><a href="#f4">4. Használhatóság</a>
+<ul>
+<li><a href="#f4-1">4.1. Betanulási idő</a></li>
+<li><a href="#f4-2">4.2. Más játékokhoz hasonló irányítás</a></li>
+<li><a href="#f4-3">4.3. Átláthatóság</a></li>
+<li><a href="#f4-4">4.4. Visszajelzés a játékos felé</a></li>
+<li><a href="#f4-5">4.5. Gyorsbillentyűk</a></li>
+<li><a href="#f4-6">4.6. Kezdők segítése</a></li>
+</ul></li>
+<li><a href="#f5">5. Megbízhatóság</a>
+<ul>
+<li><a href="#f5-1">5.1. Rendelkezésre állás</a></li>
+<li><a href="#f5-2">5.2. Hibák közötti átlagos idő (MTBF)</a></li>
+<li><a href="#f5-3">5.3. Hiba utáni helyreállítás és javítási idő (MTTR)</a></li>
+<li><a href="#f5-4">5.4. Memóriakezelés és futásidejű stabilitás</a></li>
+<li><a href="#f5-5">5.5. A számítások és eredmények pontossága</a></li>
+</ul></li>
+<li><a href="#f6">6. Teljesítmény</a>
+<ul>
+<li><a href="#f6-1">6.1. Válaszidők</a></li>
+<li><a href="#f6-2">6.2. Képkockasebesség (FPS)</a></li>
+<li><a href="#f6-3">6.3. Kapacitás és egységlimit</a></li>
+<li><a href="#f6-4">6.4. Erőforrásigények</a></li>
+</ul></li>
+<li><a href="#f7">7. Támogatottság</a>
+<ul>
+<li><a href="#f7-1">7.1. Kódolási szabványok és karbantarthatóság</a></li>
+<li><a href="#f7-2">7.2. Bővíthetőség</a></li>
+<li><a href="#f7-3">7.3. Konfigurálhatóság</a></li>
+<li><a href="#f7-4">7.4. Naplózás és hibakeresés</a></li>
+</ul></li>
+<li><a href="#f8">8. Tervezési korlátozások</a>
+<ul>
+<li><a href="#f8-1">8.1. Architektúra</a></li>
+<li><a href="#f8-2">8.2. Programozási nyelv</a></li>
+<li><a href="#f8-3">8.3. Fejlesztőeszközök</a></li>
+<li><a href="#f8-4">8.4. Felhasznált kész elemek</a></li>
+<li><a href="#f8-5">8.5. Fejlesztési módszertan</a></li>
+</ul></li>
+<li><a href="#f9">9. On-line dokumentáció és Help rendszer</a>
+<ul>
+<li><a href="#f9-1">9.1. Tooltipek (eszköztippek)</a></li>
+<li><a href="#f9-2">9.2. Súgó képernyő</a></li>
+<li><a href="#f9-3">9.3. Játék közbeni üzenetek</a></li>
+<li><a href="#f9-4">9.4. Felhasználói útmutató (README)</a></li>
+</ul></li>
+<li><a href="#f10">10. Felhasznált kész komponensek</a>
+<ul>
+<li><a href="#f10-1">10.1. SDL2</a></li>
+<li><a href="#f10-2">10.2. SDL2_image és SDL2_ttf</a></li>
+<li><a href="#f10-3">10.3. SDL2_mixer</a></li>
+<li><a href="#f10-4">10.4. Grafika</a></li>
+<li><a href="#f10-5">10.5. Betűtípus</a></li>
+<li><a href="#f10-6">10.6. Fejlesztőeszközök</a></li>
+</ul></li>
+<li><a href="#f11">11. Interfészek</a>
+<ul>
+<li><a href="#f11-1">11.1. Felhasználói interfészek</a></li>
+<li><a href="#f11-2">11.2. Hardware interfészek</a></li>
+<li><a href="#f11-3">11.3. Software interfészek</a></li>
+<li><a href="#f11-4">11.4. Kommunikációs interfészek</a></li>
+</ul></li>
+<li><a href="#f12">12. Alkalmazott szabványok</a>
+<ul>
+<li><a href="#f12-1">12.1. Kötelezően alkalmazandó szabványok</a></li>
+<li><a href="#f12-2">12.2. Választás alapján alkalmazott szabványok</a></li>
+</ul></li>
+<li><a href="#f13">13. Mellékletek</a>
+<ul>
+<li><a href="#f13-1">13.1. Fogalomtár</a></li>
+<li><a href="#f13-2">13.2. Hivatkozott dokumentumok és források</a></li>
+</ul></li>
+</ul>
+
+<hr>
+
+
+<h1 id="f1">1. Bevezetés</h1>
+
+<p>
+Ez a dokumentum a csapatunk által fejlesztett játék követelményeit tartalmazza. A dokumentum fő célja, hogy megfogalmazzuk a vízió dokumentumban leírt ötleteket és elképzeléseket konkrét követelmények formájában. Tartalmazza részletesen az összes funkcionális és nem funkcionális követelményt, amiket a játéknak tudnia kell a félév végére és ezek fontossági sorrendjét a MoSCoW-elv szerint fogjuk meghatározni.
+</p>
+
+<p>
+Az SRS-ben lévő dolgok alapján fogjuk tudni azonosítani a játékbeli objektumokat és a C++ osztályokat, a rendszer és az AI viselkedését, továbbá a háttérben futó számításokat is, mint pl. a sebzésszámítás vagy a nyersanyagok kezelése. Emellett a tesztelések során is ehhez a dokumentumhoz fogjuk hasonlítani a kész programot, hogy úgy működik-e minden, ahogy itt előre megterveztük. A lentebb szereplő követelmények nagyon fontosak lesznek a következő beadandónál, amikor majd az UML tervezési dokumentumot csináljuk.
+</p>
+
+<p>
+A dokumentum egyrészt a gyakorlatvezetőnek ("megrendelő") szól, hogy le tudja ellenőrizni, hogy tényleg a megfelelő szoftver fog-e elkészülni a megbeszéltek alapján. Másrészt pedig magunknak, mivel a kódolás során végig ebből fogunk kiindulni.
+</p>
+
+<p>
+A dokumentum felépítése a megadott SRS mintát követi. A 2. fejezetben egy általános áttekintés található, a 3. fejezetben vannak a konkrét rendszerfunkciók és a use case-ek, 4-től a 12. fejezetig pedig leírjuk a nem funkcionális elvárásokat, a korlátozásokat és a különféle interfészeket részletesen. A végén, a 13. fejezetben egy rövid fogalomtár és a hivatkozott források vannak.
+</p>
+
+<h1 id="f2">2. Áttekintés</h1>
+
+<p>
+Itt röviden összefoglaljuk, milyen programról van szó, kinek készül, és milyen keretek között dolgozunk rajta. Ezek nagy része már a vízió dokumentumban is benne van, ilyenkor odahivatkozunk.
+</p>
+
+<h2 id="f2-1">2.1. A termék környezete</h2>
+<p>
+A Stonehold egy 2D-s, felülnézetes valós idejű stratégiai játék, amit egyedül lehet játszani egy gépi ellenfél ellen. Önálló Windows-program: kicsomagolás után a saját mappájából indul, nem kell hozzá telepítő, internet vagy felhasználói fiók. Nem része egy nagyobb rendszernek, és más programokkal sem tart kapcsolatot.
+</p>
+<p>
+A futáshoz kell neki: 64 bites Windows 10 vagy 11, az SDL2 és a kiegészítői (DLL-ként a játék mellett), és az erőforrásmappa a képekkel, betűtípusokkal és konfigurációs fájlokkal. Csak a saját mappájából olvas fájlokat, és ha lesz mentés, oda ír is. Részletesen a 11. fejezetben.
+</p>
+<p>
+A programon belül öt nagyobb rész van: a motor (ablak, rajzolás, bemenet, időzítés), a gazdaság és az építkezés, a harc és az útvonalkeresés, a gépi ellenfél és a kezelőfelület. Ezek egymásra épülnek, nagyjából abban a sorrendben, ahogy az M1-M5 mérföldkövek is követik egymást.
+</p>
+
+<h2 id="f2-2">2.2. A legfontosabb funkciók</h2>
+<p>
+A játékos munkásokkal nyersanyagot gyűjt (fát, aranyat, követ, acélt és ételt), ebből épületeket húz fel és katonákat képez, a seregével pedig megpróbálja lerombolni az ellenfél bázisát, miközben a gép ugyanezt próbálja vele. A funkciók fontossági sorrendjét a vízióban már MoSCoW szerint meghatároztuk, ezen itt nem változtatunk:
+</p>
+<ul>
+	<li>Must have: főmenü, görgethető térkép és kamera, egységek kijelölése és mozgatása, nyersanyaggyűjtés, építkezés, egységképzés, harc, útvonalkeresés, gépi ellenfél, HUD és minimap, győzelem és vereség.</li>
+	<li>Should have: technológiafa, szünet menü, gyorsbillentyűk, legalább két nehézségi szint.</li>
+	<li>Could have: több térkép, hangok és zene, mentés és betöltés.</li>
+	<li>Won't have (ebben a félévben): többjátékos mód, kampány, hősök és varázslatok, pályaszerkesztő.</li>
+</ul>
+<p>
+A vízióhoz képest két helyen tértünk el, mindkettőről a részletes kidolgozás közben döntöttünk. A fa és az arany mellé bekerült a kő, az acél és az étel, a népesség pedig felső korlátként működik (3.3). A mérkőzés már akkor véget ér, ha az egyik fél főépülete megsemmisül, nem kell az összes épületét lerombolni (F-HARC-18).
+</p>
+<p>
+Az egyes funkciók pontos leírása a 3. fejezetben van.
+</p>
+
+<h2 id="f2-3">2.3. A felhasználók jellemzői</h2>
+<p>
+A játéknak egyetlen felhasználói szerepköre van, a játékos. Adminisztrátor vagy más jogosultsági szint nincs, mivel nincs szerver és nincsenek fiókok, amiket kezelni kellene.
+</p>
+<p>
+A játékosokat két csoportra osztjuk. Az egyik csoport már játszott RTS-sel (pl. Age of Empires II-vel vagy Warcraft III-mal). Nekik az a fontos hogy az irányítás a megszokott módon működjön, és legyenek gyorsbillentyűk. A másik csoport kezdő, nekik a tooltipek, a súgó és a könnyű nehézségi szint segít. Mindkét csoport ugyanazt a felületet használja, külön kezdő mód nincs.
+</p>
+<p>
+A vízió alapján főleg 14 év feletti játékosokra számítunk, akiknek elég az alap számítógépes tudás: ki tudnak csomagolni egy ZIP-fájlt, és el tudnak indítani egy programot. Szerintünk egy meccs kb. 20-40 perc lesz, tehát a játékot alkalmi játékra tervezzük.
+</p>
+
+<h2 id="f2-4">2.4. Korlátozások</h2>
+<p>
+A korlátok nagy része már benne van a vízió 6. fejezetében, ide azokat írtuk, amik a követelményekre is hatnak. A játék csak 64 bites Windows 10/11-re készül, csak egyjátékos módban és csak magyarul. Kész motort nem használhatunk, a keretrendszert C++-ban, SDL2-re építve magunk írjuk, ezért olyan dolgokat is nekünk kell kitalálni, amiket egy motor készen adna (pl. útvonalkeresés, memóriakezelés). A kamera nem nagyítható, zoom nincs. A pályán egyszerre lévő egységek száma korlátozott (6.3).
+</p>
+<p>
+Időből és emberből is kevés van: egy félév, öt ember, kb. 430 munkaóra, a végleges változatot a 13. héten kell leadni. Csak ingyenes eszközöket és szabad felhasználású grafikát használhatunk. A tervezést érintő megkötések a 8. fejezetben vannak.
+</p>
+
+<h2 id="f2-5">2.5. Feltételezések és függőségek</h2>
+<p>
+Feltételezzük, hogy a játékos gépe eléri a vízióban megadott minimumot (kétmagos 2 GHz-es processzor, 2 GB RAM, hardveres gyorsítást tudó videókártya, legalább 1280x720-as kijelző), és hogy az SDL2 és a kiegészítői mindenkinek ugyanúgy beállíthatók és lefordíthatók. Azt is feltételezzük, hogy találunk elég ingyenes grafikát, ami nagyjából passzol egymáshoz. Ha nem, akkor egyszerűbb, saját rajzolású képek lesznek. Ha valaki kiesik a csapatból, a feladatait a csapatvezető osztja szét a többiek között.
+</p>
+<p>
+A legfontosabb függőség a részek sorrendje: a gazdaság a motorra épül, a harc az egységek mozgatására, az MI pedig a gazdaságra és a harcra is. Ha a motor (M1) csúszik, minden más is csúszik, ezért azzal kezdünk.
+</p>
+
+<h2 id="f2-6">2.6. A követelmények csoportosítása</h2>
+<p>
+A funkcionális követelményeket (3. fejezet) a játék részei szerint csoportosítottuk, mert a munkát is így osztottuk el egymás között, és a UML-tervben is ezek lesznek a fő csomagok. Minden csoportnak saját azonosító-előtagja van:
+</p>
+<ul>
+	<li>F-MOT: motor alapok (ablak, játékhurok, térkép, rajzolás, bemenet)</li>
+	<li>F-UI: menük, kamera és kezelőfelület</li>
+	<li>F-GAZD: nyersanyagok és gyűjtés</li>
+	<li>F-EPIT: építkezés</li>
+	<li>F-TECH: technológiafa</li>
+	<li>F-HARC: egységek és harc</li>
+	<li>F-UTV: útvonalkeresés</li>
+	<li>F-MI: gépi ellenfél</li>
+</ul>
+<p>
+Minden követelmény kap egy azonosítót (előtag és sorszám, pl. F-HARC-14), egy MoSCoW-prioritást, és mellé írjuk, hogy a vízió melyik részéből jön. Ezekre később a UML-nél és a tesztelésnél is hivatkozni fogunk.
+</p>
+<p>
+A use case-ek külön, a 3. fejezet végén (3.9) vannak összegyűjtve, és azonosítóval hivatkoznak a fenti csoportok követelményeire. A nem funkcionális követelményeket nem soroltuk csoportokba. Ezek a sablon szerint a 4-7. fejezetben vannak, és fejezetszámmal hivatkozunk rájuk (pl. "lásd 6.2").
+</p>
+
+
+<h1 id="f3">3. A rendszer funkciói</h1>
+
+<p>
+A rendszer funkcióit modulonként írtuk le, ugyanúgy, ahogy a munkát is szétosztottuk (lásd 2.6). Minden modulnál van egy szöveges rész és egy táblázat a konkrét követelményekkel, azonosítóval és MoSCoW prioritással. A felhasználói eseteket (use case-eket) a fejezet végén, a 3.9-ben írtuk le. Az UML diagramokat majd külön, a UML tervezési dokumentumban csináljuk meg, itt csak a szöveges leírásuk van.
+</p>
+<p>
+Az egységek és épületek pontos számértékei (életerő, sebzés, költség, idők) nem itt vannak, hanem a konfigurációs fájlban, így a játékegyensúly újrafordítás nélkül hangolható (7.3).
+</p>
+
+<h2 id="f3-1">3.1. Motor alapok</h2>
+
+<p>
+Ez a saját keretrendszer alapja, erre épül minden más (M1 mérföldkő). Mivel kész motort nem használhatunk, ezt mind nekünk kell megírni. Hogy belül hogyan néz ki, azt a 8.1 írja le, itt csak az van, mit kell tudnia.
+</p>
+<p>
+Induláskor megnyílik az ablak a beállításfájlban megadott felbontással és móddal, ha nincs ilyen fájl, akkor 1280x720 ablakos. Utána megy a fő ciklus: bemenet, frissítés, rajzolás. A frissítés fix, másodpercenként 60-szor fut. Ha a gép nagyon lemarad, egy körben csak pár frissítést csinál meg és a többit eldobja, különben egyre jobban belassulna.
+</p>
+<p>
+A térkép csempékből álló rács, egy csempe 32x32 pixel, a pálya fájlból töltődik be. Minden csempéről tudni kell, hogy járható-e, ezt használja az útvonalkeresés. A legnagyobb pálya most 128x128 csempe, de ha ez túl lassú lesz, lehet, hogy kisebb lesz. Rajzolásnál sorban jön a talaj, a tereptárgyak és épületek, az egységek, a kijelölés és az életerőcsíkok, legfelül pedig a HUD meg a menük. Csak azt rajzoljuk ki, ami a kamerában látszik.
+</p>
+<p>
+Egy kattintást először a felület kap meg, és csak ha az nem kezeli, akkor megy tovább a játéktérre, különben pl. egy gombra kattintva az alatta álló egység is kijelölődne.
+</p>
+<p>
+A képeket és betűtípusokat egyszer töltjük be, és a program végén szabadítjuk fel. Ha egy kép hiányzik, a játék ne álljon le, hanem rakjon ki helyette egy feltűnő lila képet, és írja be a naplóba. A konfigurációs fájlnál ugyanígy: ha egy érték hibás vagy hiányzik, legyen alapérték, és ez is menjen a naplóba. F3-ra a sarokban megjelenik az FPS, ez a teszteléshez kell. Az ablak X gombja ugyanazt csinálja, mint a Kilépés a menüben.
+</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-MOT-01</td><td>Induláskor a beállításfájl szerinti felbontású és módú ablakot kell nyitni. Ha nincs ilyen fájl, 1280x720-as ablakot.</td><td>M</td><td>Vízió: motor alapok (M1)</td></tr>
+  <tr><td>F-MOT-02</td><td>A játék állapotát fix időközönként, másodpercenként 60-szor kell frissíteni, a rajzolástól függetlenül (8.1).</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+  <tr><td>F-MOT-03</td><td>A térkép 32x32 pixeles csempékből álló rács, amit a program fájlból tölt be. Legnagyobb mérete 128x128 csempe.</td><td>M</td><td>Vízió: térkép és kamera</td></tr>
+  <tr><td>F-MOT-04</td><td>Csak a kamerában látható részt kell kirajzolni, a fenti rétegsorrendben.</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+  <tr><td>F-MOT-05</td><td>A kattintást először a felületnek kell feldolgoznia, a játéktér csak akkor kapja meg, ha a felület nem kezelte.</td><td>M</td><td>Vízió: egységek irányítása</td></tr>
+  <tr><td>F-MOT-06</td><td>Hiányzó kép esetén a játék nem állhat le, helyettesítő képet kell megjeleníteni, és naplózni kell a hibát.</td><td>M</td><td>Vízió: minőségi elvárások</td></tr>
+  <tr><td>F-MOT-07</td><td>A konfigurációs fájl hibás vagy hiányzó értékei helyett alapértéket kell használni, és ezt naplózni kell.</td><td>M</td><td>Vízió: konfigurációs fájl</td></tr>
+  <tr><td>F-MOT-08</td><td>F3-ra meg kell tudni jeleníteni az aktuális FPS-t.</td><td>S</td><td>Vízió: minőségi elvárások</td></tr>
+  <tr><td>F-MOT-09</td><td>Az ablak bezárása ugyanúgy lépjen ki, mint a menü Kilépés gombja, és szabadítson fel minden erőforrást.</td><td>M</td><td>Vízió: főmenü</td></tr>
+</table>
+
+<h2 id="f3-2">3.2. Menük, kamera és kezelőfelület</h2>
+
+<p>Ide a menürendszerrel és a kamera kezelésével kapcsolatos funkciók kerültek. A játék közbeni képernyő (HUD, minimap, kijelölés, építési menü) részletes leírása a 11.1-ben van.</p>
+
+<h3>3.2.1. Főmenü</h3>
+<p>A játék indításakor a főmenü jelenik meg. A főmenüben a következő gombok vannak: Új játék, Beállítások, Súgó és Kilépés. A gombok egérrel kattinthatók, és ha az egér egy gomb fölé kerül, a gomb kiemelődik (pl. megváltozik a színe), így látszik, mire fog kattintani a játékos. A Kilépés gombra a program bezárul.</p>
+<h3>3.2.2. Új játék beállításai</h3>
+<p>Az Új játék gomb megnyomása után nem indul el rögtön a játék, hanem egy beállító képernyő jön, ahol a játékos kiválaszthatja az AI-ellenfél nehézségét (könnyű vagy normál). Az alapértelmezett nehézség a normál. Ha később több pálya is lesz, itt lehet majd azt is kiválasztani. A képernyőn van egy Indítás gomb, ami elindítja a mérkőzést, és egy Vissza gomb, ami visszavisz a főmenübe.</p>
+<h3>3.2.3. Szünet menü</h3>
+<p>Játék közben az ESC billentyűvel a szünet menü nyitható meg. Amíg a szünet menü nyitva van, a játék megáll (az egységek nem mozognak, a nyersanyag nem gyűlik, az AI sem csinál semmit). A szünet menüben ezek a gombok vannak: Folytatás, Beállítások, Súgó és Kilépés a főmenübe. Az ESC újbóli megnyomása ugyanazt csinálja, mint a Folytatás. Mivel a Kilépés a főmenübe esetén elveszik az aktuális mérkőzés, a játék előtte rákérdez, hogy biztosan ki akar-e lépni a játékos.</p>
+<h3>3.2.4. Beállítások</h3>
+<p>A beállítások menü a főmenüből és a szünet menüből is elérhető. A következőket lehet benne állítani:</p>
+<ul>
+  <li>zene hangereje és hangeffektek hangereje (külön-külön, csúszkával), ha a hangok elkészülnek,</li>
+  <li>felbontás (egy listából, legalább 1280x720),</li>
+  <li>ablakos vagy teljes képernyős mód.</li>
+</ul>
+<p>A beállításokat a játék egy konfigurációs fájlba menti, így a következő indításkor is megmaradnak. Ha a fájl hiányzik vagy hibás, a játék az alapértelmezett értékekkel indul.</p>
+<h3>3.2.5. Játék vége képernyő</h3>
+<p>Ha a mérkőzés véget ér (a játékos vagy az AI veszít), megjelenik egy képernyő, ami kiírja, hogy a játékos nyert vagy vesztett. Innen a Főmenü gombbal lehet visszamenni a főmenübe.</p>
+<h3>3.2.6. Kamera mozgatása billentyűzettel</h3>
+<p>A pálya nagyobb, mint ami egyszerre kifér a képernyőre, ezért a kamerát mozgatni kell. A kamera a WASD billentyűkkel és a nyilakkal is mozgatható (W / fel = fel, S / le = le, A / bal = balra, D / jobb = jobbra). Ha a játékos két billentyűt nyom egyszerre (pl. W és D), a kamera átlósan mozog. A kamera addig mozog, amíg a billentyű le van nyomva.</p>
+<h3>3.2.7. Kamera mozgatása a képernyő szélével (edge scroll)</h3>
+<p>Ha a játékos az egeret a képernyő valamelyik széléhez viszi (kb. 10 pixelen belülre), a kamera abba az irányba kezd mozogni. Ez csak akkor működik, ha a játék ablaka aktív, különben például ablakos módban zavaró lenne, ha a kamera akkor is mozogna, amikor a játékos egy másik ablakba kattint.</p>
+<h3>3.2.8. Kamera ugrása a minimapre kattintással</h3>
+<p>Ha a játékos bal egérgombbal a minimapre kattint, a kamera azonnal a pálya megfelelő pontjára ugrik (a kattintott pont lesz a képernyő közepe). Ha lenyomva tartja a gombot és húzza az egeret a minimapen, a kamera követi.</p>
+<h3>3.2.9. Kamera határai</h3>
+<p>A kamera semmilyen módon nem mehet ki a pálya területéről, a pálya széleinél megáll. Ez minden mozgatási módra (billentyűzet, edge scroll, minimap) igaz. A kamera nem nagyítható, a zoomot a vízióban (6. fejezet) kizártuk.</p>
+
+<h3>3.2.10. A menük és a kamera követelményei</h3>
+<table border="1">
+  <tr><th>Azon.</th><th>Mit kell tudnia</th><th>Prioritás</th></tr>
+  <tr><td>F-UI-01</td><td>Indításkor a főmenü jön be (Új játék, Beállítások, Súgó, Kilépés).</td><td>Must</td></tr>
+  <tr><td>F-UI-02</td><td>Új játék előtt ki lehet választani az AI nehézségét (könnyű / normál), alapból normál.</td><td>Should</td></tr>
+  <tr><td>F-UI-03</td><td>ESC-re szünet menü, közben a játék áll.</td><td>Should</td></tr>
+  <tr><td>F-UI-04</td><td>Ha a szünet menüből kilépünk a főmenübe, előtte rákérdez.</td><td>Should</td></tr>
+  <tr><td>F-UI-05</td><td>Beállítások: felbontás (min. 1280x720), ablakos / teljes képernyő. Fájlba menti, ha a fájl rossz, alapértékekkel indul.</td><td>Should</td></tr>
+  <tr><td>F-UI-06</td><td>Zene és effekt hangerő külön csúszkával (csak ha lesz hang).</td><td>Could</td></tr>
+  <tr><td>F-UI-07</td><td>Meccs végén győzelem / vereség képernyő, onnan vissza a főmenübe.</td><td>Must</td></tr>
+  <tr><td>F-UI-08</td><td>Kamera WASD-vel és nyilakkal, átlósan is.</td><td>Must</td></tr>
+  <tr><td>F-UI-09</td><td>Edge scroll (kb. 10 px a széltől), csak ha aktív az ablak.</td><td>Must</td></tr>
+  <tr><td>F-UI-10</td><td>Minimapre kattintva / húzva odaugrik a kamera.</td><td>Must</td></tr>
+  <tr><td>F-UI-11</td><td>A kamera nem mehet ki a pályáról.</td><td>Must</td></tr>
+  <tr><td>F-UI-12</td><td>Kijelölés: klikk, húzott téglalap, Shift + klikk. Mozgatás jobb klikkel (részletek: 11.1).</td><td>Must</td></tr>
+  <tr><td>F-UI-13</td><td>HUD: nyersanyagok, népesség, kijelölt egység adatai, építési menü, minimap (11.1).</td><td>Must</td></tr>
+</table>
+
+<h2 id="f3-3">3.3. Nyersanyagok és gyűjtés</h2>
+
+<p>
+Ez a rész a Stonehold gazdasági alrendszerének a működését írja le. A gazdaság adja az alapot a bázis építéséhez és a hadsereg kiképzéséhez, így a játékmenet egyik legfontosabb része.
+</p>
+
+<p>
+A játékban öt nyersanyag és mellettük a népesség van, amelyek beosztása nagyon fontos a győzelemhez: a fa, az arany, a kő, az acél, az étel és a népesség.
+</p>
+
+<ul>
+  <li>
+    Erőforrásokkal kapcsolatos tudnivalók:
+    <ul>
+      <li>Fa: A térképen található erdőkből termelhető ki munkások segítségével. Alapvető építőanyag.</li>
+      <li>Arany: Aranyérből bányászható ki, szintén munkásokkal. Fejlettebb épületek, egységek és fejlesztések megvásárlásához szükséges.</li>
+      <li>Kő: Kőfejtőből nyerhető, amit sziklás területre kell építeni. Főként a kőépületek, falak és az őrtorony felhúzásához kell.</li>
+      <li>Acél: Ércbányászat és azt követő feldolgozás (kohászat) révén állítható elő, mindkettő a kohóban történik, amit érclelőhelyre kell építeni. Külön érc nyersanyag nincs. A nehézfegyverzet és a fejlett katonai egységek gyártási nyersanyaga.</li>
+      <li>Étel: A farmok termelik. Az egységek kiképzéséhez kell.</li>
+      <li>Népesség: A birodalom rendelkezésre álló emberi erőforrása, ez nem gyűjthető. Lakóházak építésével növelhető, és ez szab határt annak, hogy összesen mennyi munkásunk és katonánk lehet (de a 6.3-ban megadott egységlimitnél több nem lehet).</li>
+    </ul>
+  </li>
+  <li>
+    A gyűjtés menete és a kitermelés módjai:
+    <ul>
+      <li>A fa és az arany szabad kézzel gyűjthető, a munkások oda-vissza hordják a terhet a lelőhely és a gyűjtőpont (főépület vagy raktár) között.</li>
+      <li>A kő, az acél és az étel szabad kézzel nem gyűjthető. Ezekhez egy külön kitermelő épületet (kőfejtő, kohó, farm) kell lehelyezni közvetlenül a nyersanyag helyére vagy az arra kijelölt területre. Ekkor a munkások az adott épületen belül dolgoznak, és a termelés folyamatosan kerül a készletbe. Minél több munkás van beosztva, annál gyorsabb, de egy épületbe csak korlátozott számú munkás fér (konfigurációs fájl).</li>
+      <li>A játékos rákattint a munkásra, majd jobb klikkel a lelőhelyre vagy a kitermelő épületre, és így jelöli ki a feladatot.</li>
+      <li>Leadás után a munkás automatikusan visszatér a forráshoz, amíg új parancsot nem kap, vagy a készlet ki nem ürül. A kiürült lelőhely eltűnik a térképről.</li>
+    </ul>
+  </li>
+  <li>
+    Készlet nyilvántartása:
+    <ul>
+      <li>A begyűjtött mennyiségek azonnal megjelennek a képernyő felső részén található kezelőfelületen (HUD), így a játékos folyamatosan nyomon követheti a készleteit.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+Megjegyzés: a vízióban még csak a fa és az arany szerepelt. A kő, az acél és az étel a gazdaság részletes kidolgozásakor került be, mert ezekkel lehet a technológiafa szintjeit elválasztani egymástól. Mivel ez több munka, ezek Should have prioritást kaptak, tehát ha nem férnek bele az időbe, a játék fával és arannyal is működik. Folyamatos élelmezés (hogy az egységek folyamatosan fogyasszák az ételt) nem lesz, mert túl bonyolult lenne, az étel csak a kiképzés költségében szerepel.
+</p>
+
+<table border="1">
+  <tr><th>ID</th><th>Követelmény</th><th>MoSCoW</th><th>Vízió</th></tr>
+  <tr><td>F-GAZD-01</td><td>A rendszer nyilvántartja a fát és az aranyat, ezeket a munkások közvetlenül a lelőhelyről gyűjtik.</td><td>M</td><td>5. fejezet, nyersanyaggyűjtés</td></tr>
+  <tr><td>F-GAZD-02</td><td>A rendszer kezeli a követ, az acélt és az ételt is, ezeket kitermelő épület (kőfejtő, kohó, farm) állítja elő a beosztott munkások számától függően.</td><td>S</td><td>- (bővítés)</td></tr>
+  <tr><td>F-GAZD-03</td><td>A munkás a kitermelt adagot a legközelebbi főépületbe vagy raktárba viszi, majd magától visszamegy a lelőhelyhez, amíg új parancsot nem kap.</td><td>M</td><td>5. fejezet, nyersanyaggyűjtés</td></tr>
+  <tr><td>F-GAZD-04</td><td>A lelőhelyek véges mennyiségűek, a kiürült lelőhely eltűnik, az ott dolgozó munkások megállnak.</td><td>M</td><td>5. fejezet, nyersanyaggyűjtés</td></tr>
+  <tr><td>F-GAZD-05</td><td>A nyersanyagok mennyisége egész szám, és nem lehet negatív (5.5).</td><td>M</td><td>7. fejezet, játékegyensúly</td></tr>
+  <tr><td>F-GAZD-06</td><td>A népesség maximumát a lakóházak növelik, de nem lépheti túl az egységlimitet. Új egység csak szabad hely esetén képezhető.</td><td>S</td><td>- (bővítés)</td></tr>
+  <tr><td>F-GAZD-07</td><td>A HUD felső sávjában mindig látszik az összes nyersanyag és a népesség (jelenlegi/maximum).</td><td>M</td><td>5. fejezet, kezelőfelület</td></tr>
+</table>
+
+<h2 id="f3-4">3.4. Építkezési mechanikák</h2>
+
+<p>
+Épületekkel lehet bővíteni a bázist, növelni a népességet, új egységeket képezni és védekezni.
+</p>
+
+<ul>
+  <li>
+    Az építés lépései:
+    <ul>
+      <li>A játékos kiválaszt egy munkást, megnyitja az építési menüt, majd kiválasztja a kívánt épületet.</li>
+      <li>Ha rendelkezésre áll elegendő nyersanyag, a kurzor alatt megjelenik az épület körvonala. Ha nincs elég, az épület gombja szürke.</li>
+      <li>A zöld jelzés szabad területet, a piros foglalt területet jelöl. Foglalt helyre nem lehet építeni.</li>
+      <li>A lehelyezés pillanatában a szükséges nyersanyagok levonódnak a készletből, a kijelölt munkás pedig odamegy és felépíti a szerkezetet.</li>
+      <li>A lehelyezés jobb klikkel vagy ESC-vel megszakítható, ilyenkor nem vonódik le semmi.</li>
+    </ul>
+  </li>
+  <li>
+    Építési idő és állapotok:
+    <ul>
+      <li>Az épületek felépítése időt vesz igénybe, ezalatt félkész állapotban láthatók.</li>
+      <li>Ha a munkást elterelik vagy megsemmisítik, a munkálatok egy másik munkással bármikor folytathatók.</li>
+      <li>A megsemmisült épületek életereje nullára csökken, és eltűnnek a térképről.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Az épületek listája:</p>
+<table border="1">
+  <tr><th>Épület</th><th>Mire jó</th><th>Szint</th></tr>
+  <tr><td>Főépület</td><td>Ezzel kezd a játékos. Munkásképzés, nyersanyag leadása, szintlépés. Ha megsemmisül, a játékos veszít.</td><td>kezdő</td></tr>
+  <tr><td>Lakóház</td><td>Növeli a népesség maximumát.</td><td>1.</td></tr>
+  <tr><td>Raktár</td><td>Nyersanyag-leadóhely, hogy ne kelljen mindent a főépületig hordani.</td><td>1.</td></tr>
+  <tr><td>Kaszárnya</td><td>Katonák képzése.</td><td>1.</td></tr>
+  <tr><td>Farm</td><td>Ételt termel.</td><td>1.</td></tr>
+  <tr><td>Kőfejtő</td><td>Követ termel, sziklás területre építhető.</td><td>2.</td></tr>
+  <tr><td>Kohó</td><td>Acélt termel, érclelőhelyre építhető.</td><td>2.</td></tr>
+  <tr><td>Kovácsműhely</td><td>Fejlesztések vásárlása (3.5).</td><td>2.</td></tr>
+  <tr><td>Őrtorony</td><td>Magától lövi a hatótávjába érő ellenséges egységeket.</td><td>2.</td></tr>
+  <tr><td>Fal</td><td>Elzárja az utat, az egységek nem tudnak átmenni rajta.</td><td>2.</td></tr>
+</table>
+
+<p>Az építkezés követelményei:</p>
+<table border="1">
+  <tr><th>ID</th><th>Követelmény</th><th>MoSCoW</th><th>Vízió</th></tr>
+  <tr><td>F-EPIT-01</td><td>Építeni csak kijelölt munkással lehet, az építési menüből.</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-02</td><td>Ha nincs elég nyersanyag, az épület gombja szürke, és nem választható ki (4.4).</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-03</td><td>Lehelyezés előtt az épület körvonala követi az egeret: zöld, ha szabad a hely, piros, ha foglalt. Foglalt helyre nem lehet építeni.</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-04</td><td>A lehelyezés jobb klikkel vagy ESC-vel megszakítható, ilyenkor nem vonódik le nyersanyag.</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-05</td><td>Lehelyezéskor a költség azonnal levonódik, a munkás odamegy és felépíti az épületet, ami addig félkész állapotban van.</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-06</td><td>A félkész épületet bármelyik saját munkás folytathatja.</td><td>S</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-07</td><td>A rendszer a fenti táblázat épülettípusait támogatja, a költségük, építési idejük és életerejük a konfigurációs fájlban van.</td><td>M</td><td>5. fejezet, építkezés</td></tr>
+  <tr><td>F-EPIT-08</td><td>Az őrtorony magától lövi a hatótávjába érő ellenséges egységeket.</td><td>S</td><td>5. fejezet, harcrendszer</td></tr>
+</table>
+
+<h2 id="f3-5">3.5. Technológiafa és fejlődési szintek</h2>
+
+<p>
+A technológiafa miatt a fejlődés fokozatos, így a meccs elején még nem lehet elsöprő erejű támadást indítani.
+</p>
+
+<ul>
+  <li>
+    Épületfüggőségek és követelmények:
+    <ul>
+      <li>Fejlettebb épületek és katonai egységek csak akkor oldhatók fel, ha a játékos már felépítette az alapvető struktúrákat, és elérte a szükséges szintet.</li>
+      <li>A szintlépés a főépületben indítható, nyersanyagért és időért. A 2. szinthez kell egy kész kaszárnya (ára fa és arany), a 3. szinthez egy kész kovácsműhely (ehhez már kő és acél is kell).</li>
+    </ul>
+  </li>
+  <li>
+    Fejlesztések és kutatások:
+    <ul>
+      <li>A kovácsműhelyben arany, kő vagy acél ráfordításával különféle fejlesztések indíthatók (pl. hatékonyabb fatermelés, erősebb acélpáncélzat a katonáknak). Egy fejlesztés egyszer vehető meg, és az összes érintett egységre hat, a később kiképzettekre is.</li>
+    </ul>
+  </li>
+  <li>
+    Fejlődési szintek:
+    <ul>
+      <li>1. Szint: Alapvető fatermelés, aranybányászat, lakóházak, raktár, farm, kaszárnya és az első munkások/alapkatonák (közelharci katona) képzése.</li>
+      <li>2. Szint: Kőfejtés, acélfeldolgozás (kohó), kovácsműhely, őrtorony és fal, íjászok.</li>
+      <li>3. Szint: Teljes technológiafa elérése, nehézfegyverzetű egységek (nehézegység) és az összes fejlesztés.</li>
+    </ul>
+  </li>
+</ul>
+
+<table border="1">
+  <tr><th>ID</th><th>Követelmény</th><th>MoSCoW</th><th>Vízió</th></tr>
+  <tr><td>F-TECH-01</td><td>A játékban három fejlődési szint van, az épületek és egységek a fenti felsorolás szerint szinthez kötöttek.</td><td>S</td><td>5. fejezet, technológiafa</td></tr>
+  <tr><td>F-TECH-02</td><td>A szintlépés a főépületben indítható, nyersanyagba és időbe kerül. Feltétele egy kész kaszárnya (2. szint), illetve kovácsműhely (3. szint).</td><td>S</td><td>5. fejezet, technológiafa</td></tr>
+  <tr><td>F-TECH-03</td><td>A még nem elérhető épületek és egységek gombja szürke, a tooltip kiírja, mi hiányzik hozzá.</td><td>S</td><td>5. fejezet, technológiafa</td></tr>
+  <tr><td>F-TECH-04</td><td>A kovácsműhelyben egyszer megvehető fejlesztések vannak, amelyek az összes érintett egységre hatnak.</td><td>S</td><td>5. fejezet, technológiafa</td></tr>
+  <tr><td>F-TECH-05</td><td>A szintlépés és a fejlesztések ára és ideje a konfigurációs fájlban van.</td><td>S</td><td>7. fejezet, karbantarthatóság</td></tr>
+</table>
+
+<h2 id="f3-6">3.6. Egységek és harc</h2>
+
+<h3>3.6.1. Egységtípusok</h3>
+<p>A játékban kétféle egység szerepel: munkások és katonák. A munkások nyersanyagot gyűjtenek (lásd 3.3), emellett építenek. Harcban csak végszükség esetén vesznek részt.</p>
+<p>Katonákból több típus van: közelharci katona, íjász és nehézegység. A közelharci katona a frontvonalon harcol, mivel jól bírja a sebzést. A nehézegység drága és lassan képezhető, de nagy sebzése miatt főként épületek ellen hatásos.</p>
+<p>Minden egységnek más az életereje, a sebzése és a hatótávja. A munkásokat a főépületben, a katonákat a kaszárnyában lehet képezni. A képzés nyersanyagba kerül, és meghatározott időt vesz igénybe. Ha nincs elég nyersanyag, a képzés nem indul el, erről a játékos visszajelzést kap.</p>
+<p>A térképen lévő egységek számának felső korlátja van, hogy a teljesítmény ne romoljon. A játékos és az MI ugyanazokat az egységtípusokat használja.</p>
+<p>Minden egységnek saját adatai vannak: költség, képzési idő, életerő, sebzés, hatótáv és sebesség. Ezek mind a konfigurációs fájlban vannak, nem a programkódban, ezért a játékegyensúly a program újrafordítása nélkül hangolható.</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-HARC-01</td><td>A rendszernek két egységkategóriát kell támogatnia: munkást és katonát. A katonák közé legalább a közelharci katona, az íjász és a nehézegység tartozik.</td><td>M</td><td>Vízió: egységek</td></tr>
+  <tr><td>F-HARC-02</td><td>A munkásnak nyersanyagot kell gyűjtenie (3.3), és építenie kell tudnia. Harcban csak végszükség esetén vehet részt.</td><td>M</td><td>Vízió: nyersanyaggyűjtés, építkezés</td></tr>
+  <tr><td>F-HARC-03</td><td>Minden egységtípusnak külön életerővel, sebzéssel és hatótávval kell rendelkeznie.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-04</td><td>Az egységek adatait (költség, képzési idő, életerő, sebzés, hatótáv, sebesség) a konfigurációs fájlból kell betölteni, azok nem lehetnek a programkódban.</td><td>M</td><td>Vízió: konfigurációs fájl</td></tr>
+  <tr><td>F-HARC-05</td><td>A munkásokat a főépületben, a katonákat a kaszárnyában kell képezni. A képzés nyersanyagba kerül és meghatározott időt vesz igénybe.</td><td>M</td><td>Vízió: egységképzés</td></tr>
+  <tr><td>F-HARC-06</td><td>Ha nincs elég nyersanyag, a képzés nem indulhat el, és erről a rendszernek visszajelzést kell adnia a játékosnak.</td><td>M</td><td>Vízió: egységképzés, HUD</td></tr>
+  <tr><td>F-HARC-07</td><td>A térképen lévő egységek számának felső korlátja van. Az értéket a konfigurációs fájl rögzíti (alapértéke 200, lásd 6.3), és onnan módosítható.</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+  <tr><td>F-HARC-08</td><td>A játékos és az MI ugyanazokat az egységtípusokat használja.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+</table>
+<h3>3.6.2. Harcrendszer és sebzésszámítás</h3>
+<p>Az egységek ellenséges egységeket és épületeket támadhatnak, a harc valós időben zajlik. A játékos jobb egérgombbal adhat támadási parancsot.</p>
+<p>Ha a célpont hatótávon kívül esik, az egység automatikusan megközelíti. Ha a parancs nélküli egység látótávolságába ellenség kerül, az egység magától megtámadja, kivéve, ha a játékos mozgásparancsot adott neki.</p>
+<p>A támadás a támadási időköz szerint ismétlődik, amíg a célpont él, vagy a támadó új parancsot kap. A sebzést a támadó alapsebzése, a támadó és a célpont típusa szerinti szorzó, valamint a célpont védelmi értéke határozza meg. Az alapsebzést megszorozzuk a típusszorzóval, majd levonjuk belőle a védelmet. Egy találat legalább 1 sebzést okoz, így a harc nem akadhat el. A számításban nincs véletlen elem, ezért a harc jól tesztelhető és kiegyensúlyozható. Az eredmény a célpont életerejéből vonódik le.</p>
+<p>Ha egy egység vagy épület életereje nullára csökken, megsemmisül, és eltűnik a térképről. A játékos az egységek és épületek életerejét mindig látja, a kijelölt egység adatai pedig megjelennek a HUD-on. A mérkőzés akkor ér véget, ha az egyik fél főépülete megsemmisül, ekkor győzelmi vagy vereségi képernyő jelenik meg. Kb. 100 egység harca mellett is tartani kell a 6.2-ben megadott képkockasebességet.</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-HARC-09</td><td>Az egységeknek támadniuk kell tudniuk ellenséges egységeket és épületeket. A harc valós időben zajlik.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-10</td><td>A játékos jobb egérgombbal adhat támadási parancsot egy kijelölt egységnek.</td><td>M</td><td>Vízió: egységek irányítása</td></tr>
+  <tr><td>F-HARC-11</td><td>Ha a célpont hatótávon kívül esik, az egységnek automatikusan közelítenie kell hozzá.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-12</td><td>A parancs nélküli egységnek magától meg kell támadnia a látótávolságába kerülő ellenséget, kivéve, ha a játékos mozgásparancsot adott neki.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-13</td><td>A támadást a támadási időköz szerint kell ismételni, amíg a célpont él, vagy a támadó új parancsot kap.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-14</td><td>A sebzést a következő képlet szerint kell számítani: sebzés = max(1, alapsebzés x típusszorzó - védelem). A találat legalább 1 sebzést okoz.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-15</td><td>A sebzésszámításban nem lehet véletlen elem. A sebzés a célpont életerejéből vonódik le.</td><td>M</td><td>Vízió: játékegyensúly, tesztelhetőség</td></tr>
+  <tr><td>F-HARC-16</td><td>Ha egy egység vagy épület életereje nullára csökken, a rendszernek meg kell semmisítenie, és el kell távolítania a térképről.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-HARC-17</td><td>A rendszernek mindig meg kell jelenítenie az egységek és épületek életerejét, a kijelölt egység adatait pedig a HUD-on.</td><td>M</td><td>Vízió: átláthatóság, HUD</td></tr>
+  <tr><td>F-HARC-18</td><td>Ha az egyik fél főépülete megsemmisül, a mérkőzés véget ér, és győzelmi vagy vereségi képernyőt kell megjeleníteni.</td><td>M</td><td>Vízió: győzelem és vereség</td></tr>
+  <tr><td>F-HARC-19</td><td>Kb. 100 egység harca mellett is legalább 60 FPS legyen, csúcsterhelésnél sem eshet 30 FPS alá (6.2).</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+</table>
+
+<h2 id="f3-7">3.7. Útvonalkeresés (pathfinding)</h2>
+<p>Az egységek a kijelölt célhoz maguk keresik meg az útvonalat, elkerülik az épületeket és a terepakadályokat. A térkép rácsos felépítésű, minden mező járható vagy járhatatlan. Az épületek által elfoglalt mezők járhatatlanok. Az útvonalat A* algoritmus számítja, ezért az útvonal akadálymentes és lehetőleg a legrövidebb.</p>
+<p>Ha a cél elérhetetlen, az egység a hozzá legközelebbi elérhető mezőig megy. Ha nincs járható út, a rendszer nem akadhat el, és nem léphet végtelen ciklusba. Több egység együttes mozgatásakor az egységek nem torlódhatnak össze, és nem haladhatnak át egymáson. Ha menet közben a térkép megváltozik, például új épület épül az útvonalon, az egység újraszámolja az útvonalát.</p>
+<p>Az útvonalkeresés nem blokkolhatja a főciklust. A számítási terhet a rendszer elosztja, például képkockánként korlátozott számú útvonalat számol, hogy az FPS-célok teljesüljenek. A fejlesztés egyszerű, stabil megoldással indul. Bonyolultabb optimalizálás csak akkor kerül be, ha a teljesítmény ezt megköveteli.</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-UTV-01</td><td>Az egységeknek a kijelölt célhoz maguknak kell megkeresniük az útvonalat, és el kell kerülniük az épületeket és a terepakadályokat.</td><td>M</td><td>Vízió: útvonalkeresés</td></tr>
+  <tr><td>F-UTV-02</td><td>A térkép rácsos felépítésű legyen, minden mező járható vagy járhatatlan. Az épületek által elfoglalt mezők járhatatlanok.</td><td>M</td><td>Vízió: térkép</td></tr>
+  <tr><td>F-UTV-03</td><td>Az útvonalat A* algoritmussal kell számítani. Az útvonal legyen akadálymentes és lehetőleg a legrövidebb.</td><td>M</td><td>Vízió: útvonalkeresés</td></tr>
+  <tr><td>F-UTV-04</td><td>Ha a cél elérhetetlen, az egységnek a hozzá legközelebbi elérhető mezőig kell mennie.</td><td>M</td><td>Vízió: útvonalkeresés</td></tr>
+  <tr><td>F-UTV-05</td><td>Ha nincs járható út, a rendszer nem akadhat el, és nem léphet végtelen ciklusba.</td><td>M</td><td>Vízió: stabilitás</td></tr>
+  <tr><td>F-UTV-06</td><td>Több egység együttes mozgatásakor az egységek nem torlódhatnak össze, és nem haladhatnak át egymáson.</td><td>M</td><td>Vízió: egységek irányítása</td></tr>
+  <tr><td>F-UTV-07</td><td>Ha menet közben a térkép megváltozik (például új épület épül az útvonalon), az egységnek újra kell számolnia az útvonalát.</td><td>M</td><td>Vízió: útvonalkeresés</td></tr>
+  <tr><td>F-UTV-08</td><td>Az útvonalkeresés nem blokkolhatja a főciklust. A számítási terhet a rendszernek el kell osztania (például képkockánként korlátozott számú útvonal számításával).</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+  <tr><td>F-UTV-09</td><td>A fejlesztést egyszerű, stabil megoldással kell indítani. Bonyolultabb optimalizálás csak akkor kerülhet be, ha a teljesítmény ezt megköveteli.</td><td>M</td><td>Vízió: kockázatok</td></tr>
+</table>
+
+<h2 id="f3-8">3.8. Gépi ellenfél</h2>
+
+<h3>3.8.1. A gépi ellenfél bázisépítő viselkedése</h3>
+<p>A gépi ellenfél szabályalapú, szkriptelt MI. A játékossal azonos feltételekkel játszik: ugyanazokat a nyersanyagokat gyűjti, ugyanazokat az épületeket építi, és ugyanazokat az egységeket képezi. Semmiképpen sem kap több nyersanyagot vagy jobb szorzókat, ezzel elkerülve a nem fair játékot.</p>
+<p>Az MI a főépületével és a kezdő munkásaival indul. A munkásokat először fa- és aranygyűjtésre osztja be, később a többi nyersanyagra is, és folyamatosan képez újakat, amíg el nem éri a megadott célszámot. Az építési sorrendet előre meghatározott szabályok adják, például előbb kaszárnyát épít, utána további gyártóépületeket. Csak akkor épít, ha van elég nyersanyaga. Az épületeket érvényes, szabad mezőkre, a főépület közelébe helyezi, és nem zárja el velük a saját egységei útját.</p>
+<p>Hogy a gazdaság és a haderő egyensúlyban maradjon, ha valamelyik nyersanyagból fogy, az MI több munkást állít annak gyűjtésére. Ha egy épülete megsemmisül, észleli a veszteséget, és lehetőség szerint újraépíti. Döntéseit rögzített időközönként hozza meg, nem minden képkockán, hogy a processzorterhelés alacsony maradjon.</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-MI-01</td><td>A gépi ellenfélnek szabályalapú (szkriptelt) MI-ként kell működnie.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-02</td><td>Az MI-nek a játékossal azonos feltételekkel kell játszania: ugyanazokat a nyersanyagokat, épületeket és egységeket használja. Nem kaphat többletnyersanyagot vagy jobb szorzókat.</td><td>M</td><td>Vízió: játékegyensúly</td></tr>
+  <tr><td>F-MI-03</td><td>Az MI-nek a főépületével és a kezdő munkásaival kell indulnia, a munkásokat pedig először fa- és aranygyűjtésre, később a többi nyersanyag termelésére is be kell osztania.</td><td>M</td><td>Vízió: gépi ellenfél, nyersanyaggyűjtés</td></tr>
+  <tr><td>F-MI-04</td><td>Az MI-nek folyamatosan kell munkásokat képeznie, amíg el nem éri a megadott célszámot.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-05</td><td>Az MI az építési sorrendet előre meghatározott szabályok szerint kövesse (például előbb kaszárnya, majd további gyártóépületek).</td><td>M</td><td>Vízió: gépi ellenfél, építkezés</td></tr>
+  <tr><td>F-MI-06</td><td>Az MI csak akkor építhet, ha van elég nyersanyaga.</td><td>M</td><td>Vízió: építkezés</td></tr>
+  <tr><td>F-MI-07</td><td>Az MI az épületeket érvényes, szabad mezőkre helyezi, a főépület közelében, és nem zárhatja el velük a saját egységei útját.</td><td>M</td><td>Vízió: építkezés, útvonalkeresés</td></tr>
+  <tr><td>F-MI-08</td><td>Ha valamelyik nyersanyagból fogy, az MI-nek több munkást kell állítania annak gyűjtésére.</td><td>M</td><td>Vízió: gazdaság</td></tr>
+  <tr><td>F-MI-09</td><td>Ha az MI valamelyik épülete megsemmisül, észlelnie kell a veszteséget, és lehetőség szerint újra kell építenie.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-10</td><td>Az MI döntéseit rögzített időközönként hozza meg, nem minden képkockán, hogy a processzorterhelés alacsony maradjon.</td><td>M</td><td>Vízió: teljesítmény</td></tr>
+</table>
+<h3>3.8.2. A gépi ellenfél támadó viselkedése</h3>
+<p>Az MI katonai egységeket képez, és egy gyülekezési ponton gyűjti őket a bázisán. Amikor a haderő eléri a megadott létszámot, támadási hullámot indít a játékos bázisa felé. A támadók a játékos egységeit és épületeit célozzák. Elsőbbséget kapnak a közeli, fenyegető egységek, utána az épületek, majd végül a főépület.</p>
+<p>Ha a játékos az MI bázisát támadja, az MI védekezik. A közeli katonai egységeit a támadók ellen irányítja, szükség esetén a munkásokat is bevonja. Ha a támadás kudarcot vall, és a haderő létszáma egy megadott küszöb alá esik, az MI visszavonul, és új haderőt épít a következő hullámhoz.</p>
+<p>A rendszer legalább két nehézségi szintet támogat, például könnyűt és normált. A szintek az MI paramétereiben különböznek: a reakcióidőben, az építési ütemben, valamint a támadási hullámok méretében és gyakoriságában. A normál nehézségű MI-t egy átlagos játékos néhány próbálkozás után le tudja győzni, nincs olyan stratégia, amely az MI ellen biztos győzelmet hoz. Az MI paraméterei konfigurációs fájlból módosíthatók.</p>
+
+<table border="1">
+  <tr><th>Azonosító</th><th>Követelmény</th><th>Prioritás</th><th>Forrás</th></tr>
+  <tr><td>F-MI-11</td><td>Az MI-nek katonai egységeket kell képeznie, és egy gyülekezési ponton kell gyűjtenie őket a bázisán.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-12</td><td>Amikor a haderő eléri a megadott létszámot, az MI-nek támadási hullámot kell indítania a játékos bázisa felé.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-13</td><td>A támadóknak a játékos egységeit és épületeit kell célozniuk, a következő sorrendben: közeli, fenyegető egységek, majd épületek, végül a főépület.</td><td>M</td><td>Vízió: harcrendszer</td></tr>
+  <tr><td>F-MI-14</td><td>Ha a játékos az MI bázisát támadja, az MI-nek védekeznie kell: a közeli katonai egységeit a támadók ellen irányítja, szükség esetén a munkásokat is bevonja.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-15</td><td>Ha a támadás kudarcot vall, és a haderő létszáma egy megadott küszöb alá esik, az MI-nek vissza kell vonulnia, és új haderőt kell építenie a következő hullámhoz.</td><td>M</td><td>Vízió: gépi ellenfél</td></tr>
+  <tr><td>F-MI-16</td><td>A rendszernek legalább két nehézségi szintet kell támogatnia (például könnyű és normál). A szintek a reakcióidőben, az építési ütemben, valamint a támadási hullámok méretében és gyakoriságában különbözzenek.</td><td>S</td><td>Vízió: nehézségi szintek</td></tr>
+  <tr><td>F-MI-17</td><td>A normál nehézségű MI-t egy átlagos játékos néhány próbálkozás után le tudja győzni. Nem létezhet olyan stratégia, amely az MI ellen biztos győzelmet hoz.</td><td>M</td><td>Vízió: játékegyensúly</td></tr>
+  <tr><td>F-MI-18</td><td>Az MI paramétereinek konfigurációs fájlból módosíthatónak kell lenniük.</td><td>M</td><td>Vízió: konfigurációs fájl</td></tr>
+</table>
+
+<h2 id="f3-9">3.9. Felhasználói esetek (use case-ek)</h2>
+
+<p>
+Itt vannak a legfontosabb use case-ek részletesen, lépésenként. A modulok követelményeire az azonosítójukkal hivatkozunk. A use case-eket a MoSCoW elv alapján priorizáltuk.
+</p>
+
+<h3>Szereplők a rendszerben</h3>
+<ul>
+	<li>Játékos: A felhasználó, aki az egeret és a billentyűzetet nyomkodja, és a saját birodalmát irányítja.</li>
+	<li>Rendszer / AI: A háttérben futó játékmotor, ami a játékmechanikát számolja + a mesterséges intelligencia ellenfél.</li>
+</ul>
+
+<h3>3.9.1. UC-01: Épület lerakása (Prioritás: Must have)</h3>
+<ul>
+	<li>Rövid leírás: A játékos kiválaszt egy épületet és egy munkással felépítteti a térképen.</li>
+	<li>Előfeltételek: Ki van jelölve egy saját munkás, és a játékosnak van elég nyersanyaga.</li>
+	<li>Utófeltételek: Az épület félkészen rákerül a pályára, a rendszer levonja az árát a játékos egyenlegéből, a munkás pedig elkezdi építeni.</li>
+	<li>Szokásos működés:
+		<ol>
+			<li>A játékos kijelöl egy munkást.</li>
+			<li>Rákattint az építési menüben az adott épület ikonjára.</li>
+			<li>Az egér kurzora átvált az épület szellemképes formájára.</li>
+			<li>A játékos keres egy üres helyet a térképen, és rákattint a bal gombbal.</li>
+			<li>A rendszer lerakja a félkész épületet és rögtön frissíti a nyersanyag-számlálót, a munkás odamegy és építeni kezd.</li>
+		</ol>
+	</li>
+	<li>Alternatív esetek: Nincs elég nyersanyag az épülethez. Ilyenkor a gomb ki van szürkítve a menüben, a program kattintáskor nem csinál semmit, és kiírja, hogy "Nincs elég nyersanyag".</li>
+	<li>Kivételes esetek: A játékos olyan helyre akar építeni, ahol már van egy másik épület, vagy tereptárgy van ott. Ekkor az épület szellemképe pirosra vált, és a kattintásra nem történik semmi, a rendszer nem engedi a lerakást.</li>
+	<li>Kapcsolódó követelmények: F-EPIT-01 - F-EPIT-05, F-GAZD-05</li>
+</ul>
+
+<h3>3.9.2. UC-02: Egység kiképzése (Prioritás: Must have)</h3>
+<ul>
+	<li>Rövid leírás: A játékos az egyik épületében legyárt egy új katonát.</li>
+	<li>Előfeltételek: Van egy kész kaszárnya, van elég nyersanyag, van szabad hely a népességben, és nem értük el a 200-as egységlimitet.</li>
+	<li>Utófeltételek: A nyersanyag levonódik, a katona pedig idővel megjelenik az épület mellett.</li>
+	<li>Szokásos működés:
+		<ol>
+			<li>A játékos rákattint a kaszárnyára.</li>
+			<li>A felugró menüben kiválasztja a kiképezni kívánt egységet, pl. közelharci katonát.</li>
+			<li>A rendszer elindítja a képzési időt, elkezd töltődni egy kis csík.</li>
+			<li>Ha letelt az idő, a rendszer kirakja az egységet az épület mellé a pályára.</li>
+		</ol>
+	</li>
+	<li>Alternatív esetek: Betelt a népesség vagy az egységlimit. Ilyenkor a rendszer kiírja a képernyőre, hogy "Elérted a maximális populációt" és nem indul el a képzés.</li>
+	<li>Kivételes esetek: A képzés közben az ellenség lerombolja a kaszárnyát. Ilyenkor a képzés megszakad, a katona nem jön létre, a rendszer pedig visszaadja a nyersanyagot a játékosnak.</li>
+	<li>Kapcsolódó követelmények: F-HARC-05, F-HARC-06, F-HARC-07, F-GAZD-06</li>
+</ul>
+
+<h3>3.9.3. UC-03: Ellenség megtámadása (Prioritás: Must have)</h3>
+<ul>
+	<li>Rövid leírás: A játékos utasítja a saját katonáját, hogy támadjon meg egy ellenséget.</li>
+	<li>Előfeltételek: A játékosnak ki van jelölve legalább egy saját katonája.</li>
+	<li>Utófeltételek: Az egység odamegy, elkezdi ütni az ellenséget, és a rendszer folyamatosan vonja a HP-ját a célpontnak.</li>
+	<li>Szokásos működés:
+		<ol>
+			<li>A játékos a bal egérgomb nyomva tartásával és húzásával kijelöli a saját katonáit.</li>
+			<li>Jobb gombbal rákattint egy ellenséges egységre.</li>
+			<li>A rendszer útvonalat számol és elindítja a katonát a cél felé.</li>
+			<li>Amikor odaér, elindítja a támadási animációt és levonja a sebzést.</li>
+		</ol>
+	</li>
+	<li>Alternatív esetek: A célpont meghal, mire a mi katonánk odaérne. Ekkor a katona megáll ott, ahol van, és vár az újabb parancsra.</li>
+	<li>Kivételes esetek: Az ellenség egy fal mögött van, ahova nem lehet elsétálni, mert nincs érvényes útvonal. Ekkor a katona elmegy a célhoz legközelebbi elérhető mezőig, és ott megáll (F-UTV-04).</li>
+	<li>Kapcsolódó követelmények: F-HARC-09 - F-HARC-16, F-UTV-01, F-UTV-04</li>
+</ul>
+
+
+<h1 id="f4">4. Használhatóság</h1>
+
+<p>A célunk az, hogy aki játszott már valamilyen stratégiai játékkal, az szinte rögtön tudja kezelni a játékot, aki pedig még nem, az is gyorsan bele tudjon jönni.</p>
+
+<h2 id="f4-1">4.1. Betanulási idő</h2>
+<p>Egy kezdő játékosnak (aki még nem játszott RTS játékkal) kb. 10-15 perc alatt el kell tudnia sajátítani az alap irányítást: kamera mozgatása, egységek kijelölése és mozgatása, épület lerakása. Egy RTS-ekben jártas játékosnak ehhez néhány perc elég kell legyen, mivel az irányítás a megszokott módon működik (lásd 4.2). Egy teljes mérkőzés lejátszásához szükséges stratégiai tudás természetesen több idő, de ez már a játék része.</p>
+
+<h2 id="f4-2">4.2. Más játékokhoz hasonló irányítás</h2>
+<p>Az irányítást a klasszikus RTS játékokhoz (Age of Empires II, Warcraft III) igazítjuk, hogy ne kelljen újat tanulni:</p>
+<ul>
+  <li>bal klikk: kijelölés,</li>
+  <li>bal gomb lenyomva + húzás: több egység kijelölése egy téglalappal,</li>
+  <li>jobb klikk: a kijelölt egységek mozgatása, illetve támadás, ha ellenségre kattintunk,</li>
+  <li>ESC: megszakítás vagy szünet menü,</li>
+  <li>WASD / nyilak és edge scroll: kamera mozgatása.</li>
+</ul>
+<p>A menük a szokásos módon, egérrel kezelhetők, ebben semmi különleges nincs.</p>
+
+<h2 id="f4-3">4.3. Átláthatóság</h2>
+<p>A játékosnak mindig látnia kell a fontos információkat anélkül, hogy keresgélnie kellene:</p>
+<ul>
+  <li>a nyersanyagok aktuális mennyisége mindig látszik a képernyő tetején,</li>
+  <li>a kijelölt egységek egyértelműen meg vannak jelölve (keret vagy kör alattuk),</li>
+  <li>a kijelölt egységek fölött látszik az életerőcsíkjuk,</li>
+  <li>a saját és az ellenséges egységek színben különböznek, a minimapen is,</li>
+  <li>a képernyő nincs túlzsúfolva, a felület elemei a képernyő széleinél vannak, hogy a játéktér minél nagyobb része látszódjon.</li>
+</ul>
+
+<h2 id="f4-4">4.4. Visszajelzés a játékos felé</h2>
+<p>Ha a játékos olyat próbál csinálni ami nem lehetséges, a játéknak jeleznie kell, hogy miért nem. Például ha nincs elég nyersanyag egy épülethez, akkor a gomb szürke, és egy rövid üzenet jelenik meg (pl. "Nincs elég fa!"). Ha olyan helyre akar építeni, ahova nem lehet, az épület előnézete pirosan jelenik meg. Így a játékos nem érzi azt, hogy "nem működik a játék".</p>
+
+<h2 id="f4-5">4.5. Gyorsbillentyűk</h2>
+<p>A gyakorlottabb játékosok kedvéért a gyakran használt parancsokhoz (pl. épületek kiválasztása az építési menüben) gyorsbillentyűk tartoznak. A gyorsbillentyűt a gomb tooltipje is kiírja, így ezeket nem kell fejből tudni, használat közben megtanulhatók. A játék gyorsbillentyűk nélkül, csak egérrel is teljesen játszható.</p>
+
+<h2 id="f4-6">4.6. Kezdők segítése</h2>
+<p>A gyors betanulást a tooltipek és a súgó képernyő segítik (részletesen lásd a 9. fejezetben). Külön oktató pályát (tutorialt) időhiány miatt nem tervezünk, de ha marad rá idő, később hozzáadható. Ezen kívül a könnyű AI-nehézség is kezdőknek szól, ahol az ellenfél lassabban épít és később támad.</p>
+
+<h1 id="f5">5. Megbízhatóság</h1>
+
+<p>
+Ebben a fejezetben a játék stabilitásával és megbízható működésével kapcsolatos követelményeket gyűjtöttük össze. A C++ nyelv és a saját keretrendszer miatt különösen figyelnünk kell arra, hogy a program ne fagyjon le játék közben.
+</p>
+
+<h2 id="f5-1">5.1. Rendelkezésre állás</h2>
+<p>
+A játék egy offline, singleplayer alkalmazás, ezért független bármilyen külső szervertől vagy internetkapcsolattól. Tehát a szoftvernek az elindítás után 100%-ban rendelkezésre kell állnia. Nem lesznek karbantartási leállások, a frissítéseket a fejlesztés végén adjuk ki.
+</p>
+
+<h2 id="f5-2">5.2. Hibák közötti átlagos idő (MTBF)</h2>
+<p>
+Természetesen cél, hogy a játék egy átlagos hosszúságú meccs alatt (kb. 20-40 perc, de el is húzódhat) egyáltalán ne omoljon össze. Úgy tervezzük, hogy a végleges demó programleállással járó hibák közötti átlagos ideje elérje a minimum 10 óra folyamatos játékidőt. Akkor is, amikor sok egység van a pályán és egyszerre fut több bonyolult logika.
+</p>
+
+<h2 id="f5-3">5.3. Hiba utáni helyreállítás és javítási idő (MTTR)</h2>
+<p>
+Ha a programban valamilyen váratlan futásidejű hiba mégis leállást okozna, akkor a felhasználó a játék újraindításával tudja kiküszöbölni azt, ami egy átlagos gépen 5-10 másodperc. Fejlesztői oldalról a tesztelések során talált kritikus hibákat igyekszünk 24-48 órán belül javítani, hogy a kéthetes scrum ciklusokat tartani tudjuk.
+</p>
+
+<h2 id="f5-4">5.4. Memóriakezelés és futásidejű stabilitás</h2>
+<p>
+A C++ nyelv sajátossága miatt oda kell figyelnünk a memóriaszivárgásokra és a null pointerek elkerülésére. A játék közben folyamatosan keletkeznek és elpusztulnak objektumok (pl. kitermelt fák, megölt katonák, lerombolt épületek). A programnak mindig fel kell szabadítania a memóriát ezek után, hogy hosszabb játékmenet során se teljen be a RAM és ne lassuljon be a program. A hibás fájleléréseket is megfelelően kell kezelnie a programnak (pl. ha hiányzik egy kép vagy hangfájl).
+</p>
+
+<h2 id="f5-5">5.5. A számítások és eredmények pontossága</h2>
+<p>
+A játékmechanikák mögött futó számításoknak pontosnak kell lenniük.
+</p>
+<ul>
+	<li>
+		<p>Gazdaság: A mennyiség nem mehet mínuszba. A nyersanyag-számlálóknak egész számoknak kell lenniük, kerekítési hiba miatt ne vesszen el nyersanyag.</p>
+	</li>
+	<li>
+		<p>Harcrendszer: A sebzésszámításnak és a HP levonásának a beállított statisztikák alapján kell történnie.</p>
+	</li>
+	<li>
+		<p>Útvonalkeresés és pozíciók: Az egységek koordinátáit a 2D-s térképen úgy kell számolni, hogy ne akadjanak bele a tereptárgyakba vagy egymásba, és ne tudjanak leesni a pályáról.</p>
+	</li>
+</ul>
+
+<h1 id="f6">6. Teljesítmény</h1>
+
+<p>
+Ebben a fejezetben az elvárt teljesítménymutatók találhatóak. A saját motor miatt alapvető elvárás, hogy a játék ne igényeljen nagyon erős gépet és egy átlagos egyetemi laptopon is simán fusson.
+</p>
+
+<h2 id="f6-1">6.1. Válaszidők</h2>
+<p>
+Az olyan játékos interakcióira, mint egy kattintás vagy épület lehelyezése, a programnak érezhető késés nélkül kell reagálnia. A válaszidő ne menjen 100-200 milliszekundum fölé mert akkor nagyon darabosnak fog érződni az irányítás. 
+</p>
+
+<h2 id="f6-2">6.2. Képkockasebesség (FPS)</h2>
+<p>
+Normál esetben a stabil 60 FPS-t szeretnénk tartani. Ha nagyon sok minden történik a képernyőn egyszerre, akkor lejjebb eshet a teljesítmény, de a minimum 30 FPS-t olyankor is tartania kell a programnak, hogy játszható maradjon.
+</p>
+
+<h2 id="f6-3">6.3. Kapacitás és egységlimit</h2>
+<p>
+Egy egységlimit bevezetését tervezzük, hogy az útvonalkereső algoritmus és az AI logikája ne akassza meg teljesen a processzort. Egy játékosnak (és a gépnek is) maximum 200 egysége lehessen egyszerre a pályán (ez a konfigurációs fájlban állítható). Emellett a betölthető 2D-s térkép maximális mérete is fixálva lesz, hogy a sok csempe ne terhelje túl a rendszert.
+</p>
+
+<h2 id="f6-4">6.4. Erőforrásigények</h2>
+<p>
+A RAM igényt szeretnénk maximum 500 MB alatt tartani a legextrémebb esetekben is. Processzorból elégnek kell lennie egy régebbi i3-asnak is. A szoftvert szeretnék annyira optimalizálni, hogy ne pörgesse maximumon a hűtőt feleslegesen, ha épp alig történik valami a térképen.
+</p>
+
+<h1 id="f7">7. Támogatottság</h1>
+
+<p>
+Ez a fejezet a szoftver karbantarthatóságára, bővíthetőségére és konfigurálhatóságára vonatkozó követelményeket tartalmazza, vagyis azt, hogy a kódot később mennyire lesz könnyű javítani és bővíteni.
+</p>
+
+<h2 id="f7-1">7.1. Kódolási szabványok és karbantarthatóság</h2>
+<ul>
+  <li>A kódot jól elkülönülő modulokra bontjuk (játékmotor/renderelés, gazdasági rendszer, harcrendszer, MI-ellenfél, kezelőfelület), így az egyes részek egymástól függetlenül is javíthatók.</li>
+  <li>A csapat egységes C++ kódolási szabályokat használ (érthető változó- és függvénynevek, egyforma behúzás, egységes osztályfelépítés), a konkrét szabályok a 8.5-ben vannak.</li>
+  <li>A bonyolultabb algoritmusokhoz (pl. útvonalkeresés, annak ellenőrzése, hogy hova lehet építeni) rövid megjegyzéseket írunk a kódba.</li>
+</ul>
+
+<h2 id="f7-2">7.2. Bővíthetőség</h2>
+<ul>
+  <li>Később új épületek, egységtípusok vagy nyersanyagforrások is hozzáadhatók anélkül, hogy a motort alapjaiban át kellene írni.</li>
+  <li>Az épületek, egységek és nyersanyagforrások közös ősosztályokból származnak, így egy új egységtípushoz elég egy új származtatott osztály és az adatai a konfigurációs fájlban.</li>
+  <li>A pálya külön fájlból töltődik be, így később több különböző térképet is tud kezelni a játék (ez Could have).</li>
+</ul>
+
+<h2 id="f7-3">7.3. Konfigurálhatóság</h2>
+<p>
+Az egységek és épületek életereje, a nyersanyagköltségek (fa, arany, kő, acél, étel, népesség), az építési idők és a sebzésértékek külön konfigurációs fájlokban vannak, a formátumukat a 8.4 írja le. Mivel ezek nincsenek a kódba írva, a játékegyensúlyt újrafordítás nélkül, gyorsan lehet állítani.
+</p>
+
+<h2 id="f7-4">7.4. Naplózás és hibakeresés</h2>
+<ul>
+  <li>Fejlesztés és tesztelés közben a fontosabb hibák (pl. az SDL nem indul el, hiányzik egy fájl, nem sikerül memóriát foglalni) a konzolra és egy naplófájlba is kiíródnak, hogy gyorsan meg lehessen őket találni.</li>
+  <li>A memóriaszivárgás ellen okosmutatókat használunk, és a memóriakezelést külön is teszteljük (lásd 5.4).</li>
+</ul>
+
+<h1 id="f8">8. Tervezési korlátozások</h1>
+
+<p>
+Itt vannak azok a dolgok, amik meghatározzák, hogyan írhatjuk meg a programot. Egy részük a tárgy miatt kötelező (pl. nem lehet kész motort használni), a többit mi döntöttük el.
+</p>
+
+<h2 id="f8-1">8.1. Architektúra</h2>
+<p>
+A program egy fő ciklusból áll (game loop), ami minden körben beolvassa az egeret és a billentyűzetet, frissíti a játékot, aztán kirajzolja. A kódot három részre bontjuk:
+</p>
+<ol>
+	<li>Motor: ablak, rajzolás, egér és billentyűzet, időzítés, fájlok betöltése. Csak ez a rész hívja az SDL-t.</li>
+	<li>Játéklogika: térkép, egységek, épületek, gazdaság, harc, útvonalkeresés, MI. Ez nem rajzol semmit, csak számol.</li>
+	<li>Kezelőfelület: menük, HUD, minimap, tooltipek. A játéklogikából veszi, mit kell kiírni, és neki adja tovább a játékos parancsait.</li>
+</ol>
+<p>
+Így könnyebb szétosztani a munkát, és a játéklogikát ablak nélkül is lehet tesztelni.
+</p>
+<p>
+A játék másodpercenként 60-szor frissül, a rajzolás pedig ettől külön megy, amilyen gyorsan a gép bírja. Így egy lassabb gépen sem lassul le maga a játék, csak kevesebb lesz az FPS. Mivel a sebzésben nincs véletlen (F-HARC-15), ugyanaz a helyzet mindig ugyanúgy jön ki, ez a teszteléshez jó.
+</p>
+<p>
+A program egy szálon fut. Az útvonalkeresést és az MI-t nem tesszük külön szálra, hanem több képkockára szétosztjuk (F-UTV-08, F-MI-10), mert több szállal sokkal nehezebb lenne hibát keresni.
+</p>
+
+<h2 id="f8-2">8.2. Programozási nyelv</h2>
+<p>
+C++17. Ezt a MinGW fordító rendesen tudja, és van benne pár hasznos dolog (pl. std::filesystem a fájlokhoz). C++20-at nem használunk, nem akarunk fordító hibákkal bajlódni.
+</p>
+<p>
+Más nyelvet nem használunk. A doksi HTML-ben készül (ez már a projekttervben is benne volt), a konfigurációs fájlok sima szövegfájlok (8.4).
+</p>
+
+<h2 id="f8-3">8.3. Fejlesztőeszközök</h2>
+<p>
+Kódot VS Code-ban írunk (C/C++ és CMake Tools bővítménnyel), a fordító MinGW-w64 g++, amit MSYS2-ből telepítünk. Mindenkinek ugyanezt kell használnia, különben ami az egyik gépen lefordul, az a másikon lehet hogy nem. A fordításhoz CMake-et használunk, így mindenki ugyanúgy tudja fordítani. A kód GitHubon van, ott vezetjük az Issue-kat is, a UML-hez StarUML-t vagy draw.io-t használunk.
+</p>
+<p>
+Az exe-t statikusan linkeljük, hogy ne kelljen a MinGW-s DLL-eket is mellé tenni.
+</p>
+
+<h2 id="f8-4">8.4. Felhasznált kész elemek</h2>
+<p>
+A vízióban az van, hogy csak C++ és SDL2. Ez annyiban változik, hogy a sima SDL2 csak BMP képet tud betölteni és szöveget se tud kiírni, ezért kell még az SDL2_image (PNG képek) és az SDL2_ttf (betűtípusok). Ha lesz hang, akkor az SDL2_mixer is. Ezek is az SDL-hez tartoznak, részletek a 10. fejezetben.
+</p>
+<p>
+SDL3 is van már, de maradunk az SDL2-nél, mert erre terveztünk, és sokkal több leírás van hozzá.
+</p>
+<p>
+Más kész kódot nem használunk, kész motort (Unity, Unreal, Godot) amúgy se szabad. A konfigurációs fájlokhoz egyenlőre külső könyvtárat sem használunk (pl. JSON), saját egyszerű "kulcs = érték" formátumot írunk, ennyi elég.
+</p>
+<p>
+Ha valahonnan kódot veszünk át (pl. egy A* példát), kommentben odaírjuk, honnan van.
+</p>
+
+<h2 id="f8-5">8.5. Fejlesztési módszertan</h2>
+<p>
+Kéthetes ciklusokban dolgozunk, scrum-szerűen, ahogy a projekttervben is van. Teljes Scrumot nem csinálunk (nincs Scrum Master meg napi stand-up), öt embernél szerintünk nem érné meg, csak ennyit:
+</p>
+<ul>
+	<li>kéthetente megbeszéljük, mi készült el, és kiosztjuk a következő feladatokat (GitHub Issue-ként),</li>
+	<li>hetente beszámolunk a gyakorlatvezetőnek,</li>
+	<li>először a Must have dolgok készülnek el, a sorrendet a MoSCoW és az dönti el, hogy mi mire épül.</li>
+</ul>
+<p>
+Gitben a main ágon mindig fordítható verzió van. Mindenki külön ágon dolgozik (pl. feature/utvonalkereses), és pull requesttel kerül be a mainbe, amit valaki másnak át kell néznie. A commitokat magyarul írjuk.
+</p>
+<p>
+Kódolási szabályok (a 7.1-hez):
+</p>
+<ul>
+	<li>osztálynév nagybetűvel (Unit, Building, PathFinder), függvény és változó kisbetűvel (getHealth, unitCount),</li>
+	<li>tagváltozók m_ előtaggal (m_health),</li>
+	<li>minden osztály külön .h és .cpp fájlban, ugyanazzal a névvel,</li>
+	<li>new/delete helyett okosmutató (std::unique_ptr), ahol lehet (5.4, 7.4),</li>
+	<li>a kódban angol nevek, a kommentek lehetnek magyarul.</li>
+</ul>
+
+<h1 id="f9">9. On-line dokumentáció és Help rendszer</h1>
+
+<p>A játékhoz kell egy egyszerű súgórendszer, mert enélkül egy kezdő nem tudná, mit csinálnak az egyes gombok és épületek. Mivel a játék offline működik, "on-line" dokumentáció alatt itt a játékon belül elérhető segítséget értjük, külön weboldalt nem készítünk.</p>
+
+<h2 id="f9-1">9.1. Tooltipek (eszköztippek)</h2>
+<p>Ha a játékos az egeret a felület egy gombja fölött tartja (kb. fél másodpercig), megjelenik mellette egy kis szövegdoboz. A tooltipben a következők szerepelnek (ha az adott gombnál értelmezhetők):</p>
+<ul>
+  <li>a gomb / épület / egység neve,</li>
+  <li>a költsége (milyen nyersanyagból mennyi kell hozzá),</li>
+  <li>egy egy-két mondatos leírás, hogy mire jó,</li>
+  <li>a hozzá tartozó gyorsbillentyű.</li>
+</ul>
+<p>A tooltip eltűnik, amikor az egér elhagyja a gombot. A tooltip nem lóghat ki a képernyőről, ha a gomb a képernyő szélén van, a doboz a másik oldalra kerül.</p>
+
+<h2 id="f9-2">9.2. Súgó képernyő</h2>
+<p>A főmenüből és a szünet menüből is elérhető egy Súgó képernyő. Ez tartalmazza:</p>
+<ul>
+  <li>a játék céljának rövid leírását (mitől nyer vagy veszít a játékos),</li>
+  <li>az irányítást egy táblázatban (egér és billentyűk),</li>
+  <li>a nyersanyagok és a fontosabb épületek, egységek rövid leírását.</li>
+</ul>
+<p>A súgó szövegét nem a kódba írjuk bele, hanem egy külön szövegfájlból tölti be a játék, így könnyen javítható újrafordítás nélkül.</p>
+
+<h2 id="f9-3">9.3. Játék közbeni üzenetek</h2>
+<p>A játék rövid szöveges üzenetekkel jelzi a fontos eseményeket, pl. "Nincs elég arany!", "Ide nem lehet építeni!", "Támadás ér!". Az üzenetek néhány másodperc után maguktól eltűnnek, hogy ne takarják a játékteret.</p>
+
+<h2 id="f9-4">9.4. Felhasználói útmutató (README)</h2>
+<p>A játékhoz tartozik egy README fájl, ami a GitHub tárolóban és a leadott ZIP fájlban is megtalálható. A README tartalma:</p>
+<ul>
+  <li>a játék rövid leírása,</li>
+  <li>rendszerkövetelmények,</li>
+  <li>telepítés és indítás lépései,</li>
+  <li>az irányítás összefoglalása,</li>
+  <li>a forráskód fordításának lépései (fejlesztőknek),</li>
+  <li>ismert hibák,</li>
+  <li>a készítők listája.</li>
+</ul>
+<p>A README magyar nyelvű, és Markdown formátumban készül, hogy a GitHubon is jól olvasható legyen.</p>
+
+<h1 id="f10">10. Felhasznált kész komponensek</h1>
+
+<p>
+Nem veszünk meg semmit, minden ingyenes (a költség csak a munkaidő). Ami a játékba bekerül, de nem mi csináltuk, azt itt soroljuk fel.
+</p>
+
+<h2 id="f10-1">10.1. SDL2</h2>
+<p>
+Innen töltjük le: libsdl.org, illetve github.com/libsdl-org/SDL. A 2.x verziót használjuk, a MinGW-s fejlesztői csomaggal. Licenc: zlib.
+</p>
+<p>
+A zlib licenc szerint ingyen használhatjuk, és a játékkal együtt odaadhatjuk (az SDL2.dll a ZIP-ben lesz az exe mellett), a saját kódunkat pedig emiatt nem kell közzétenni. Annyi a feltétel, hogy nem mondhatjuk, hogy mi írtuk, és ha átírnánk a forráskódját, azt jelezni kellene. Mi nem írjuk át, csak a kész DLL-t használjuk. A README-be azért beírjuk, hogy SDL2-t használunk.
+</p>
+
+<h2 id="f10-2">10.2. SDL2_image és SDL2_ttf</h2>
+<p>
+Ezek az SDL hivatalos kiegészítői, ugyanonnan vannak, és ezek is zlib licencesek. Az SDL2_image a PNG képekhez kell, az SDL2_ttf a szövegekhez.
+</p>
+<p>
+Az SDL2_ttf a FreeType nevű könyvtárat használja, aminek a licence szerint a dokumentációban meg kell említeni, hogy használjuk. Ezt beírjuk a README-be, és a licencfájlokat is betesszük a ZIP-be.
+</p>
+
+<h2 id="f10-3">10.3. SDL2_mixer</h2>
+<p>
+Csak akkor kell, ha lesznek hangok (Could have). Ez is az SDL-hez tartozik, és ez is zlib licences.
+</p>
+
+<h2 id="f10-4">10.4. Grafika</h2>
+<p>
+A képeket vagy mi rajzoljuk, vagy ingyenes oldalról szedjük, pl. OpenGameArt.org. Csak CC0 (bármire használható) vagy CC BY (a szerzőt fel kell tüntetni) licencű képet használunk. Hogy ne keveredjen össze, egy CREDITS.txt fájlba felírjuk, melyik kép honnan van, ki csinálta és milyen licenccel. A CC BY-os szerzők a README-be is bekerülnek.
+</p>
+
+<h2 id="f10-5">10.5. Betűtípus</h2>
+<p>
+Olyan betűtípus kell, amiben benne van az ő és az ű is. Az Arialt és a többi windowsos betűtípust nem tehetjük bele a ZIP-be, ezért a Google Fonts-ról választunk egyet. Ott a legtöbb OFL licences, vagyis odaadhatjuk a játékkal, csak a licencfájlt is mellé kell tenni. Hogy melyik lesz, azt még nem döntöttük el.
+</p>
+
+<h2 id="f10-6">10.6. Fejlesztőeszközök</h2>
+<p>
+VS Code, MSYS2/MinGW-w64, CMake, Git, GitHub, draw.io és StarUML. Ezek nem kerülnek bele a játékba, és mind ingyenesek (a StarUML-ből az ingyenes kipróbálós verziót használjuk).
+</p>
+
+<h1 id="f11">11. Interfészek</h1>
+
+<h2 id="f11-1">11.1. Felhasználói interfészek</h2>
+
+<h3>Stílus</h3>
+<p>Kötelező szabványt nem kell követnünk, a felületet a klasszikus RTS játékokban megszokott elrendezéshez igazítjuk (felül nyersanyagok, alul minimap és vezérlőpult). A felület nyelve magyar. A felület elemei a képernyő széleihez igazodnak, így a választott felbontástól függetlenül ugyanott vannak (legkisebb támogatott felbontás: 1280x720).</p>
+
+<h3>Felhasználói csoportok</h3>
+<p>Két fő csoporttal számolunk: kezdők, akik még nem játszottak RTS-sel, és gyakorlott játékosok. A kezdőknek a tooltipek, a súgó és az egyértelmű visszajelzések fontosak, a gyakorlottaknak pedig a gyors irányítás (gyorsbillentyűk, húzásos kijelölés, minimap). A felületet úgy tervezzük, hogy mindkét csoport elboldoguljon vele, külön "kezdő" és "haladó" felület nincs.</p>
+
+<h3>A játékképernyő elrendezése</h3>
+<p>A játék közbeni képernyő vázlata:</p>
+<pre>
++--------------------------------------------------------------+
+| Fa:180 Arany:250 Kő:60 Acél:0 Étel:120  Nép:14/30   [Szünet] |  &lt;- felső sáv
++--------------------------------------------------------------+
+|                                                              |
+|                                                              |
+|                         JÁTÉKTÉR                             |
+|               (pálya, egységek, épületek)                    |
+|                                                              |
+|                                                              |
++--------------+-------------------------+---------------------+
+|              |  Kijelölt egység/épület |  Parancsok /        |
+|   MINIMAP    |  - név, kép             |  építési menü       |
+|              |  - életerő              |  [  ] [  ] [  ]     |
+|              |  (több kijelölt: ikonok)|  [  ] [  ] [  ]     |
++--------------+-------------------------+---------------------+
+</pre>
+
+<h3>Felső sáv</h3>
+<p>Bal oldalon a nyersanyagok (fa, arany, kő, acél, étel) aktuális mennyisége látszik egy kis ikonnal és a számmal, utánuk pedig a népesség (jelenlegi/maximum, pl. 14/30). Jobb oldalon egy szünet gomb van, ami ugyanazt csinálja, mint az ESC.</p>
+
+<h3>Minimap</h3>
+<p>A bal alsó sarokban helyezkedik el, és kicsiben a teljes pályát mutatja. A saját egységek és épületek egy színnel (pl. kékkel), az ellenségéi egy másikkal (pl. pirossal) látszanak. Egy fehér téglalap mutatja, hogy a pálya melyik része látszik éppen a képernyőn. A minimapre kattintva a kamera odaugrik (lásd 3.2.8).</p>
+
+<h3>Egységkijelölés</h3>
+<ul>
+  <li>Bal klikk egy egységre: kijelöli az egységet, az előző kijelölés megszűnik.</li>
+  <li>Bal gomb lenyomva + húzás: egy téglalap rajzolódik, és a benne lévő összes saját egység ki lesz jelölve.</li>
+  <li>Shift + bal klikk: hozzáadja az egységet a meglévő kijelöléshez (vagy kiveszi belőle, ha már benne volt).</li>
+  <li>Bal klikk üres területre: megszűnik a kijelölés.</li>
+  <li>Ellenséges egységet is ki lehet jelölni, hogy lássuk az adatait, de irányítani nem lehet.</li>
+</ul>
+<p>A kijelölt egységek alatt egy kör vagy keret látszik, fölöttük pedig az életerőcsíkjuk.</p>
+
+<h3>Információs panel (alul középen)</h3>
+<p>Ha egy egység vagy épület van kijelölve, itt látszik a neve, a képe és az életereje (számmal és csíkkal is). Ha több egység van kijelölve, a panel kis ikonokat mutat a kijelölt egységekről, és egy ikonra kattintva csak az az egység marad kijelölve.</p>
+
+<h3>Parancs- és építési menü (jobb alul)</h3>
+<p>Ennek a résznek a tartalma attól függ, mi van kijelölve:</p>
+<ul>
+  <li>Munkás kijelölésekor: az építhető épületek gombjai jelennek meg (pl. kaszárnya, raktár), mindegyiken az épület ikonja.</li>
+  <li>Épület kijelölésekor: az ott képezhető egységek gombjai jelennek meg (pl. a kaszárnyában közelharci katona vagy íjász), illetve a képzési sor.</li>
+  <li>Harci egység kijelölésekor: az egység parancsai (pl. megállás).</li>
+  <li>Ha semmi sincs kijelölve: a menü üres.</li>
+</ul>
+<p>Ha egy gombhoz nincs elég nyersanyag, a gomb szürkén jelenik meg. A gombok fölé víve az egeret megjelenik a tooltip (lásd 9.1).</p>
+
+<h3>Épület lerakása</h3>
+<p>Ha a játékos az építési menüben kiválaszt egy épületet, az épület áttetsző képe követi az egeret a játéktéren. Ha az adott helyre lehet építeni, a kép zöldes, ha nem (pl. ott már van valami, vagy rossz a terep), akkor pirosas. Bal klikkre az épület lerakódik és elkezdődik az építése, jobb klikkre vagy ESC-re az építés megszakad.</p>
+
+<h3>Menük kinézete</h3>
+<p>A menük (főmenü, szünet, beállítások, súgó, játék vége) egységes kinézetűek: középre igazított, egymás alatti gombok, minden gomb ugyanakkora. A szünet menü a játék fölé, egy sötétített háttérre rajzolódik, így látszik, hogy a játék áll.</p>
+
+<h2 id="f11-2">11.2. Hardware interfészek</h2>
+<p>A Stonehold önálló, egyjátékos asztali játék, ezért nem használ speciális vagy egyedi hardvereszközt. Csak a szokásos PC-perifériákat és a számítógép alapvető hardverelemeit kezeli, ezeket az SDL2 könyvtáron és az operációs rendszeren keresztül éri el. Közvetlen hardverhozzáférést nem valósít meg.</p>
+<p>A megjelenítéshez hardveres gyorsítást támogató grafikus vezérlő szükséges, az integrált grafikus egység is megfelel. A kijelző felbontása legalább 1280x720 pixel legyen.</p>
+<p>A játék egérrel és billentyűzettel vezérelhető: az egér az egységek kijelölésére és irányítására, az építésre, a menük kezelésére és a minimap használatára szolgál, míg a billentyűzet a kamera mozgatására, a gyorsbillentyűkre és a szüneteltetésre. Érintőképernyőt és játékvezérlőt a rendszer nem támogat.</p>
+<p>A minimális konfiguráció kétmagos, 2 GHz-es processzor és 2 GB memória. A játék memóriahasználata legfeljebb 500 MB. A telepített játék mérete nem haladja meg a 200 MB-ot. A hangeffektusok és a zene opcionális funkciók, ha elkészülnek, a hangkimenetet is az SDL2 kezeli. A játék nem használ hálózati adaptert, kamerát, mikrofont, érzékelőt vagy más külső eszközt.</p>
+
+<h2 id="f11-3">11.3. Software interfészek</h2>
+<p>A rendszer az üzembe helyezés után nem tart kapcsolatot más alkalmazásokkal, szerverekkel vagy külső szolgáltatásokkal. Az alábbi komponensekre viszont támaszkodik.</p>
+<p>Az operációs rendszer 64 bites Windows 10 vagy 11. A játék natív Windows-alkalmazás, a futtatható állományt (.exe) az operációs rendszer indítja. Linux, macOS és mobil platformok nem támogatottak. A futtatható fájl nincs digitálisan aláírva, ezért első indításkor a Windows SmartScreen figyelmeztetést jeleníthet meg, erről a README tájékoztat.</p>
+<p>A játék legfontosabb külső függősége az SDL2 könyvtár. A saját fejlesztésű 2D keretrendszer erre épül, és ezen keresztül kezeli az ablakot, a grafikus megjelenítést, az egér- és billentyűeseményeket, az időzítést és szükség esetén a hangot. A könyvtár és a két kiegészítője (SDL2_image, SDL2_ttf) DLL-ként kerül a játék mellé, a licencük zlib, így szabadon felhasználhatók (lásd 10. fejezet). Kész játékmotor (Unity, Unreal, Godot) nem használható.</p>
+<p>A képeket, sprite-okat, betűtípusokat és konfigurációs fájlokat a játék a fájlrendszerből, az erőforrásmappából tölti be. Az egységek és épületek adatai (költség, életerő, sebzés) konfigurációs fájlban vannak, nem a programkódban, ezért a játékegyensúly újrafordítás nélkül hangolható. A játék a kicsomagolt mappából fut, rendszergazdai jogra nincs szüksége, és nem módosítja a rendszerbeállításokat. Az eltávolítás a mappa törlésével történik. Ha a mentés és betöltés (opcionális funkció) elkészül, a mentési fájlokat a játék a fájlrendszerbe, a játék mappájába vagy a felhasználó dokumentumai közé írja és onnan olvassa.</p>
+<p>A fejlesztői eszközök (C++ fordító, VS Code, Git és GitHub) csak a fejlesztéshez kellenek, a futáshoz nem. A forráskód a GitHub-tárolóból klónozható, a fordítás lépéseit a README tartalmazza. A játék nem gyűjt és nem küld személyes adatot, nem kér regisztrációt, és nem kapcsolódik külső szolgáltatásokhoz.</p>
+
+<h2 id="f11-4">11.4. Kommunikációs interfészek</h2>
+<p>A Stonehold futás közben nem használ kommunikációs csatornát. Offline működik, nem igényel internetet, szervert vagy felhasználói fiókot, és nem kommunikál más rendszerekkel. Nincs internetes, mobiltelefonos vagy böngészős kliens. A játék nem nyit hálózati portot, és nem kezdeményez kimenő kapcsolatot. A többjátékos mód a félévben nem készül el.</p>
+<p>A játékos és a rendszer közötti kommunikáció helyben, grafikus felületen keresztül zajlik. Elemei: a főmenü, a HUD (nyersanyagok, a kijelölt egység adatai, életerő), a minimap, valamint a győzelmet és vereséget jelző képernyők. A játékos egérrel és billentyűzettel ad parancsot, a rendszer pedig a képernyőn jelzi vissza az eseményeket. A felület nyelve kizárólag magyar. A gépi ellenfél ugyanabban a programban fut, így a vele való kommunikáció belső, a játék moduljai között zajlik.</p>
+<p>A játék egyetlen ZIP-archívumként kerül átadásra, amely az .exe fájlt, az SDL DLL-jeit (SDL2.dll, SDL2_image.dll, SDL2_ttf.dll), a licencfájlokat és az erőforrásmappát tartalmazza. A terjesztés a GitHub-tárolón vagy a gyakorlatvezetővel előre egyeztetett csatornán keresztül történik. A fejlesztés közbeni kommunikáció (GitHub-tároló, GitHub Issues hibakövetés, heti megbeszélések) a projekt szervezését szolgálja, nem a termék része.</p>
+
+<h1 id="f12">12. Alkalmazott szabványok</h1>
+
+<p>
+A fejlesztés és a dokumentálás során a kötelező egyetemi követelmények mellett néhány olyan szabályt is betartunk, amelyet a csapat maga választott, hogy a kód és a dokumentáció egységes legyen.
+</p>
+
+<h2 id="f12-1">12.1. Kötelezően alkalmazandó szabványok</h2>
+<ul>
+  <li>A Szoftvertechnológia tárgy honlapján megadott elvárások, mérföldkövek és beadási határidők. Ide tartozik az is, hogy ez a dokumentum a tárgy SRS mintáját követi.</li>
+  <li>A tervezéshez az OMG UML szabványát használjuk (use case, osztály-, szekvencia- és állapotdiagram), StarUML-lel vagy draw.io-val.</li>
+  <li>A felhasznált külső komponensek (SDL2 és kiegészítői, grafika, betűtípus) licencfeltételei, ezeket a 10. fejezet sorolja fel.</li>
+</ul>
+<p>
+Jogszabályi előírással nem kell külön számolnunk. A játék nem kezel személyes adatot és nem csatlakozik az internethez, így pl. a GDPR sem vonatkozik rá.
+</p>
+
+<h2 id="f12-2">12.2. Választás alapján alkalmazott szabványok</h2>
+<ul>
+  <li>C++17 és saját, könnyűsúlyú 2D keretrendszer, ami az SDL2-re és a hivatalos kiegészítőire épül. Kész játékmotort nem használunk.</li>
+  <li>A dokumentumokat HTML-ben írjuk, a kóddal együtt a GitHub-tárolóban, így könnyen tudjuk közösen szerkeszteni és verziózni őket.</li>
+  <li>Közös C++ kódolási és elnevezési szabályok (8.5), és kereszt-review: amit valaki megír, azt egy másik csapattag nézi át.</li>
+  <li>Verziókezelés Gittel és GitHubbal, külön ágakkal és pull requestekkel (8.5).</li>
+  <li>A funkciók fontossági sorrendjét és a feladatok ütemezését MoSCoW szerint határozzuk meg.</li>
+</ul>
+
+<h1 id="f13">13. Mellékletek</h1>
+
+<h2 id="f13-1">13.1. Fogalomtár</h2>
+<p>
+A legtöbb fogalom a vízió szótárában (10. fejezet) már benne van, ide csak az újak kerültek.
+</p>
+<table border="1" cellpadding="6">
+  <tr><th>Fogalom</th><th>Jelentés</th></tr>
+  <tr><td>A* algoritmus</td><td>Útvonalkereső algoritmus, ami a rácsos térképen a legrövidebb akadálymentes utat keresi meg.</td></tr>
+  <tr><td>Csempe</td><td>A térkép egy négyzet alakú mezője (32x32 pixel). A pálya ilyenekből álló rács.</td></tr>
+  <tr><td>Edge scroll</td><td>A kamera mozgatása úgy, hogy az egeret a képernyő szélére visszük.</td></tr>
+  <tr><td>Egységlimit</td><td>Egy félnek egyszerre a pályán lévő egységeinek legnagyobb száma.</td></tr>
+  <tr><td>Fejlődési szint</td><td>A technológiafa három lépcsője.</td></tr>
+  <tr><td>Fix időlépés</td><td>A játék állapota mindig ugyanakkora időközönként frissül, függetlenül attól, hány képkockát rajzol ki a gép.</td></tr>
+  <tr><td>Főépület</td><td>Ezzel az épülettel kezd mindkét fél. Itt lehet munkást képezni, nyersanyagot leadni és szintet lépni. Ha megsemmisül, az a fél elveszíti a meccset.</td></tr>
+  <tr><td>Gyülekezési pont</td><td>Az a hely a gépi ellenfél bázisán, ahol a katonáit gyűjti egy támadás előtt.</td></tr>
+  <tr><td>Kaszárnya</td><td>A katonák képzésére szolgáló épület.</td></tr>
+  <tr><td>Kitermelő épület</td><td>Kőfejtő, kohó vagy farm. Olyan épület, amelyben a beosztott munkások nyersanyagot termelnek.</td></tr>
+  <tr><td>Lelőhely</td><td>A térkép egy pontja, ahonnan nyersanyagot lehet kitermelni (erdő, aranyér, szikla, érc). Véges mennyiségű.</td></tr>
+  <tr><td>Népesség</td><td>Felső határ arra, hogy hány egysége lehet egyszerre egy félnek. Lakóházakkal nő, de az egységlimitet nem lépheti túl.</td></tr>
+  <tr><td>Támadási hullám</td><td>A gépi ellenfél egy-egy szervezett támadása a játékos bázisa ellen.</td></tr>
+  <tr><td>Típusszorzó</td><td>A sebzésszámításban szereplő szorzó, ami a támadó és a célpont típusától függ.</td></tr>
+  <tr><td>Use case (UC)</td><td>Felhasználói eset: egy konkrét folyamat a játékos szemszögéből, lépésekre bontva.</td></tr>
+</table>
+
+<h2 id="f13-2">13.2. Hivatkozott dokumentumok és források</h2>
+<ul>
+	<li>TeamFive: Stonehold - Projektterv (H1)</li>
+	<li>TeamFive: Stonehold - vízió dokumentum (H2)</li>
+	<li>A tárgy SRS-mintája: <a href="https://users.iit.uni-miskolc.hu/~mileff/szt/srs.html">https://users.iit.uni-miskolc.hu/~mileff/szt/srs.html</a></li>
+	<li>SDL és kiegészítő könyvtárai: <a href="https://www.libsdl.org">https://www.libsdl.org</a>, <a href="https://github.com/libsdl-org">https://github.com/libsdl-org</a></li>
+	<li>FreeType licenc (FTL): <a href="https://spdx.org/licenses/FTL">https://spdx.org/licenses/FTL</a></li>
+	<li>SIL Open Font License: <a href="https://openfontlicense.org">https://openfontlicense.org</a></li>
+	<li>Creative Commons licencek: <a href="https://creativecommons.org/licenses/">https://creativecommons.org/licenses/</a></li>
+	<li>OMG UML specifikáció: <a href="https://www.omg.org/spec/UML/">https://www.omg.org/spec/UML/</a></li>
+</ul>
+
+
+</body>
+</html>
