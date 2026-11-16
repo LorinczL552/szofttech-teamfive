@@ -21,6 +21,7 @@ Miskolci Egyetem, Informatikai Intézet
 <tr><td>2026.10.26-28.</td><td>0.1</td><td>A fejezetek megírása külön fájlokban a feladatkörök szerint</td><td>Mindenki</td></tr>
 <tr><td>2026.10.28.</td><td>0.2</td><td>Összefésülés</td><td>Lőrincz Loránd László</td></tr>
 <tr><td>2026.10.28.</td><td>1.0</td><td>Áttekintés után leadott változat</td><td>Mindenki</td></tr>
+<tr><td>2026.11.16.</td><td>1.1</td><td>Use case diagram a 3.9 fejezetbe a gyakorlatvezető visszajelzése alapján</td><td>Molnár Levente</td></tr>
 </table>
 
 <h2>Tartalomjegyzék</h2>
@@ -230,7 +231,7 @@ A use case-ek külön, a 3. fejezet végén (3.9) vannak összegyűjtve, és azo
 <h1 id="f3">3. A rendszer funkciói</h1>
 
 <p>
-A rendszer funkcióit modulonként írtuk le, ugyanúgy, ahogy a munkát is szétosztottuk (lásd 2.6). Minden modulnál van egy szöveges rész és egy táblázat a konkrét követelményekkel, azonosítóval és MoSCoW prioritással. A felhasználói eseteket (use case-eket) a fejezet végén, a 3.9-ben írtuk le. Az UML diagramokat majd külön, a UML tervezési dokumentumban csináljuk meg, itt csak a szöveges leírásuk van.
+A rendszer funkcióit modulonként írtuk le, ugyanúgy, ahogy a munkát is szétosztottuk (lásd 2.6). Minden modulnál van egy szöveges rész és egy táblázat a konkrét követelményekkel, azonosítóval és MoSCoW prioritással. A felhasználói eseteket (use case-eket) a fejezet végén, a 3.9-ben írtuk le, ott van a use case diagram is. A többi UML diagram az analízis modellbe kerül.
 </p>
 <p>
 Az egységek és épületek pontos számértékei (életerő, sebzés, költség, idők) nem itt vannak, hanem a konfigurációs fájlban, így a játékegyensúly újrafordítás nélkül hangolható (7.3).
@@ -569,6 +570,65 @@ Itt vannak a legfontosabb use case-ek részletesen, lépésenként. A modulok k�
 	<li>Játékos: A felhasználó, aki az egeret és a billentyűzetet nyomkodja, és a saját birodalmát irányítja.</li>
 	<li>Rendszer / AI: A háttérben futó játékmotor, ami a játékmechanikát számolja + a mesterséges intelligencia ellenfél.</li>
 </ul>
+
+<h3>Use case diagram</h3>
+
+<p>
+A diagramon a játékos és 3 use case látható. Az ábra mutatja, hogy melyik use casek tartalmazzák az Egység kijelölése és az Útvonal keresése eseteket.
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="14" role="img" aria-label="Use case diagram">
+  <defs>
+    <marker id="nyil" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10" fill="none" stroke="#000"/>
+    </marker>
+  </defs>
+  <rect x="170" y="20" width="570" height="380" fill="#fff" stroke="#000"/>
+  <text x="185" y="44" font-weight="bold">Stonehold</text>
+
+  <g stroke="#000" stroke-width="1.5" fill="none">
+    <circle cx="80" cy="170" r="14" fill="#fff"/>
+    <line x1="80" y1="184" x2="80" y2="230"/>
+    <line x1="55" y1="198" x2="105" y2="198"/>
+    <line x1="80" y1="230" x2="60" y2="265"/>
+    <line x1="80" y1="230" x2="100" y2="265"/>
+  </g>
+  <text x="80" y="290" text-anchor="middle">Játékos</text>
+
+  <g stroke="#000">
+    <line x1="108" y1="195" x2="227" y2="98"/>
+    <line x1="108" y1="205" x2="225" y2="210"/>
+    <line x1="108" y1="215" x2="227" y2="322"/>
+  </g>
+
+  <g fill="#fff" stroke="#000">
+    <ellipse cx="330" cy="90" rx="105" ry="34"/>
+    <ellipse cx="330" cy="210" rx="105" ry="34"/>
+    <ellipse cx="330" cy="330" rx="105" ry="34"/>
+    <ellipse cx="610" cy="150" rx="90" ry="30"/>
+    <ellipse cx="610" cy="290" rx="90" ry="30"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="330" y="86">UC-01</text><text x="330" y="104">Épület lerakása</text>
+    <text x="330" y="206">UC-02</text><text x="330" y="224">Egység kiképzése</text>
+    <text x="330" y="326">UC-03</text><text x="330" y="344">Ellenség megtámadása</text>
+    <text x="610" y="155">Egység kijelölése</text>
+    <text x="610" y="295">Útvonal keresése</text>
+  </g>
+
+  <g stroke="#000" stroke-dasharray="6,4" marker-end="url(#nyil)">
+    <line x1="432" y1="102" x2="521" y2="143"/>
+    <line x1="420" y1="313" x2="527" y2="163"/>
+    <line x1="434" y1="322" x2="521" y2="295"/>
+  </g>
+  <g font-size="12" text-anchor="middle">
+    <text x="468" y="110">«include»</text>
+    <text x="500" y="230">«include»</text>
+    <text x="474" y="327">«include»</text>
+  </g>
+</svg>
+</figure>
 
 <h3>3.9.1. UC-01: Épület lerakása (Prioritás: Must have)</h3>
 <ul>
