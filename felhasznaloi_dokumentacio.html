@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stonehold - Felhasználói dokumentáció</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; line-height: 1.45; }
+  table { border-collapse: collapse; margin: 8px 0 16px; width: 100%; }
+  th, td { border: 1px solid #000; padding: 4px 8px; vertical-align: top; text-align: left; }
+  .cimlap { text-align: center; margin: 60px 0 40px; }
+  .cimlap h1 { font-size: 36px; margin-bottom: 4px; }
+  kbd { border: 1px solid #888; border-radius: 3px; padding: 0 4px; background: #f4f4f4; font-family: inherit; }
+  figure { margin: 16px 0; text-align: center; }
+  figcaption { font-style: italic; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="cimlap">
+  <h1>Stonehold</h1>
+  <p style="font-size:20px">Felhasználói dokumentáció</p>
+  <p>1.0 verzió</p>
+  <p>Csapat: TeamFive<br>
+  Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)</p>
+  <p>Miskolci Egyetem, Informatikai Intézet<br>2026. november</p>
+</div>
+
+<h2>Történet</h2>
+<table>
+  <tr><th>Dátum</th><th>Verzió</th><th>Leírás</th><th>Szerző</th></tr>
+  <tr><td>2026.11.17.</td><td>1.0</td><td>Az első teljes változat a gyakorlatvezető visszajelzése alapján.</td><td>Martis Milán</td></tr>
+</table>
+
+<h2>Tartalomjegyzék</h2>
+<ul>
+  <li><a href="#f1">1. A játékról</a></li>
+  <li><a href="#f2">2. Rendszerkövetelmények</a></li>
+  <li><a href="#f3">3. Telepítés és indítás</a></li>
+  <li><a href="#f4">4. A menük használata</a></li>
+  <li><a href="#f5">5. A játékképernyő</a></li>
+  <li><a href="#f6">6. Irányítás</a></li>
+  <li><a href="#f7">7. Játékmenet</a></li>
+  <li><a href="#f8">8. Beállítások</a></li>
+  <li><a href="#f9">9. Hibaelhárítás</a></li>
+  <li><a href="#f10">10. Készítők és felhasznált elemek</a></li>
+</ul>
+
+<h2 id="f1">1. A játékról</h2>
+<p>A Stonehold egy 2D-s, felülnézetes valós idejű stratégiai játék. Egyedül játszol egy gépi ellenfél ellen. Munkásokkal nyersanyagot gyűjtesz, ebből épületeket húzol fel, katonákat képzel, és megpróbálod lerombolni az ellenfél főépületét, mielőtt ő rombolná le a tiédet. Egy mérkőzés kb. 20-40 perc.</p>
+<p>Ez a dokumentum leírja, hogyan kell a játékot elindítani és kezelni. Ha játék közben kell segítség, a főmenüből és a szünet menüből is elérhető a súgó (Help gomb), és ha az egeret egy gomb fölött tartod, egy kis szövegdoboz (tooltip) is elmondja, mire jó a gomb.</p>
+
+<h2 id="f2">2. Rendszerkövetelmények</h2>
+<table>
+  <tr><th></th><th>Legalább ennyi kell</th></tr>
+  <tr><td>Operációs rendszer</td><td>64 bites Windows 10 vagy 11</td></tr>
+  <tr><td>Processzor</td><td>kétmagos, 2 GHz</td></tr>
+  <tr><td>Memória</td><td>2 GB RAM (a játék legfeljebb 500 MB-ot használ)</td></tr>
+  <tr><td>Videókártya</td><td>hardveres gyorsítást tudó kártya, az integrált is jó</td></tr>
+  <tr><td>Kijelző</td><td>legalább 1280x720 pixel</td></tr>
+  <tr><td>Tárhely</td><td>legfeljebb 200 MB</td></tr>
+  <tr><td>Bemenet</td><td>egér és billentyűzet (érintőképernyő és játékvezérlő nem működik)</td></tr>
+</table>
+<p>Internet, felhasználói fiók és rendszergazdai jog nem kell. A játék nem gyűjt és nem küld el semmilyen adatot.</p>
+
+<h2 id="f3">3. Telepítés és indítás</h2>
+<h3>3.1. Telepítés</h3>
+<p>A játékhoz nem kell telepítő.</p>
+<ol>
+  <li>Töltsd le a Stonehold ZIP-fájlját a csapat GitHub-tárolójából (vagy onnan, ahol a gyakorlatvezetővel megbeszéltük).</li>
+  <li>Csomagold ki egy tetszőleges mappába, pl. a Dokumentumok közé. Fontos, hogy minden fájl együtt maradjon: a <code>Stonehold.exe</code> mellett ott kell lennie az <code>SDL2.dll</code>, <code>SDL2_image.dll</code> és <code>SDL2_ttf.dll</code> fájloknak, valamint az erőforrásmappának a képekkel, betűtípusokkal és konfigurációs fájlokkal.</li>
+</ol>
+<h3>3.2. Indítás</h3>
+<ol>
+  <li>Kattints duplán a <code>Stonehold.exe</code> fájlra.</li>
+  <li>Első indításkor a Windows SmartScreen figyelmeztetést írhat ki, mert a program nincs digitálisan aláírva. Ilyenkor kattints a „További információ”, majd a „Futtatás mindenképp” gombra.</li>
+  <li>Megnyílik a játék ablaka a főmenüvel. Első indításkor 1280x720-as ablakban indul, ezt a beállításokban (Settings) lehet átállítani.</li>
+</ol>
+<h3>3.3. Eltávolítás</h3>
+<p>Töröld a játék mappáját. A játék máshová nem ír, és a rendszer beállításain sem változtat.</p>
+
+<h2 id="f4">4. A menük használata</h2>
+<p>A játék felülete angol nyelvű, ezért a gombok nevét angolul írjuk, ahogy a képernyőn látod. A menükben egérrel lehet kattintani. Az a gomb, amelyik fölött az egér van, kiemelődik.</p>
+<h3>4.1. Főmenü</h3>
+<p>A játék indítása után ez jelenik meg. Gombjai:</p>
+<ul>
+  <li><b>New Game:</b> az új mérkőzés beállításaihoz visz (4.2).</li>
+  <li><b>Settings:</b> felbontás, képernyőmód, hangerő (8. fejezet).</li>
+  <li><b>Help:</b> a játék céljának, az irányításnak és a fontosabb épületeknek és egységeknek a rövid leírása.</li>
+  <li><b>Exit:</b> bezárja a játékot. Az ablak X gombja ugyanezt csinálja.</li>
+</ul>
+<h3>4.2. Új játék beállításai</h3>
+<p>Itt választhatod ki, milyen nehéz legyen a gépi ellenfél:</p>
+<ul>
+  <li><b>Easy:</b> az ellenfél lassabban gondolkodik és épít, és később, kisebb sereggel támad. Az első néhány játékhoz ezt ajánljuk.</li>
+  <li><b>Normal:</b> ez az alapbeállítás. Néhány próbálkozás után le lehet győzni.</li>
+</ul>
+<p>A <b>Start</b> gomb elindítja a mérkőzést, a <b>Back</b> visszavisz a főmenübe.</p>
+<h3>4.3. Szünet menü</h3>
+<p>Játék közben az <kbd>ESC</kbd> billentyűvel vagy a képernyő jobb felső sarkában lévő Pause gombbal nyithatod meg. Amíg nyitva van, a játék áll: az egységek nem mozognak, nem gyűlik a nyersanyag, és az ellenfél sem csinál semmit. Gombjai:</p>
+<ul>
+  <li><b>Resume:</b> visszamész a játékba. Az <kbd>ESC</kbd> újbóli megnyomása ugyanezt csinálja.</li>
+  <li><b>Settings</b> és <b>Help:</b> ugyanazok, mint a főmenüben. A Back gombbal ide jössz vissza.</li>
+  <li><b>Quit to Main Menu:</b> a játék előbb megkérdezi, biztosan ki akarsz-e lépni, mert a mostani mérkőzés elvész. Mentés nincs.</li>
+</ul>
+<h3>4.4. Játék vége</h3>
+<p>Ha valamelyik fél főépülete megsemmisül, a mérkőzés véget ér, és a játék kiírja, hogy győztél (Victory!) vagy vesztettél (Defeat!). A <b>Main Menu</b> gombbal mehetsz vissza a főmenübe, és onnan kezdhetsz új játékot.</p>
+
+<h2 id="f5">5. A játékképernyő</h2>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 30 680 380" width="680" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="11" role="img" aria-label="A játékképernyő részei">
+<rect x="60" y="40" width="640" height="360" fill="#fff" stroke="#000" stroke-width="1.5"/>
+<rect x="60" y="40" width="640" height="16" fill="#eee" stroke="#000"/>
+<text x="66" y="52" font-size="10">▪ Wood 180   ▪ Gold 250   ▪ Stone 60   ▪ Steel 0   ▪ Food 120   ▪ Population 14/30</text>
+<rect x="652" y="42" width="44" height="12" fill="#fff" stroke="#000"/><text x="674" y="51" text-anchor="middle" font-size="9">Pause</text>
+<rect x="110" y="90" width="56" height="44" fill="#fff" stroke="#00f" stroke-width="2"/><text x="138" y="116" text-anchor="middle" font-size="9" fill="#00f">Town Hall</text>
+<ellipse cx="230" cy="186" rx="9" ry="4" fill="none" stroke="#000"/><circle cx="230" cy="180" r="6" fill="#00f"/><rect x="221" y="168" width="18" height="3" fill="#0a0"/>
+<ellipse cx="252" cy="196" rx="9" ry="4" fill="none" stroke="#000"/><circle cx="252" cy="190" r="6" fill="#00f"/><rect x="243" y="178" width="18" height="3" fill="#0a0"/>
+<circle cx="440" cy="190" r="6" fill="#c00"/><circle cx="456" cy="200" r="6" fill="#c00"/>
+<text x="448" y="220" text-anchor="middle" font-size="9" fill="#c00">enemy</text>
+<text x="241" y="225" text-anchor="middle" font-size="9">your selected units</text>
+<rect x="300" y="268" width="160" height="20" fill="#fff" stroke="#000"/><text x="380" y="282" text-anchor="middle">Not enough gold!</text>
+<rect x="60" y="300" width="640" height="100" fill="#eee" stroke="#000"/>
+<rect x="60" y="300" width="100" height="100" fill="#dfe8d8" stroke="#000"/>
+<rect x="74" y="320" width="34" height="19" fill="none" stroke="#000"/>
+<circle cx="80" cy="328" r="2" fill="#00f"/><circle cx="140" cy="380" r="2" fill="#c00"/>
+<rect x="176" y="322" width="48" height="48" fill="#fff" stroke="#000"/><circle cx="200" cy="346" r="12" fill="#00f"/>
+<text x="236" y="336" font-weight="bold">Melee Soldier</text>
+<text x="236" y="354">Health: 90 / 120</text>
+<rect x="236" y="360" width="150" height="8" fill="#fff" stroke="#000"/><rect x="236" y="360" width="112" height="8" fill="#0a0"/>
+<rect x="602" y="300" width="98" height="100" fill="#eee" stroke="#000"/>
+<g font-size="9" text-anchor="middle">
+<rect x="604" y="302" width="30" height="30" fill="#fff" stroke="#000"/><text x="619" y="321">1</text>
+<rect x="636" y="302" width="30" height="30" fill="#fff" stroke="#000"/><text x="651" y="321">2</text>
+<rect x="668" y="302" width="30" height="30" fill="#fff" stroke="#000"/><text x="683" y="321">3</text>
+<rect x="604" y="334" width="30" height="30" fill="#fff" stroke="#000"/><text x="619" y="353">4</text>
+<rect x="636" y="334" width="30" height="30" fill="#ccc" stroke="#888"/><text x="651" y="353" fill="#888">5</text>
+<rect x="668" y="334" width="30" height="30" fill="#ccc" stroke="#888"/><text x="683" y="353" fill="#888">6</text>
+<rect x="604" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="619" y="385" fill="#888">7</text>
+<rect x="636" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="651" y="385" fill="#888">8</text>
+<rect x="668" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="683" y="385" fill="#888">9</text>
+</g>
+<g font-size="13" font-weight="bold" fill="#fff">
+<circle cx="560" cy="48" r="9" fill="#c60"/><text x="560" y="53" text-anchor="middle">1</text>
+<circle cx="380" cy="160" r="9" fill="#c60"/><text x="380" y="165" text-anchor="middle">2</text>
+<circle cx="150" cy="312" r="9" fill="#c60"/><text x="150" y="317" text-anchor="middle">3</text>
+<circle cx="580" cy="312" r="9" fill="#c60"/><text x="580" y="317" text-anchor="middle">4</text>
+<circle cx="590" cy="388" r="9" fill="#c60"/><text x="590" y="393" text-anchor="middle">5</text>
+<circle cx="476" cy="278" r="9" fill="#c60"/><text x="476" y="283" text-anchor="middle">6</text>
+</g>
+</svg>
+<figcaption>A játékképernyő részei (vázlat)</figcaption>
+</figure>
+<ol>
+  <li><b>Felső sáv:</b> a nyersanyagaid (fa, arany, kő, acél, étel) és a népesség (jelenlegi/legnagyobb). Jobb oldalon a Pause gomb.</li>
+  <li><b>Játéktér:</b> a pálya. A saját egységeid és épületeid kékek, az ellenségéi pirosak. A kijelölt egységek alatt kör, fölöttük az életerőcsíkjuk látszik.</li>
+  <li><b>Minimap:</b> a teljes pálya kicsiben. A keret mutatja, melyik részét látod éppen. Ha rákattintasz, a kamera odaugrik.</li>
+  <li><b>Információs panel:</b> a kijelölt egység vagy épület neve, képe és életereje. Épületnél itt látszik a képzési sor is. Ha több egységet jelöltél ki, kis ikonok jelennek meg, és ha egy ikonra kattintasz, csak az az egység marad kijelölve.</li>
+  <li><b>Parancsmenü:</b> a kijelöléstől függő gombok, pl. munkásnál az épületek, kaszárnyánál a katonák. A szürke gombot most nem lehet megnyomni, a tooltip kiírja, miért.</li>
+  <li><b>Üzenetek:</b> ha valami nem sikerül, vagy támadás ér, itt jelenik meg egy rövid üzenet, ami pár másodperc múlva eltűnik.</li>
+</ol>
+
+<h2 id="f6">6. Irányítás</h2>
+<p>Az irányítás olyan, mint a legtöbb klasszikus stratégiai játékban (pl. Age of Empires II). Minden csak egérrel is megcsinálható, a billentyűk csak gyorsítanak.</p>
+<h3>6.1. Egér</h3>
+<table>
+  <tr><th>Mit csinálsz</th><th>Mi történik</th></tr>
+  <tr><td>Bal klikk egy egységre vagy épületre</td><td>Kijelölöd. Az előző kijelölés megszűnik.</td></tr>
+  <tr><td>Bal gomb lenyomva + húzás</td><td>Egy téglalap rajzolódik, és a benne lévő összes saját egységed ki lesz jelölve.</td></tr>
+  <tr><td><kbd>Shift</kbd> + bal klikk</td><td>Hozzáadod az egységet a kijelöléshez, vagy kiveszed belőle.</td></tr>
+  <tr><td>Bal klikk üres helyre</td><td>Megszűnik a kijelölés.</td></tr>
+  <tr><td>Jobb klikk a talajra</td><td>A kijelölt egységek odamennek. Útközben nem állnak meg harcolni.</td></tr>
+  <tr><td>Jobb klikk ellenséges egységre vagy épületre</td><td>A kijelölt egységek megtámadják. Ha messze van, előbb odamennek.</td></tr>
+  <tr><td>Jobb klikk fára, aranyérre vagy kitermelő épületre</td><td>A kijelölt munkások elkezdenek gyűjteni.</td></tr>
+  <tr><td>Jobb klikk félkész saját épületre</td><td>A kijelölt munkások folytatják az építését.</td></tr>
+  <tr><td>Kattintás vagy húzás a minimapen</td><td>A kamera odaugrik, húzásnál követi az egeret.</td></tr>
+  <tr><td>Egér a képernyő szélén</td><td>A kamera arra mozog.</td></tr>
+</table>
+<p>Az ellenséges egységet is ki lehet jelölni, hogy lásd az életerejét, de parancsot neki nem adhatsz.</p>
+<h3>6.2. Billentyűzet</h3>
+<table>
+  <tr><th>Billentyű</th><th>Mit csinál</th></tr>
+  <tr><td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> vagy a nyilak</td><td>A kamera mozgatása. Két billentyűvel átlósan is megy.</td></tr>
+  <tr><td><kbd>1</kbd> … <kbd>9</kbd></td><td>A parancsmenü gombjai, balról jobbra, fentről lefelé. Melyik szám melyik gomb, azt a tooltip is kiírja.</td></tr>
+  <tr><td><kbd>ESC</kbd></td><td>Épület lerakása közben megszakítja a lerakást. Különben megnyitja vagy bezárja a szünet menüt.</td></tr>
+  <tr><td><kbd>F3</kbd></td><td>Kiírja a sarokba, hány képkocka jelenik meg másodpercenként (FPS).</td></tr>
+</table>
+
+<h2 id="f7">7. Játékmenet</h2>
+<h3>7.1. A cél</h3>
+<p>Mindkét fél egy főépülettel és néhány munkással kezd. Az nyer, aki előbb megsemmisíti a másik főépületét. Ha a te főépületed semmisül meg, vesztettél, akkor is, ha más épületeid és katonáid még vannak.</p>
+<h3>7.2. Nyersanyagok</h3>
+<table>
+  <tr><th>Nyersanyag</th><th>Honnan jön</th><th>Mire kell</th></tr>
+  <tr><td>Wood (fa)</td><td>Erdőből, munkásokkal</td><td>Szinte mindenhez, ez az alap építőanyag.</td></tr>
+  <tr><td>Gold (arany)</td><td>Aranyérből, munkásokkal</td><td>Fejlettebb épületekhez, egységekhez és fejlesztésekhez.</td></tr>
+  <tr><td>Stone (kő)</td><td>Kőfejtőből, amit sziklás területre kell építeni</td><td>Kőépületekhez, falhoz, őrtoronyhoz.</td></tr>
+  <tr><td>Steel (acél)</td><td>Kohóból, amit érclelőhelyre kell építeni</td><td>Nehézegységekhez és fejlett fejlesztésekhez.</td></tr>
+  <tr><td>Food (étel)</td><td>Farmról</td><td>Egységek képzéséhez.</td></tr>
+</table>
+<p>A <b>népesség</b> nem nyersanyag, hanem korlát: azt mutatja, hány egységed lehet egyszerre. Lakóházakkal lehet növelni, de egy félnek egyszerre legfeljebb 200 egysége lehet.</p>
+<h3>7.3. Gyűjtés</h3>
+<p>A fát és az aranyat a munkások szabad kézzel gyűjtik. Jelölj ki egy vagy több munkást, és kattints jobb gombbal egy fára vagy aranyérre. A munkások oda-vissza hordják a nyersanyagot a lelőhely és a legközelebbi főépület vagy raktár között, amíg új parancsot nem adsz nekik, vagy amíg el nem fogy a lelőhely. Ha messze van a lelőhely, érdemes mellé egy raktárt építeni.</p>
+<p>A követ, az acélt és az ételt kitermelő épület (kőfejtő, kohó, farm) termeli. Építsd fel, aztán küldj bele munkásokat jobb klikkel. Minél több munkás dolgozik benne, annál gyorsabban termel, de egy épületbe csak néhány fér.</p>
+<h3>7.4. Építkezés</h3>
+<ol>
+  <li>Jelölj ki egy munkást.</li>
+  <li>A parancsmenüben kattints a kívánt épületre (vagy nyomd meg a számát). Ha a gomb szürke, nincs elég nyersanyagod, vagy még nem érted el a szükséges szintet.</li>
+  <li>Az épület áttetsző képe követi az egeret. Ha zöld, oda lehet építeni, ha piros, nem (pl. ott már van valami).</li>
+  <li>Bal klikkel rakd le. Ekkor vonódik le az ára, és a munkás odamegy és felépíti. Jobb klikkel vagy <kbd>ESC</kbd>-vel meggondolhatod magad, ilyenkor nem vonódik le semmi.</li>
+</ol>
+<p>Amíg az épület nincs kész, félkész állapotban látszik. Ha a munkást közben máshová küldöd, vagy meghal, egy másik munkással jobb klikkel folytathatod.</p>
+<table>
+  <tr><th>Épület</th><th>Mire jó</th><th>Szint</th></tr>
+  <tr><td>Town Hall (főépület)</td><td>Ezzel kezdesz. Munkást képez, ide lehet leadni a nyersanyagot, itt lehet szintet lépni. Ha elpusztul, vesztettél.</td><td>kezdő</td></tr>
+  <tr><td>House (lakóház)</td><td>Növeli a népesség maximumát.</td><td>1.</td></tr>
+  <tr><td>Storehouse (raktár)</td><td>Nyersanyag-leadóhely, hogy ne kelljen mindent a főépületig hordani.</td><td>1.</td></tr>
+  <tr><td>Barracks (kaszárnya)</td><td>Katonákat képez.</td><td>1.</td></tr>
+  <tr><td>Farm</td><td>Ételt termel.</td><td>1.</td></tr>
+  <tr><td>Quarry (kőfejtő)</td><td>Követ termel, sziklás területre kell építeni.</td><td>2.</td></tr>
+  <tr><td>Foundry (kohó)</td><td>Acélt termel, érclelőhelyre kell építeni.</td><td>2.</td></tr>
+  <tr><td>Blacksmith (kovácsműhely)</td><td>Itt lehet fejlesztéseket venni.</td><td>2.</td></tr>
+  <tr><td>Watchtower (őrtorony)</td><td>Magától lövi a közelébe érő ellenséget.</td><td>2.</td></tr>
+  <tr><td>Wall (fal)</td><td>Elzárja az utat, az egységek nem tudnak átmenni rajta.</td><td>2.</td></tr>
+</table>
+<h3>7.5. Fejlődési szintek és fejlesztések</h3>
+<p>A játékban három szint van. Az elején csak az 1. szintű épületeket és egységeket éred el. Szintet a főépületben lehet lépni, ez nyersanyagba és időbe kerül:</p>
+<ul>
+  <li>a 2. szinthez kell egy kész kaszárnya,</li>
+  <li>a 3. szinthez kell egy kész kovácsműhely.</li>
+</ul>
+<p>A kovácsműhelyben fejlesztéseket vehetsz, pl. gyorsabb fatermelést vagy erősebb páncélt a katonáknak. Egy fejlesztést csak egyszer lehet megvenni, és minden érintett egységre hat, a később képzettekre is.</p>
+<h3>7.6. Egységek képzése</h3>
+<p>Jelöld ki a főépületet (munkáshoz) vagy a kaszárnyát (katonához), és kattints a parancsmenüben az egységre. Az árát a játék rögtön levonja, az egység pedig beáll a képzési sorba. Az információs panelen egy csík mutatja, mennyi van még hátra. Ha elkészült, az egység megjelenik az épület mellett.</p>
+<p>Nem indul el a képzés, ha nincs elég nyersanyagod, vagy betelt a népesség. Ilyenkor a játék kiírja, mi a baj. Ha a képzés közben lerombolják az épületet, a nyersanyagot visszakapod.</p>
+<table>
+  <tr><th>Egység</th><th>Hol képezhető</th><th>Leírás</th><th>Szint</th></tr>
+  <tr><td>Worker (munkás)</td><td>Town Hall</td><td>Gyűjt és épít. Magától nem támad, csak ha megparancsolod.</td><td>1.</td></tr>
+  <tr><td>Melee Soldier (közelharci katona)</td><td>Barracks</td><td>Közelről harcol, sokat kibír. Ő áll elöl.</td><td>1.</td></tr>
+  <tr><td>Archer (íjász)</td><td>Barracks</td><td>Messziről lő, de kevesebbet bír.</td><td>2.</td></tr>
+  <tr><td>Heavy Unit (nehézegység)</td><td>Barracks</td><td>Drága és lassan képezhető, de nagyot üt, főleg épületek ellen jó.</td><td>3.</td></tr>
+</table>
+<h3>7.7. Harc</h3>
+<p>Jelöld ki a katonáidat, és kattints jobb gombbal egy ellenséges egységre vagy épületre. A katonák odamennek, és addig ütik, amíg el nem pusztul, vagy amíg más parancsot nem adsz nekik. Ha egy katona áll, és ellenség jön a közelébe, magától is megtámadja. Ha viszont mozgásparancsot adtál neki, nem áll meg harcolni.</p>
+<p>A sebzésben nincs szerencse: ugyanaz a helyzet mindig ugyanúgy jön ki. Hogy egy ütés mennyit sebez, az attól függ, ki kit üt: a nehézegység pl. épületek ellen sokkal erősebb, az íjász viszont alig karcolja őket. Minden ütés legalább 1-et sebez.</p>
+<p>Ha egy egység vagy épület életereje elfogy, eltűnik a pályáról. Az ellenfél bármikor megtámadhat, ilyenkor a játék kiírja: „You are under attack!”.</p>
+<h3>7.8. Tippek kezdőknek</h3>
+<ul>
+  <li>Az elején képezz pár munkást, és küldd őket fára és aranyra. Nyersanyag nélkül semmit nem lehet csinálni.</li>
+  <li>Építs időben lakóházat, különben betelik a népesség, és nem tudsz új egységet képezni.</li>
+  <li>A kaszárnyát ne hagyd sokáig, mert az ellenfél előbb-utóbb támadni fog.</li>
+  <li>Tartsd az egeret egy gomb fölött, és a tooltip megmondja, mire jó és mennyibe kerül.</li>
+  <li>Az első játékokhoz válaszd a könnyű ellenfelet.</li>
+</ul>
+
+<h2 id="f8">8. Beállítások</h2>
+<p>A beállításokat a főmenüből és a szünet menüből is el lehet érni.</p>
+<table>
+  <tr><th>Beállítás</th><th>Mit állít</th></tr>
+  <tr><td>Resolution</td><td>A játék ablakának mérete egy listából. A legkisebb 1280x720.</td></tr>
+  <tr><td>Fullscreen</td><td>Ha be van pipálva, a játék a teljes képernyőt kitölti, különben ablakban fut.</td></tr>
+  <tr><td>Music, Sound effects</td><td>A két hangerő külön csúszkával. Csak akkor látszanak, ha a játékban van hang.</td></tr>
+</table>
+<p>Az <b>Apply</b> gomb elmenti a beállításokat, így a következő indításkor is megmaradnak. A <b>Back</b> mentés nélkül lép ki. A beállítások a játék mappájában, a <code>beallitasok.ini</code> fájlban vannak. Ha ez a fájl elromlik vagy hiányzik, a játék az alapbeállításokkal (1280x720, ablakos mód) indul.</p>
+
+<h2 id="f9">9. Hibaelhárítás</h2>
+<table>
+  <tr><th>Probléma</th><th>Mit lehet tenni</th></tr>
+  <tr><td>Indításkor a Windows azt írja, hogy védte a számítógépet.</td><td>Ez a SmartScreen, mert a programot nem írtuk alá digitálisan. Kattints a „További információ”, majd a „Futtatás mindenképp” gombra.</td></tr>
+  <tr><td>Hibaüzenet, hogy hiányzik az SDL2.dll (vagy SDL2_image.dll, SDL2_ttf.dll).</td><td>A DLL-fájloknak a Stonehold.exe mellett kell lenniük. Csomagold ki újra a teljes ZIP-et, ne csak az exe-t másold át.</td></tr>
+  <tr><td>A játék el sem indul, vagy rögtön bezárul.</td><td>Nézd meg a játék mappájában a <code>naplo.txt</code> fájlt, abba írja ki a játék a hibát. Ellenőrizd, hogy 64 bites Windows 10 vagy 11 van-e a gépen.</td></tr>
+  <tr><td>Valahol egy feltűnő lila kép jelenik meg.</td><td>Hiányzik egy képfájl az erőforrásmappából. A játék ettől még működik, de érdemes újra kicsomagolni.</td></tr>
+  <tr><td>Az ablak túl nagy, nem fér ki a képernyőre, vagy rossz a felbontás.</td><td>Töröld a <code>beallitasok.ini</code> fájlt. A következő indításkor a játék 1280x720-as ablakban indul.</td></tr>
+  <tr><td>A kamera magától mozog.</td><td>Valószínűleg az egér a képernyő szélén van. Vidd beljebb. Ablakos módban a kamera csak akkor mozog, ha a játék ablaka aktív.</td></tr>
+  <tr><td>Nem tudok építeni vagy egységet képezni.</td><td>Nézd meg a gomb tooltipjét: kiírja, mi hiányzik (nyersanyag, szint vagy épület). Egységnél a népesség is betelhetett, ilyenkor építs lakóházat.</td></tr>
+  <tr><td>Az egységek nem mennek oda, ahová küldtem őket.</td><td>Lehet, hogy oda nem vezet út (pl. fal mögé). Ilyenkor az egység a legközelebbi elérhető helyig megy, és ott megáll.</td></tr>
+  <tr><td>A játék akadozik.</td><td>Az <kbd>F3</kbd>-mal ellenőrizheted az FPS-t. Próbálj kisebb felbontást vagy ablakos módot, és zárd be a többi programot.</td></tr>
+</table>
+<p>Ha a hiba nem szerepel itt, jelentsd a csapat GitHub-tárolójában (Issues), és mellékeld a <code>naplo.txt</code> fájlt.</p>
+
+<h2 id="f10">10. Készítők és felhasznált elemek</h2>
+<p>A játékot a TeamFive csapat készítette a Miskolci Egyetem Szoftvertechnológia tárgyára: Lőrincz Loránd László, Pozsgai Marcell, Kiss Balázs, Molnár Levente és Martis Milán.</p>
+<p>A játék az SDL2, SDL2_image és SDL2_ttf könyvtárakat használja (zlib licenc). Az SDL2_ttf a FreeType könyvtárra épül. A felhasznált képek és a betűtípus szerzői és licencei a játék mappájában lévő <code>CREDITS.txt</code> fájlban vannak, a licencfájlok pedig a ZIP-ben, a játék mellett.</p>
+
+</body>
+</html>

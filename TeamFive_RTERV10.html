@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Stonehold - Rendszerterv</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; line-height: 1.45; }
+  table { border-collapse: collapse; margin: 8px 0 16px; }
+  th, td { padding: 4px 8px; vertical-align: top; text-align: left; }
+  figure { margin: 16px 0; text-align: center; }
+  figure img { max-width: 100% !important; height: auto; }
+  figcaption { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Stonehold - Rendszerterv</h1>
+
+<p>
+Rendszerterv<br>
+Csapat: TeamFive<br>
+Csapattagok: Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)<br>
+Miskolci Egyetem, Informatikai Intézet
+</p>
+
+<h2>Történet</h2>
+
+<table border="1" cellpadding="6">
+<tr><th>Dátum</th><th>Verzió</th><th>Leírás</th><th>Szerző</th></tr>
+<tr><td>2026.11.11-17.</td><td>0.1</td><td>A fejezetek megírása külön fájlokban a feladatfelosztás szerint</td><td>Mindenki</td></tr>
+<tr><td>2026.11.17.</td><td>0.2</td><td>Összefésülés, ábraszámok</td><td>Lőrincz Loránd László</td></tr>
+<tr><td>2026.11.18.</td><td>1.0</td><td>Leadott változat</td><td>Mindenki</td></tr>
+</table>
+
+<h2>Tartalomjegyzék</h2>
+
+<ul>
+<li><a href="#f1">1. Bevezetés</a></li>
+<li><a href="#f2">2. Felhasználói felület</a>
+<ul>
+<li><a href="#f2-1">2.1. Általános szabályok</a></li>
+<li><a href="#f2-2">2.2. A menük</a></li>
+<li><a href="#f2-3">2.3. A játékképernyő</a></li>
+<li><a href="#f2-4">2.4. A parancsmenü tartalma</a></li>
+<li><a href="#f2-5">2.5. Egér és billentyűzet</a></li>
+<li><a href="#f2-6">2.6. Üzenetek a játékosnak</a></li>
+<li><a href="#f2-7">2.7. A vezérlők és a játéklogika közti parancsok</a></li>
+</ul></li>
+<li><a href="#f3">3. Adatmodellek</a>
+<ul>
+<li><a href="#f3-1">3.1. Adatbázis-kezelő kiválasztása</a></li>
+<li><a href="#f3-2">3.2. Az adatok szerkezete</a></li>
+<li><a href="#f3-3">3.3. A fájlok formátuma</a></li>
+<li><a href="#f3-4">3.4. Az adatkezelő osztályok</a></li>
+</ul></li>
+<li><a href="#f4">4. A funkcionális modell kiegészítése</a>
+<ul>
+<li><a href="#f4-1">4.1. UC-01: Épület lerakása</a></li>
+<li><a href="#f4-2">4.2. UC-02: Egység kiképzése</a></li>
+<li><a href="#f4-3">4.3. UC-03: Ellenség megtámadása</a></li>
+</ul></li>
+</ul>
+
+<h2 id="f1">1. Bevezetés</h2>
+<p>Ez a dokumentum a Stonehold rendszerterve. Az analízis modellre épül (TeamFive_ANAL10.html), és azokat a részeket dolgozza ki, amik ott még nem voltak benne: hogyan néz ki a felület, hol és milyen formában vannak az adatok, és mi történik a use case-ekben, ha valami nem a szokásos módon megy.</p>
+<p>A fejezetek:</p>
+<ul>
+  <li>2. Felhasználói felület: a menük és a játékképernyő vázlata, a gombok és a billentyűk, és hogy melyik kattintás melyik osztály melyik műveletét hívja. (Martis Milán)</li>
+  <li>3. Adatmodellek: a konfigurációs fájlok és a beállításfájl szerkezete és formátuma, és az osztályok, amik ezeket betöltik. (Molnár Levente)</li>
+  <li>4. A funkcionális modell kiegészítése: a három use case alternatív és kivételes esetei aktivitásdiagramon. (Molnár Levente)</li>
+</ul>
+<p>Az osztályneveket és a hivatkozásokat ugyanúgy használjuk, mint az analízis modellben. Ha ott egy ábrára vagy fejezetre hivatkozunk, elé írjuk, hogy ANAL (pl. ANAL 4.2. ábra), az SRS pontjai elé azt, hogy SRS. A 3. fejezetben van néhány új osztály (pl. GameData, UnitStats), ezek a betöltött számértékek tárolására kellenek, az analízis modellben még nem szerepeltek, mert ott csak a ConfigLoader volt.</p>
+
+
+<h2 id="f2">2. Felhasználói felület</h2>
+
+<p>
+Ebben a fejezetben a játék képernyőit rajzoltam meg, az SRS 3.2 és 11.1 fejezete alapján. Az osztályokat, amik a képernyők mögött vannak, az analízis modell 4. fejezete írja le, itt az a fontos, hogy mi hol van a képernyőn, és melyik gomb vagy kattintás milyen parancsot ad a játéklogikának.
+</p>
+
+<h3 id="f2-1">2.1. Általános szabályok</h3>
+
+<ul>
+	<li>A felületet 1280x720-as felbontásra tervezzük, ez a legkisebb támogatott méret. Nagyobb felbontásnál a felület elemei a képernyő széleihez tapadnak, és csak a játéktér lesz nagyobb. A menük mindig középen vannak.</li>
+	<li>A felület nyelve angol: a gombok, a menük és az üzenetek angolul jelennek meg. A kódban is angol nevek vannak, így a kettő egyezik.</li>
+	<li>Minden menügomb ugyanakkora (280x48 pixel), és egymás alatt, középre igazítva vannak. Ha az egér egy gomb fölött van, a gomb világosabb lesz.</li>
+	<li>A szürke gombot nem lehet megnyomni. A tooltip ilyenkor kiírja, miért szürke (pl. nincs elég nyersanyag, vagy még nincs meg a szint).</li>
+	<li>Színek: a saját egységek és épületek kékek, az ellenségéi pirosak, a minimapen is. A lerakás előtti épület zöld, ha oda lehet építeni, és piros, ha nem.</li>
+	<li>A szünet menü és a kilépés előtti kérdés a játék fölé rajzolódik, sötétített háttérrel, így látszik, hogy a játék áll.</li>
+</ul>
+
+<p>
+Hogy a képernyők között hogyan lehet mozogni, azt az analízis modell 4.3. ábrája (a ScreenManager állapotdiagramja) mutatja.
+</p>
+
+<h3 id="f2-2">2.2. A menük</h3>
+
+<p>
+Az alábbi vázlatokon a menük láthatók. A szürke gomb azt mutatja, hogy éppen fölötte van az egér. A szünet menünél és a kilépés előtti kérdésnél a sötét háttér a megállított játékot jelenti.
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 980" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="A menük vázlatai">
+<!-- 1. Főmenü -->
+<text x="10" y="20" font-weight="bold">a) Main menu</text>
+<g transform="translate(10,28)">
+<rect width="360" height="203" fill="#fff" stroke="#000"/>
+<text x="180" y="40" text-anchor="middle" font-size="22" font-weight="bold">STONEHOLD</text>
+<rect x="110" y="62" width="140" height="26" fill="#fff" stroke="#000"/><text x="180" y="80" text-anchor="middle">New Game</text>
+<rect x="110" y="96" width="140" height="26" fill="#ddd" stroke="#000"/><text x="180" y="114" text-anchor="middle">Settings</text>
+<rect x="110" y="130" width="140" height="26" fill="#fff" stroke="#000"/><text x="180" y="148" text-anchor="middle">Help</text>
+<rect x="110" y="164" width="140" height="26" fill="#fff" stroke="#000"/><text x="180" y="182" text-anchor="middle">Exit</text>
+</g>
+<!-- 2. Új játék -->
+<text x="390" y="20" font-weight="bold">b) New game setup</text>
+<g transform="translate(390,28)">
+<rect width="360" height="203" fill="#fff" stroke="#000"/>
+<text x="180" y="34" text-anchor="middle" font-size="17" font-weight="bold">New Game</text>
+<text x="180" y="66" text-anchor="middle">Opponent difficulty:</text>
+<rect x="70" y="78" width="100" height="26" fill="#fff" stroke="#000"/><text x="120" y="96" text-anchor="middle">Easy</text>
+<rect x="190" y="78" width="100" height="26" fill="#fff" stroke="#000" stroke-width="3"/><text x="240" y="96" text-anchor="middle" font-weight="bold">Normal</text>
+<text x="180" y="132" text-anchor="middle" font-size="12" fill="#555">(thick border = selected level, Normal by default)</text>
+<rect x="70" y="160" width="100" height="26" fill="#fff" stroke="#000"/><text x="120" y="178" text-anchor="middle">Back</text>
+<rect x="190" y="160" width="100" height="26" fill="#ddd" stroke="#000"/><text x="240" y="178" text-anchor="middle">Start</text>
+</g>
+<!-- 3. Beállítások -->
+<text x="10" y="260" font-weight="bold">c) Settings</text>
+<g transform="translate(10,268)">
+<rect width="360" height="203" fill="#fff" stroke="#000"/>
+<text x="180" y="30" text-anchor="middle" font-size="17" font-weight="bold">Settings</text>
+<text x="40" y="64">Resolution:</text>
+<rect x="170" y="49" width="150" height="22" fill="#fff" stroke="#000"/><text x="178" y="65">1280 x 720</text><text x="308" y="65" text-anchor="middle">▾</text>
+<text x="40" y="94">Fullscreen:</text>
+<rect x="170" y="81" width="16" height="16" fill="#fff" stroke="#000"/>
+<text x="40" y="122">Music:</text>
+<line x1="170" y1="118" x2="320" y2="118" stroke="#000" stroke-width="2"/><circle cx="270" cy="118" r="6" fill="#fff" stroke="#000"/>
+<text x="40" y="148">Sound effects:</text>
+<line x1="170" y1="144" x2="320" y2="144" stroke="#000" stroke-width="2"/><circle cx="240" cy="144" r="6" fill="#fff" stroke="#000"/>
+<rect x="70" y="166" width="100" height="26" fill="#fff" stroke="#000"/><text x="120" y="184" text-anchor="middle">Back</text>
+<rect x="190" y="166" width="100" height="26" fill="#fff" stroke="#000"/><text x="240" y="184" text-anchor="middle">Apply</text>
+</g>
+<!-- 4. Szünet -->
+<text x="390" y="260" font-weight="bold">d) Pause menu</text>
+<g transform="translate(390,268)">
+<rect width="360" height="203" fill="#777" stroke="#000"/>
+<rect x="0" y="0" width="360" height="10" fill="#555"/>
+<rect x="0" y="175" width="360" height="28" fill="#555"/>
+<rect x="95" y="16" width="170" height="172" fill="#fff" stroke="#000"/>
+<text x="180" y="40" text-anchor="middle" font-size="17" font-weight="bold">Paused</text>
+<rect x="105" y="54" width="150" height="24" fill="#ddd" stroke="#000"/><text x="180" y="71" text-anchor="middle">Resume</text>
+<rect x="105" y="85" width="150" height="24" fill="#fff" stroke="#000"/><text x="180" y="102" text-anchor="middle">Settings</text>
+<rect x="105" y="116" width="150" height="24" fill="#fff" stroke="#000"/><text x="180" y="133" text-anchor="middle">Help</text>
+<rect x="105" y="147" width="150" height="24" fill="#fff" stroke="#000"/><text x="180" y="164" text-anchor="middle" font-size="12">Quit to Main Menu</text>
+</g>
+<!-- 5. Megerősítés -->
+<text x="10" y="500" font-weight="bold">e) Confirm before quitting</text>
+<g transform="translate(10,508)">
+<rect width="360" height="203" fill="#777" stroke="#000"/>
+<rect x="0" y="0" width="360" height="10" fill="#555"/>
+<rect x="0" y="175" width="360" height="28" fill="#555"/>
+<rect x="60" y="55" width="240" height="96" fill="#fff" stroke="#000"/>
+<text x="180" y="82" text-anchor="middle" font-weight="bold">Quit to the main menu?</text>
+<text x="180" y="100" text-anchor="middle" font-size="12">The current match will be lost.</text>
+<rect x="85" y="114" width="85" height="26" fill="#fff" stroke="#000"/><text x="127" y="132" text-anchor="middle">Yes</text>
+<rect x="190" y="114" width="85" height="26" fill="#fff" stroke="#000"/><text x="232" y="132" text-anchor="middle">No</text>
+</g>
+<!-- 6. Játék vége -->
+<text x="390" y="500" font-weight="bold">f) Game over</text>
+<g transform="translate(390,508)">
+<rect width="360" height="203" fill="#fff" stroke="#000"/>
+<text x="180" y="72" text-anchor="middle" font-size="26" font-weight="bold">Victory!</text>
+<text x="180" y="102" text-anchor="middle">The enemy Town Hall was destroyed.</text>
+<rect x="130" y="130" width="100" height="26" fill="#fff" stroke="#000"/><text x="180" y="148" text-anchor="middle">Main Menu</text>
+<text x="180" y="186" text-anchor="middle" font-size="12" fill="#555">on defeat: "Defeat!" and "Your Town Hall was destroyed."</text>
+</g>
+<!-- 7. Súgó -->
+<text x="10" y="740" font-weight="bold">g) Help</text>
+<g transform="translate(10,748)">
+<rect width="360" height="203" fill="#fff" stroke="#000"/>
+<text x="180" y="28" text-anchor="middle" font-size="17" font-weight="bold">Help</text>
+<text x="20" y="54" font-weight="bold" font-size="12">Goal of the game</text>
+<text x="20" y="70" font-size="12">Destroy the enemy Town Hall!</text>
+<text x="20" y="92" font-weight="bold" font-size="12">Controls</text>
+<text x="20" y="108" font-size="12">Left click: select · Right click: command</text>
+<text x="20" y="124" font-size="12">WASD / arrows: camera · ESC: pause</text>
+<text x="20" y="146" font-weight="bold" font-size="12">Resources</text>
+<text x="20" y="162" font-size="12">Wood, gold, stone, steel, food ...</text>
+<rect x="336" y="40" width="10" height="126" fill="#fff" stroke="#000"/><rect x="336" y="40" width="10" height="40" fill="#bbb" stroke="#000"/>
+<rect x="130" y="172" width="100" height="24" fill="#fff" stroke="#000"/><text x="180" y="189" text-anchor="middle">Back</text>
+</g>
+<text x="390" y="790" font-size="12" fill="#555">The help text is read from the help file (SRS 9.2).</text>
+<text x="390" y="808" font-size="12" fill="#555">If it does not fit, it scrolls with the mouse wheel</text>
+<text x="390" y="826" font-size="12" fill="#555">or the up/down arrow keys.</text>
+</svg>
+<figcaption>2.1. ábra: A menük vázlatai</figcaption>
+</figure>
+
+<p>
+A főmenüben az Exit bezárja a programot. Az új játék beállításainál most csak a nehézséget lehet választani (F-UI-02). Ha később több pálya lesz, a pályaválasztó a nehézség alá kerül. A beállításokban az Apply gomb menti a változtatásokat a beállításfájlba (RTERV 3.2), a Back mentés nélkül lép ki. A két hangerőcsúszka csak akkor látszik, ha a hangok elkészülnek (F-UI-06). A Settings és a Help képernyő Back gombja oda visz vissza, ahonnan a játékos jött, tehát a főmenübe vagy a szünet menübe.
+</p>
+
+<h3 id="f2-3">2.3. A játékképernyő</h3>
+
+<p>
+A játék közbeni képernyőt az SRS 11.1 vázlata alapján rajzoltam meg, 1280x720-as felbontásra, a felére kicsinyítve. A számok pixelben vannak.
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="11" role="img" aria-label="A játékképernyő vázlata">
+<!-- képernyő -->
+<rect x="60" y="40" width="640" height="360" fill="#fff" stroke="#000" stroke-width="1.5"/>
+<!-- felső sáv -->
+<rect x="60" y="40" width="640" height="16" fill="#eee" stroke="#000"/>
+<text x="66" y="52" font-size="10">▪ Wood 180   ▪ Gold 250   ▪ Stone 60   ▪ Steel 0   ▪ Food 120   ▪ Population 14/30</text>
+<rect x="652" y="42" width="44" height="12" fill="#fff" stroke="#000"/><text x="674" y="51" text-anchor="middle" font-size="9">Pause</text>
+<text x="694" y="70" text-anchor="end" font-size="9" fill="#555">FPS: 60 (F3)</text>
+<!-- játéktér elemei -->
+<rect x="110" y="90" width="56" height="44" fill="#fff" stroke="#00f" stroke-width="2"/><text x="138" y="116" text-anchor="middle" font-size="9" fill="#00f">Town Hall</text>
+<circle cx="560" cy="100" r="12" fill="none" stroke="#080" stroke-dasharray="2,2"/><circle cx="578" cy="112" r="12" fill="none" stroke="#080" stroke-dasharray="2,2"/><circle cx="556" cy="124" r="12" fill="none" stroke="#080" stroke-dasharray="2,2"/>
+<text x="566" y="146" text-anchor="middle" font-size="9" fill="#080">forest</text>
+<!-- kijelölt egységek -->
+<ellipse cx="230" cy="186" rx="9" ry="4" fill="none" stroke="#000"/><circle cx="230" cy="180" r="6" fill="#00f"/><rect x="221" y="168" width="18" height="3" fill="#0a0"/>
+<ellipse cx="252" cy="196" rx="9" ry="4" fill="none" stroke="#000"/><circle cx="252" cy="190" r="6" fill="#00f"/><rect x="243" y="178" width="18" height="3" fill="#0a0"/>
+<ellipse cx="236" cy="210" rx="9" ry="4" fill="none" stroke="#000"/><circle cx="236" cy="204" r="6" fill="#00f"/><rect x="227" y="192" width="12" height="3" fill="#0a0"/><rect x="239" y="192" width="6" height="3" fill="#c00"/>
+<rect x="208" y="160" width="62" height="58" fill="none" stroke="#000" stroke-dasharray="4,3"/>
+<text x="208" y="232" font-size="9">drag selection rectangle</text>
+<!-- ellenség -->
+<circle cx="440" cy="190" r="6" fill="#c00"/><circle cx="456" cy="200" r="6" fill="#c00"/>
+<text x="448" y="220" text-anchor="middle" font-size="9" fill="#c00">enemy</text>
+<!-- szellemkép -->
+<rect x="320" y="96" width="48" height="40" fill="#cfc" stroke="#080" stroke-dasharray="3,2"/><text x="344" y="120" text-anchor="middle" font-size="9" fill="#080">ghost</text>
+<!-- üzenet -->
+<rect x="300" y="268" width="160" height="20" fill="#fff" stroke="#000"/><text x="380" y="282" text-anchor="middle">Not enough gold!</text>
+<!-- alsó sáv -->
+<rect x="60" y="300" width="640" height="100" fill="#eee" stroke="#000"/>
+<!-- minimap -->
+<rect x="60" y="300" width="100" height="100" fill="#dfe8d8" stroke="#000"/>
+<rect x="74" y="320" width="34" height="19" fill="none" stroke="#fff" stroke-width="2"/><rect x="74" y="320" width="34" height="19" fill="none" stroke="#000" stroke-width="0.6"/>
+<circle cx="80" cy="328" r="2" fill="#00f"/><circle cx="86" cy="332" r="2" fill="#00f"/><circle cx="140" cy="380" r="2" fill="#c00"/><circle cx="146" cy="372" r="2" fill="#c00"/>
+<text x="110" y="396" text-anchor="middle" font-size="9">MINIMAP</text>
+<!-- információs panel -->
+<text x="381" y="314" text-anchor="middle" font-size="9" fill="#555">INFO PANEL</text>
+<rect x="176" y="322" width="48" height="48" fill="#fff" stroke="#000"/><circle cx="200" cy="346" r="12" fill="#00f"/>
+<text x="236" y="336" font-weight="bold">Melee Soldier</text>
+<text x="236" y="354">Health: 90 / 120</text>
+<rect x="236" y="360" width="150" height="8" fill="#fff" stroke="#000"/><rect x="236" y="360" width="112" height="8" fill="#0a0"/>
+<text x="236" y="388" font-size="9" fill="#555">several units selected: small icons side by side</text>
+<!-- parancsmenü -->
+<rect x="602" y="300" width="98" height="100" fill="#eee" stroke="#000"/>
+<g font-size="9" text-anchor="middle">
+<rect x="604" y="302" width="30" height="30" fill="#fff" stroke="#000"/><text x="619" y="321">1</text>
+<rect x="636" y="302" width="30" height="30" fill="#fff" stroke="#000"/><text x="651" y="321">2</text>
+<rect x="668" y="302" width="30" height="30" fill="#fff" stroke="#000" stroke-width="2"/><text x="683" y="321">3</text>
+<rect x="604" y="334" width="30" height="30" fill="#fff" stroke="#000"/><text x="619" y="353">4</text>
+<rect x="636" y="334" width="30" height="30" fill="#ccc" stroke="#888"/><text x="651" y="353" fill="#888">5</text>
+<rect x="668" y="334" width="30" height="30" fill="#ccc" stroke="#888"/><text x="683" y="353" fill="#888">6</text>
+<rect x="604" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="619" y="385" fill="#888">7</text>
+<rect x="636" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="651" y="385" fill="#888">8</text>
+<rect x="668" y="366" width="30" height="30" fill="#ccc" stroke="#888"/><text x="683" y="385" fill="#888">9</text>
+</g>
+<!-- tooltip -->
+<rect x="540" y="222" width="150" height="66" fill="#ffffe0" stroke="#000"/>
+<text x="546" y="240" font-weight="bold">Barracks [3]</text>
+<text x="546" y="254">Wood 150, Gold 50</text>
+<text x="546" y="268">Trains soldiers</text>
+<text x="546" y="280">(melee, archer, heavy).</text>
+<line x1="683" y1="288" x2="683" y2="302" stroke="#000"/>
+<text x="540" y="204" font-size="9" fill="#555">tooltip: above the button, shifted left</text><text x="540" y="215" font-size="9" fill="#555">so it stays on the screen</text>
+<!-- méretek -->
+<g font-size="10" fill="#555" stroke="#555">
+<line x1="60" y1="28" x2="700" y2="28"/><line x1="60" y1="24" x2="60" y2="32"/><line x1="700" y1="24" x2="700" y2="32"/>
+<text x="380" y="24" text-anchor="middle" stroke="none">1280</text>
+<line x1="48" y1="40" x2="48" y2="56"/><line x1="44" y1="40" x2="52" y2="40"/><line x1="44" y1="56" x2="52" y2="56"/>
+<text x="42" y="52" text-anchor="end" stroke="none">32</text>
+<line x1="48" y1="300" x2="48" y2="400"/><line x1="44" y1="300" x2="52" y2="300"/><line x1="44" y1="400" x2="52" y2="400"/>
+<text x="42" y="354" text-anchor="end" stroke="none">200</text>
+<line x1="60" y1="412" x2="160" y2="412"/><line x1="60" y1="408" x2="60" y2="416"/><line x1="160" y1="408" x2="160" y2="416"/>
+<text x="110" y="426" text-anchor="middle" stroke="none">200</text>
+<line x1="602" y1="412" x2="700" y2="412"/><line x1="602" y1="408" x2="602" y2="416"/><line x1="700" y1="408" x2="700" y2="416"/>
+<text x="651" y="426" text-anchor="middle" stroke="none">196</text>
+<text x="381" y="426" text-anchor="middle" stroke="none">remaining width</text>
+<line x1="712" y1="40" x2="712" y2="400"/><line x1="708" y1="40" x2="716" y2="40"/><line x1="708" y1="400" x2="716" y2="400"/>
+<text x="718" y="224" stroke="none">720</text>
+</g>
+<text x="380" y="456" text-anchor="middle" font-size="12">Game screen at 1280x720 (sizes in pixels)</text>
+</svg>
+<figcaption>2.2. ábra: A játékképernyő vázlata</figcaption>
+</figure>
+
+<p>
+A képernyő részei:
+</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>Rész</th><th>Hol van, mekkora</th><th>Mi van benne</th></tr>
+	<tr><td>Felső sáv</td><td>felül, teljes szélességben, 32 px magas</td><td>Bal oldalon a fa, az arany, a kő, az acél és az étel egy kis ikonnal és a mennyiséggel, utána a népesség (jelenlegi/maximum). Jobb oldalon a Pause gomb, ami ugyanazt csinálja, mint az ESC (F-GAZD-07).</td></tr>
+	<tr><td>Játéktér</td><td>a felső és az alsó sáv között</td><td>A pálya, az épületek és az egységek. A kijelölt egységek alatt kör, fölöttük életerőcsík. A sérült épületek fölött is látszik az életerőcsík (F-HARC-17).</td></tr>
+	<tr><td>Minimap</td><td>bal alul, 200x200 px</td><td>A teljes pálya kicsiben. Kék pont a saját, piros az ellenséges egység vagy épület. A fehér keret a kamera helye (F-UI-10).</td></tr>
+	<tr><td>Információs panel</td><td>alul középen, a minimap és a parancsmenü között, 200 px magas</td><td>Egy kijelölt dolognál a neve, a képe és az életereje számmal és csíkkal. Épületnél a képzési sor is, a sor elején álló egységnél töltődő csíkkal (UC-02). Több kijelölt egységnél kis ikonok, rájuk kattintva csak az az egy marad kijelölve.</td></tr>
+	<tr><td>Parancsmenü</td><td>jobb alul, 3 x 3 gomb, egyenként 60x60 px, 4 px réssel (196x196 px)</td><td>A kijelöléstől függő gombok (2.4 pont). Ha semmi sincs kijelölve, üres.</td></tr>
+	<tr><td>Üzenetek</td><td>a játéktér alján, középen</td><td>A játék közbeni üzenetek (2.6 pont). Kb. 3 másodperc után eltűnnek.</td></tr>
+	<tr><td>FPS</td><td>jobb felül, a felső sáv alatt</td><td>Csak akkor látszik, ha a játékos megnyomja az F3-at (F-MOT-08).</td></tr>
+</table>
+
+<p>
+A képzési sornál eltértünk az SRS 11.1-től: ott a parancsmenübe van írva, de a 3 x 3 gomb mellett nem fér el, ezért az információs panelen jelenik meg, a kijelölt épület adatai alatt.
+</p>
+
+<h3 id="f2-4">2.4. A parancsmenü tartalma</h3>
+
+<p>
+A gombok balról jobbra, fentről lefelé vannak számozva, a gyorsbillentyűjük az 1-9 számbillentyű. A WASD betűket nem használhattuk gyorsbillentyűnek, mert azok a kamerát mozgatják. A gyorsbillentyűt a gomb tooltipje is kiírja (SRS 4.5).
+</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>Mi van kijelölve</th><th>Gombok (gyorsbillentyű)</th></tr>
+	<tr><td>Munkás (egy vagy több)</td><td>1 House, 2 Storehouse, 3 Barracks, 4 Farm, 5 Quarry, 6 Foundry, 7 Blacksmith, 8 Watchtower, 9 Wall. A 2. szintű épületek gombja szürke, amíg nincs meg a szint (F-TECH-03).</td></tr>
+	<tr><td>Főépület</td><td>1 Worker, 2 Upgrade (a 2. vagy a 3. szintre).</td></tr>
+	<tr><td>Kaszárnya</td><td>1 Melee Soldier, 2 Archer, 3 Heavy Unit. Az íjász a 2., a nehézegység a 3. szinttől választható.</td></tr>
+	<tr><td>Kovácsműhely</td><td>A megvehető fejlesztések, egy gomb egy fejlesztés. A már megvett fejlesztés gombja eltűnik (F-TECH-04).</td></tr>
+	<tr><td>Katona (egy vagy több)</td><td>1 Stop: az egységek elfelejtik a parancsukat, és megállnak.</td></tr>
+	<tr><td>Munkás és katona vegyesen</td><td>1 Stop.</td></tr>
+	<tr><td>Más saját épület (lakóház, raktár, farm stb.)</td><td>Nincs gomb.</td></tr>
+	<tr><td>Ellenséges egység vagy épület, vagy semmi</td><td>Nincs gomb.</td></tr>
+</table>
+
+<h3 id="f2-5">2.5. Egér és billentyűzet</h3>
+
+<table border="1" cellpadding="6">
+	<tr><th>Bemenet</th><th>Mit csinál</th></tr>
+	<tr><td>Bal klikk egy egységre vagy épületre</td><td>Kijelöli, az előző kijelölés megszűnik.</td></tr>
+	<tr><td>Bal gomb lenyomva + húzás</td><td>A téglalapban lévő összes saját egységet kijelöli.</td></tr>
+	<tr><td>Shift + bal klikk</td><td>Hozzáadja az egységet a kijelöléshez, vagy kiveszi, ha már benne volt.</td></tr>
+	<tr><td>Bal klikk üres helyre</td><td>Megszünteti a kijelölést.</td></tr>
+	<tr><td>Jobb klikk</td><td>Parancs a kijelölt egységeknek: mozgás, támadás, gyűjtés vagy építés, attól függően, hova kattintott (2.7 pont).</td></tr>
+	<tr><td>Bal klikk / húzás a minimapen</td><td>A kamera odaugrik, húzásnál követi az egeret.</td></tr>
+	<tr><td>W, A, S, D vagy a nyilak</td><td>A kamera mozgatása, két billentyűvel átlósan is.</td></tr>
+	<tr><td>Egér a képernyő szélén (10 px-en belül)</td><td>A kamera abba az irányba mozog, ha a játék ablaka aktív.</td></tr>
+	<tr><td>1-9</td><td>A parancsmenü gombjai.</td></tr>
+	<tr><td>ESC</td><td>Épület lerakása közben megszakítja a lerakást. Különben megnyitja vagy bezárja a szünet menüt.</td></tr>
+	<tr><td>F3</td><td>Az FPS kiírása be és ki.</td></tr>
+</table>
+
+<h3 id="f2-6">2.6. Üzenetek a játékosnak</h3>
+
+<p>
+Ha valami nem sikerül, a játék mindig kiírja, miért (SRS 4.4 és 9.3). Az üzenetek a játéktér alján, középen jelennek meg. Ha ugyanaz az üzenet újra jön, nem kerül ki még egyszer, csak tovább marad kint.
+</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>Üzenet</th><th>Mikor jelenik meg</th><th>Kapcsolódó</th></tr>
+	<tr><td>"Not enough wood!" (gold, stone, steel, food)</td><td>Szürke gombra kattint, vagy elfogyott a nyersanyag. Az első hiányzó nyersanyagot írja ki.</td><td>F-EPIT-02, F-HARC-06</td></tr>
+	<tr><td>"Population limit reached"</td><td>Képezni akar, de betelt a népesség vagy az egységlimit.</td><td>UC-02, F-GAZD-06, F-HARC-07</td></tr>
+	<tr><td>"Can't build here!"</td><td>Piros szellemképpel kattint a pályára.</td><td>UC-01, F-EPIT-03</td></tr>
+	<tr><td>"Training cancelled, resources refunded"</td><td>Képzés közben lerombolták az épületet.</td><td>UC-02</td></tr>
+	<tr><td>"You are under attack!"</td><td>Megtámadták egy saját egységét vagy épületét. Legfeljebb 10 másodpercenként egyszer, hogy ne legyen tele vele a képernyő.</td><td>SRS 9.3</td></tr>
+	<tr><td>"Requires: Level 2" (vagy Barracks, Blacksmith)</td><td>Ezt nem üzenetként, hanem a szürke gomb tooltipjében írja ki.</td><td>F-TECH-03</td></tr>
+</table>
+
+<h3 id="f2-7">2.7. A vezérlők és a játéklogika közti parancsok</h3>
+
+<p>
+A felület nem változtat semmin a játékban, csak továbbadja, mit akar a játékos (SRS 8.1). Az alábbi táblázat azt mutatja, melyik bemenetből milyen hívás lesz, és melyik fejezetben van leírva a hívott rész. Az osztály- és műveletnevek az analízis modellből vannak.
+</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>A játékos ezt csinálja</th><th>A felületen ki kezeli</th><th>Mit hív a játéklogikában</th><th>Hol van leírva</th></tr>
+	<tr><td>Start gomb az új játék beállításainál</td><td>NewGameMenu.start()</td><td>létrehozza a Game-et, majd Game.newGame(difficulty)</td><td>ANAL 3., 7. fejezet</td></tr>
+	<tr><td>Bal klikk vagy húzás a játéktéren</td><td>Selection.click(), endDrag()</td><td>Game.entityAt(), Game.unitsInRect()</td><td>ANAL 3. fejezet, 4.2. ábra</td></tr>
+	<tr><td>Jobb klikk a talajra</td><td>Selection.issueCommand()</td><td>Unit.receiveCommand(MoveCommand) minden kijelölt egységre</td><td>ANAL 6. fejezet</td></tr>
+	<tr><td>Jobb klikk ellenséges egységre vagy épületre</td><td>Selection.issueCommand()</td><td>Unit.receiveCommand(AttackCommand)</td><td>ANAL 6. fejezet, UC-03</td></tr>
+	<tr><td>Jobb klikk lelőhelyre vagy kitermelő épületre (munkással)</td><td>Selection.issueCommand()</td><td>Worker.startGathering(node)</td><td>ANAL 5., 6. fejezet</td></tr>
+	<tr><td>Jobb klikk félkész saját épületre (munkással)</td><td>Selection.issueCommand()</td><td>Worker.startBuilding(b)</td><td>ANAL 5., 6. fejezet</td></tr>
+	<tr><td>Épület gombja, majd bal klikk a pályán</td><td>CommandMenu.pressButton(), BuildPlacement.place()</td><td>az épület lerakása, a költség levonása</td><td>ANAL 5. fejezet, UC-01</td></tr>
+	<tr><td>Egység gombja egy épületnél</td><td>CommandMenu.pressButton()</td><td>Building.requestTraining(type), ebből TrainingQueue.enqueue(type)</td><td>ANAL 6. fejezet, UC-02</td></tr>
+	<tr><td>Upgrade vagy fejlesztés gombja</td><td>CommandMenu.pressButton()</td><td>a szintlépés vagy a fejlesztés indítása</td><td>ANAL 5. fejezet</td></tr>
+	<tr><td>Stop gomb</td><td>CommandMenu.pressButton()</td><td>a kijelölt egységek parancsának törlése</td><td>ANAL 6. fejezet</td></tr>
+	<tr><td>ESC vagy Pause gomb</td><td>ScreenManager.handleEvent()</td><td>semmi: a ScreenManager nem hívja tovább a Game.update() részt, így minden megáll</td><td>ANAL 4.3. ábra</td></tr>
+	<tr><td>Apply gomb a beállításokban</td><td>SettingsMenu.apply()</td><td>Settings.save(), és az ablak átállítása</td><td>RTERV 3.4, ANAL 3. fejezet</td></tr>
+</table>
+
+<p>
+Visszafelé is van néhány hívás, ezekkel a játéklogika szól a felületnek:
+</p>
+
+<ul>
+	<li>HUD.showMessage(text): ha valami nem sikerült, pl. nincs elég nyersanyag (a TrainingQueue is ezt hívja, ANAL 6.1. ábra).</li>
+	<li>ScreenManager.gameOver(won): ha egy főépület megsemmisült (F-HARC-18).</li>
+	<li>Selection.remove(e): ha egy kijelölt egység vagy épület megsemmisült, hogy ne maradjon a kijelölésben.</li>
+</ul>
+
+
+<h2 id="f3">3. Adatmodellek</h2>
+
+<p>
+A játékhoz nem kell adatbázis. Kétféle adatot kell megőrizni. Az egyik a játék számértékei (egységek, épületek, fejlesztések, MI), ezeket mi állítjuk be. A másik a játékos beállításai, ezeket a játék menti el.
+</p>
+
+<h3 id="f3-1">3.1. Adatbázis-kezelő kiválasztása</h3>
+
+<p>
+Nem használunk adatbázis-kezelőt, az adatok egyszerű szövegfájlokban vannak.
+</p>
+
+<ul>
+	<li>A játék offline és egyjátékos. Nincs szerver és nincsenek fiókok, a fájlokat csak a játék használja.</li>
+	<li>A számértékeket induláskor egyszer olvassuk be, utána a memóriából szedjük elő. Bonyolult lekérdezésre nincs szükség, ezért nem kell adatbázis.</li>
+	<li>Az SRS szerint a konfigurációs fájlokhoz nem használunk külső könyvtárat. Így egyszerűbb a fordítás.</li>
+	<li>A szövegfájlt bármilyen szövegszerkesztővel át lehet írni, tehát fordítás nélkül tudjuk hangolni a játékegyensúlyt.</li>
+</ul>
+
+<p>
+A fájlokat saját beolvasó osztály kezeli (ConfigLoader), a C++17 szabványos fájlkezelésével (std::ifstream, std::filesystem). A játék csak a saját mappájában lévő fájlokat olvassa, írni pedig csak a beállításfájlt és a naplót írja.
+</p>
+
+<h3 id="f3-2">3.2. Az adatok szerkezete</h3>
+
+<p>
+Az adatokat témánként külön fájlba tesszük, hogy mindenki a saját területének fájlját szerkeszthesse:
+</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>Fájl</th><th>Tartalom</th><th>Mikor olvassuk</th><th>Írja-e a játék</th></tr>
+	<tr><td>config/egysegek.ini</td><td>Egységtípusonként (munkás, közelharci katona, íjász, nehézegység): költség, népességigény, képzési idő, életerő, sebzés, védelem, hatótáv, látótáv, sebesség, támadási időköz. Külön szakaszban a sebzésszámítás típusszorzói (F-HARC-14).</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/epuletek.ini</td><td>Épülettípusonként (főépület, lakóház, raktár, kaszárnya, farm, kőfejtő, kohó, kovácsműhely, őrtorony, fal): költség, építési idő, életerő, szint. Kitermelő épületnél a munkások maximális száma, lakóháznál a népességnövelés, őrtoronynál a sebzés és a hatótáv.</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/fejlesztesek.ini</td><td>A 2. és 3. szintre lépés ára, ideje és feltétele, valamint a kovácsműhely fejlesztései: ár, idő, hatás (F-TECH-05).</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/mi.ini</td><td>Nehézségi szintenként (könnyű, normál) az MI paraméterei: reakcióidő, döntési időköz, munkás-célszám, a támadási hullám mérete és gyakorisága, a visszavonulási küszöb (F-MI-16, F-MI-18).</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/jatek.ini</td><td>Általános értékek: egységlimit (alapból 200, F-HARC-07), a pálya legnagyobb mérete.</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>beallitasok.ini</td><td>A játékos beállításai: zene és hangeffektek hangereje, felbontás, ablakos vagy teljes képernyős mód.</td><td>induláskor</td><td>igen, ha a játékos módosítja</td></tr>
+	<tr><td>naplo.txt</td><td>Hibaüzenetek: hiányzó fájl, hibás érték, hiányzó kép.</td><td>soha</td><td>igen, folyamatosan</td></tr>
+</table>
+
+<p>
+A pályafájl (F-MOT-03) egy csemperács, ezért saját formátumot kap. Mivel a térképhez tartozik, a motor fejezetében írjuk le.</p>
+
+<h3 id="f3-3">3.3. A fájlok formátuma</h3>
+
+<p>
+Mindegyik fájl ugyanazt az egyszerű, INI-szerű formátumot használja:
+</p>
+
+<ul>
+	<li><code>[szakasz]</code> kezd egy új szakaszt. Egy szakasz egy egységtípus, épülettípus, fejlesztés vagy nehézségi szint.</li>
+	<li>Egy sorban egy <code>kulcs = érték</code> pár van. A kulcsok kisbetűsek, ékezet nélküliek.</li>
+	<li>A <code>#</code>-tel kezdődő sor megjegyzés, az üres sorokat a beolvasó átugorja.</li>
+	<li>Az értékek egész számok, tizedes számok vagy rövid szövegek. A nyersanyag-mennyiségek mindig nemnegatív egészek (F-GAZD-05).</li>
+</ul>
+
+<p>
+Egy részlet az egységek fájljából. A számok csak példák, a valódi értékeket a játékegyensúly hangolásakor állítjuk be:
+</p>
+
+<pre>
+# Stonehold - egységek
+[kozelharci_katona]
+koltseg_fa = 20
+koltseg_arany = 10
+koltseg_etel = 30
+nepesseg_igeny = 1
+kepzesi_ido = 12
+eletero = 120
+sebzes = 10
+vedelem = 2
+hatotav = 1
+latotav = 6
+sebesseg = 2.5
+tamadasi_idokoz = 1.2
+
+[tipusszorzok]
+nehezegyseg_epulet = 3.0
+ijasz_kozelharci = 1.5
+</pre>
+
+<p>
+Ha egy fájl hiányzik, a játék a beépített alapértékekkel megy tovább (F-MOT-07). Ugyanez történik egy hiányzó vagy rossz kulccsal (pl. szám helyett szöveg vagy negatív költség). A naplóba ilyenkor bekerül a fájl és a kulcs neve, de a játék nem áll le.
+</p>
+
+<h3 id="f3-4">3.4. Az adatkezelő osztályok</h3>
+
+<p>
+Az adatkezelő osztályok a Motor alrendszerbe tartoznak. A csomagdiagram szerint minden alrendszer a Motorra épül, így a betöltött adatokat mindegyik eléri. Az osztálynevek angolul vannak. A Logger szintén a motoré, a diagramon azért szerepel, mert a ConfigLoader ír bele. A Resources a Gazdaság és építkezés alrendszer osztálya.
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 926" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="Az adatkezelő osztályok osztálydiagramja">
+<defs><marker id="open3" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#000"/></marker></defs>
+<rect x="15" y="20" width="275" height="132" fill="#fff" stroke="#000"/>
+<text x="152.5" y="37" text-anchor="middle" font-weight="bold">ConfigLoader</text>
+<line x1="15" y1="44" x2="290" y2="44" stroke="#000"/>
+<text x="21" y="62" font-size="12">- fileName: string</text>
+<text x="21" y="77" font-size="12">- values: section → key → value</text>
+<line x1="15" y1="86" x2="290" y2="86" stroke="#000"/>
+<text x="21" y="100" font-size="12">+ load(fileName): bool</text>
+<text x="21" y="115" font-size="12">+ getNumber(section, key, default): double</text>
+<text x="21" y="130" font-size="12">+ getString(section, key, default): string</text>
+<text x="21" y="145" font-size="12">+ sections(): list</text>
+<rect x="500" y="20" width="240" height="162" fill="#fff" stroke="#000"/>
+<text x="620.0" y="37" text-anchor="middle" font-weight="bold">Settings</text>
+<line x1="500" y1="44" x2="740" y2="44" stroke="#000"/>
+<text x="506" y="62" font-size="12">- musicVolume: int (0-100)</text>
+<text x="506" y="77" font-size="12">- effectsVolume: int (0-100)</text>
+<text x="506" y="92" font-size="12">- resolutionWidth: int</text>
+<text x="506" y="107" font-size="12">- resolutionHeight: int</text>
+<text x="506" y="122" font-size="12">- fullscreen: bool</text>
+<line x1="500" y1="131" x2="740" y2="131" stroke="#000"/>
+<text x="506" y="145" font-size="12">+ load(): bool</text>
+<text x="506" y="160" font-size="12">+ save(): bool</text>
+<text x="506" y="175" font-size="12">+ resetToDefaults()</text>
+<rect x="20" y="235" width="180" height="57" fill="#fff" stroke="#000"/>
+<text x="110.0" y="252" text-anchor="middle" font-weight="bold">Logger</text>
+<line x1="20" y1="259" x2="200" y2="259" stroke="#000"/>
+<line x1="20" y1="271" x2="200" y2="271" stroke="#000"/>
+<text x="26" y="285" font-size="12">+ log(message: string)</text>
+<rect x="262" y="200" width="250" height="192" fill="#fff" stroke="#000"/>
+<text x="387.0" y="217" text-anchor="middle" font-weight="bold">GameData</text>
+<line x1="262" y1="224" x2="512" y2="224" stroke="#000"/>
+<text x="268" y="242" font-size="12">- units: UnitStats[*]</text>
+<text x="268" y="257" font-size="12">- buildings: BuildingStats[*]</text>
+<text x="268" y="272" font-size="12">- upgrades: UpgradeStats[*]</text>
+<text x="268" y="287" font-size="12">- aiParams: AIParams[2..*]</text>
+<text x="268" y="302" font-size="12">- unitLimit: int</text>
+<line x1="262" y1="311" x2="512" y2="311" stroke="#000"/>
+<text x="268" y="325" font-size="12">+ load(): bool</text>
+<text x="268" y="340" font-size="12">+ getUnit(type): UnitStats</text>
+<text x="268" y="355" font-size="12">+ getBuilding(type): BuildingStats</text>
+<text x="268" y="370" font-size="12">+ getUpgrade(name): UpgradeStats</text>
+<text x="268" y="385" font-size="12">+ getAIParams(difficulty): AIParams</text>
+<rect x="10" y="470" width="180" height="205" fill="#fff" stroke="#000"/>
+<text x="100.0" y="487" text-anchor="middle" font-weight="bold">UnitStats</text>
+<line x1="10" y1="494" x2="190" y2="494" stroke="#000"/>
+<text x="16" y="512" font-size="12">- type: string</text>
+<text x="16" y="527" font-size="12">- cost: Resources</text>
+<text x="16" y="542" font-size="12">- populationCost: int</text>
+<text x="16" y="557" font-size="12">- trainingTime: float</text>
+<text x="16" y="572" font-size="12">- hp: int</text>
+<text x="16" y="587" font-size="12">- damage: int</text>
+<text x="16" y="602" font-size="12">- armor: int</text>
+<text x="16" y="617" font-size="12">- range: int</text>
+<text x="16" y="632" font-size="12">- sightRange: int</text>
+<text x="16" y="647" font-size="12">- speed: float</text>
+<text x="16" y="662" font-size="12">- attackInterval: float</text>
+<line x1="10" y1="671" x2="190" y2="671" stroke="#000"/>
+<rect x="200" y="470" width="180" height="145" fill="#fff" stroke="#000"/>
+<text x="290.0" y="487" text-anchor="middle" font-weight="bold">BuildingStats</text>
+<line x1="200" y1="494" x2="380" y2="494" stroke="#000"/>
+<text x="206" y="512" font-size="12">- type: string</text>
+<text x="206" y="527" font-size="12">- cost: Resources</text>
+<text x="206" y="542" font-size="12">- buildTime: float</text>
+<text x="206" y="557" font-size="12">- hp: int</text>
+<text x="206" y="572" font-size="12">- level: int (1-3)</text>
+<text x="206" y="587" font-size="12">- maxWorkers: int</text>
+<text x="206" y="602" font-size="12">- populationBonus: int</text>
+<line x1="200" y1="611" x2="380" y2="611" stroke="#000"/>
+<rect x="390" y="470" width="168" height="115" fill="#fff" stroke="#000"/>
+<text x="474.0" y="487" text-anchor="middle" font-weight="bold">UpgradeStats</text>
+<line x1="390" y1="494" x2="558" y2="494" stroke="#000"/>
+<text x="396" y="512" font-size="12">- name: string</text>
+<text x="396" y="527" font-size="12">- cost: Resources</text>
+<text x="396" y="542" font-size="12">- time: float</text>
+<text x="396" y="557" font-size="12">- requiredBuilding: string</text>
+<text x="396" y="572" font-size="12">- effect: string</text>
+<line x1="390" y1="581" x2="558" y2="581" stroke="#000"/>
+<rect x="565" y="470" width="192" height="145" fill="#fff" stroke="#000"/>
+<text x="661.0" y="487" text-anchor="middle" font-weight="bold">AIParams</text>
+<line x1="565" y1="494" x2="757" y2="494" stroke="#000"/>
+<text x="571" y="512" font-size="12">- difficulty: string</text>
+<text x="571" y="527" font-size="12">- reactionTime: float</text>
+<text x="571" y="542" font-size="12">- decisionInterval: float</text>
+<text x="571" y="557" font-size="12">- workerTarget: int</text>
+<text x="571" y="572" font-size="12">- waveSize: int</text>
+<text x="571" y="587" font-size="12">- waveInterval: float</text>
+<text x="571" y="602" font-size="12">- retreatThreshold: int</text>
+<line x1="565" y1="611" x2="757" y2="611" stroke="#000"/>
+<rect x="265" y="730" width="240" height="176" fill="#fff" stroke="#000"/>
+<text x="385.0" y="747" text-anchor="middle" font-size="11">«Gazdaság és építkezés alrendszer»</text>
+<text x="385.0" y="761" text-anchor="middle" font-weight="bold">Resources</text>
+<line x1="265" y1="768" x2="505" y2="768" stroke="#000"/>
+<text x="271" y="786" font-size="12">- wood: int</text>
+<text x="271" y="801" font-size="12">- gold: int</text>
+<text x="271" y="816" font-size="12">- stone: int</text>
+<text x="271" y="831" font-size="12">- steel: int</text>
+<text x="271" y="846" font-size="12">- food: int</text>
+<line x1="265" y1="855" x2="505" y2="855" stroke="#000"/>
+<text x="271" y="869" font-size="12">+ add(r: Resources)</text>
+<text x="271" y="884" font-size="12">+ subtract(r: Resources)</text>
+<text x="271" y="899" font-size="12">+ canAfford(r: Resources): bool</text>
+<line x1="212.5" y1="152" x2="327.0" y2="200" stroke="#000"/>
+<text x="218" y="185" font-size="11" text-anchor="start">feltölti</text>
+<text x="158" y="168" font-size="11" text-anchor="middle">1</text>
+<text x="212" y="196" font-size="11" text-anchor="middle">1</text>
+<line x1="102.5" y1="152" x2="100.0" y2="235" stroke="#000" stroke-dasharray="6,4" marker-end="url(#open3)"/>
+<text x="70" y="195" font-size="11" text-anchor="end">«használ»</text>
+<line x1="500" y1="85" x2="290" y2="85" stroke="#000" stroke-dasharray="6,4" marker-end="url(#open3)"/>
+<text x="395" y="79" font-size="11" text-anchor="middle">«használ»</text>
+<path d="M387.0,392 L394.0,402 L387.0,412 L380.0,402 Z" fill="#000"/>
+<line x1="387.0" y1="412" x2="100.0" y2="470" stroke="#000"/>
+<text x="86.0" y="464" font-size="11" text-anchor="middle">*</text>
+<line x1="387.0" y1="412" x2="290.0" y2="470" stroke="#000"/>
+<text x="276.0" y="464" font-size="11" text-anchor="middle">*</text>
+<line x1="387.0" y1="412" x2="474.0" y2="470" stroke="#000"/>
+<text x="488.0" y="464" font-size="11" text-anchor="middle">*</text>
+<line x1="387.0" y1="412" x2="661.0" y2="470" stroke="#000"/>
+<text x="675.0" y="464" font-size="11" text-anchor="middle">2..*</text>
+<line x1="100.0" y1="675" x2="325.0" y2="730" stroke="#000"/>
+<text x="315.0" y="724" font-size="11" text-anchor="middle">1</text>
+<line x1="290.0" y1="615" x2="385.0" y2="730" stroke="#000"/>
+<text x="395.0" y="724" font-size="11" text-anchor="middle">1</text>
+<line x1="474.0" y1="585" x2="445.0" y2="730" stroke="#000"/>
+<text x="455.0" y="724" font-size="11" text-anchor="middle">1</text>
+</svg>
+<figcaption>3.1. ábra: Az adatkezelő osztályok osztálydiagramja</figcaption>
+</figure>
+
+<p><b>ConfigLoader</b><br>
+Beolvas egy fájlt, és szakaszonként eltárolja a kulcs-érték párokat. A getNumber() és a getString() hívásnak mindig meg kell adni egy alapértéket is, ezt kapjuk vissza, ha a kulcs hiányzik vagy hibás. Írni nem tud.</p>
+
+<p><b>GameData</b><br>
+Induláskor a ConfigLoader segítségével beolvassa az összes config fájlt, és feltölti belőlük az adatobjektumokat. Ha a játékban valakinek kell egy egység életereje vagy egy épület ára, innen kérdezi le. Futás közben nem változik.</p>
+
+<p><b>UnitStats, BuildingStats, UpgradeStats, AIParams</b><br>
+Egyszerű adatosztályok, műveletük nincs. Egy példány a fájl egy szakaszának felel meg. Az ár az első háromnál Resources típusú. A UnitStats-ban ezen kívül egy népességigény (populationCost) is van, ami megmondja, hány helyet foglal az egység a népességből (alapból 1).</p>
+
+<p><b>Resources</b><br>
+Ez a Gazdaság és építkezés alrendszer osztálya, itt csak azért szerepel, mert az árak is ezt használják. Öt nemnegatív egész szám: fa, arany, kő, acél és étel. Ugyanez az osztály tárolja a frakció készletét és egy egység, épület vagy fejlesztés árát is, így a subtract() és az add() egyszerűen az árat vonja le vagy adja vissza, a canAfford() pedig megmondja, elég-e a készlet. A népesség nincs benne, mert az nem nyersanyag, hanem korlát: a jelenlegi és a maximális népességet a Faction tárolja.</p>
+
+<p><b>Settings</b><br>
+Induláskor a ConfigLoader segítségével olvassa be a beallitasok.ini fájlt. Ha nincs ilyen fájl, 1280x720-as ablakban indul a játék (F-MOT-01). Amikor a játékos a beállítások menüben átállít valamit, a save() ugyanabban a formában írja vissza a fájlt.</p>
+
+
+<h2 id="f4">4. A funkcionális modell kiegészítése</h2>
+
+<p>
+Az analízis modell a use case-ek szokásos menetét mutatja. Itt azt rajzoltam le, mi történik, ha valami közbejön, vagyis az alternatív és kivételes eseteket. Use case-enként egy aktivitásdiagram készült. A szokásos ágat is rajta hagytam, hogy látszódjon, melyik lépésnél ágazik el a folyamat.
+</p>
+
+<h3 id="f4-1">4.1. UC-01: Épület lerakása</h3>
+
+<p>
+Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja, hogy "Nincs elég nyersanyag" (F-EPIT-02). Foglalt helyen a szellemkép piros lesz, a kattintás nem csinál semmit, és a játékos kereshet másik helyet (F-EPIT-03). Jobb klikkel vagy ESC-vel bármikor ki lehet lépni a lehelyezésből, ilyenkor semmi nem vonódik le (F-EPIT-04). A költséget a rendszer csak akkor vonja le, amikor az épület tényleg lekerül a pályára (F-EPIT-05).
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 700" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="UC-01 aktivitásdiagram">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#000"/></marker></defs>
+<circle cx="300" cy="30" r="10" fill="#000"/>
+<rect x="190.0" y="60.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="300" y="90" text-anchor="middle">Munkás kijelölése</text>
+<rect x="190.0" y="130.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="300" y="152" text-anchor="middle">Épület kiválasztása</text>
+<text x="300" y="168" text-anchor="middle">az építési menüben</text>
+<path d="M300,208 L330,230 L300,252 L270,230 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="205.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="227" text-anchor="middle">A gomb szürke, üzenet:</text>
+<text x="580" y="243" text-anchor="middle">"Nincs elég nyersanyag"</text>
+<circle cx="580" cy="300" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="580" cy="300" r="7" fill="#000"/>
+<rect x="190.0" y="280.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="300" y="302" text-anchor="middle">Az épület szellemképe</text>
+<text x="300" y="318" text-anchor="middle">követi az egeret</text>
+<path d="M300,358 L330,380 L300,402 L270,380 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="355.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="377" text-anchor="middle">Lehelyezés megszakítva,</text>
+<text x="580" y="393" text-anchor="middle">nincs levonás</text>
+<circle cx="580" cy="450" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="580" cy="450" r="7" fill="#000"/>
+<path d="M300,433 L330,455 L300,477 L270,455 Z" fill="#fff" stroke="#000"/>
+<rect x="10.0" y="430.0" width="170" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="95" y="452" text-anchor="middle">Szellemkép piros,</text>
+<text x="95" y="468" text-anchor="middle">nem történik semmi</text>
+<rect x="190.0" y="510.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="300" y="532" text-anchor="middle">Költség levonása, félkész</text>
+<text x="300" y="548" text-anchor="middle">épület lerakása</text>
+<rect x="190.0" y="580.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="300" y="602" text-anchor="middle">A munkás odamegy</text>
+<text x="300" y="618" text-anchor="middle">és felépíti</text>
+<circle cx="300" cy="670" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="300" cy="670" r="7" fill="#000"/>
+<path d="M300,40 L300,60.0" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,110.0 L300,130.0" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,180.0 L300,208" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M330,230 L470.0,230" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="400.0" y="223" font-size="12" text-anchor="middle">[nincs elég nyersanyag]</text>
+<path d="M580,255.0 L580,288" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,252 L300,280.0" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="308" y="270.0" font-size="12" text-anchor="start">[van elég]</text>
+<path d="M300,330.0 L300,358" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M330,380 L470.0,380" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="400.0" y="373" font-size="12" text-anchor="middle">[jobb klikk / ESC]</text>
+<path d="M580,405.0 L580,438" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,402 L300,433" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="308" y="421.5" font-size="12" text-anchor="start">[bal klikk]</text>
+<path d="M270,455 L180.0,455" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="225.0" y="448" font-size="12" text-anchor="middle">[foglalt hely]</text>
+<path d="M95,430.0 L95,305 L190.0,305" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,477 L300,510.0" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<text x="308" y="497.5" font-size="12" text-anchor="start">[szabad hely]</text>
+<path d="M300,560.0 L300,580.0" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+<path d="M300,630.0 L300,658" fill="none" stroke="#000" marker-end="url(#ah1)"/>
+</svg>
+<figcaption>4.1. ábra: UC-01 aktivitásdiagram</figcaption>
+</figure>
+
+<h3 id="f4-2">4.2. UC-02: Egység kiképzése</h3>
+
+<p>
+Mielőtt a képzés elindul, a rendszer megnézi, van-e elég nyersanyag (F-HARC-06), és belefér-e még egy egység a népességbe és az egységlimitbe (F-GAZD-06, F-HARC-07). Ha valamelyik nem stimmel, kiír egy üzenetet, és a képzés el sem indul. Ha képzés közben lerombolják a kaszárnyát, a katona nem jön létre, a nyersanyag pedig visszakerül a játékoshoz.
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 700" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="UC-02 aktivitásdiagram">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#000"/></marker></defs>
+<circle cx="260" cy="30" r="10" fill="#000"/>
+<rect x="150.0" y="60.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="90" text-anchor="middle">Kaszárnya kiválasztása</text>
+<rect x="150.0" y="130.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="160" text-anchor="middle">Egységtípus kiválasztása</text>
+<path d="M260,208 L290,230 L260,252 L230,230 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="205.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="227" text-anchor="middle">Üzenet: nincs elég</text>
+<text x="580" y="243" text-anchor="middle">nyersanyag</text>
+<circle cx="728" cy="230" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="230" r="7" fill="#000"/>
+<path d="M260,293 L290,315 L260,337 L230,315 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="290.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="312" text-anchor="middle">Üzenet: "Elérted a</text>
+<text x="580" y="328" text-anchor="middle">maximális populációt"</text>
+<circle cx="728" cy="315" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="315" r="7" fill="#000"/>
+<rect x="150.0" y="370.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="392" text-anchor="middle">Költség levonása,</text>
+<text x="260" y="408" text-anchor="middle">a képzés elindul</text>
+<rect x="150.0" y="440.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="462" text-anchor="middle">Telik a képzési idő</text>
+<text x="260" y="478" text-anchor="middle">(töltődő csík)</text>
+<path d="M260,518 L290,540 L260,562 L230,540 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="515.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="537" text-anchor="middle">A képzés megszakad,</text>
+<text x="580" y="553" text-anchor="middle">a nyersanyag visszajár</text>
+<circle cx="728" cy="540" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="540" r="7" fill="#000"/>
+<rect x="150.0" y="590.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="612" text-anchor="middle">Az egység megjelenik</text>
+<text x="260" y="628" text-anchor="middle">az épület mellett</text>
+<circle cx="260" cy="675" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="260" cy="675" r="7" fill="#000"/>
+<path d="M260,40 L260,60.0" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M260,110.0 L260,130.0" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M260,180.0 L260,208" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M290,230 L470.0,230" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="380.0" y="223" font-size="12" text-anchor="middle">[nincs elég nyersanyag]</text>
+<path d="M690.0,230 L716,230" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M260,252 L260,293" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="268" y="276.5" font-size="12" text-anchor="start">[van elég]</text>
+<path d="M290,315 L470.0,315" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="380.0" y="308" font-size="12" text-anchor="middle">[nincs hely a népességben</text>
+<path d="M690.0,315 L716,315" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="380.0" y="330" font-size="12" text-anchor="middle">vagy elérte a limitet]</text>
+<path d="M260,337 L260,370.0" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="268" y="357.5" font-size="12" text-anchor="start">[van szabad hely]</text>
+<path d="M260,420.0 L260,440.0" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M260,490.0 L260,518" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M290,540 L470.0,540" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="380.0" y="533" font-size="12" text-anchor="middle">[kaszárnya lerombolva]</text>
+<path d="M690.0,540 L716,540" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<path d="M260,562 L260,590.0" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+<text x="268" y="580.0" font-size="12" text-anchor="start">[letelt az idő]</text>
+<path d="M260,640.0 L260,663" fill="none" stroke="#000" marker-end="url(#ah2)"/>
+</svg>
+<figcaption>4.2. ábra: UC-02 aktivitásdiagram</figcaption>
+</figure>
+
+<h3 id="f4-3">4.3. UC-03: Ellenség megtámadása</h3>
+
+<p>
+Ha a célponthoz nem vezet járható út, az egység elmegy a legközelebbi elérhető mezőig, és ott megáll (F-UTV-04). Akkor is megáll és új parancsra vár, ha a célpont közben meghal. Amíg a célpont hatótávon kívül van, az egység közelít hozzá (F-HARC-11). Utána a támadási időköz szerint újra és újra üt (F-HARC-13). Ha a célpont életereje elfogy, eltűnik a térképről (F-HARC-16).
+</p>
+
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 790" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="UC-03 aktivitásdiagram">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#000"/></marker></defs>
+<circle cx="260" cy="30" r="10" fill="#000"/>
+<rect x="150.0" y="60.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="90" text-anchor="middle">Katonák kijelölése</text>
+<rect x="150.0" y="130.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="152" text-anchor="middle">Jobb klikk egy</text>
+<text x="260" y="168" text-anchor="middle">ellenséges egységre</text>
+<rect x="150.0" y="200.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="230" text-anchor="middle">Útvonal számítása (A*)</text>
+<path d="M260,278 L290,300 L260,322 L230,300 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="275.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="297" text-anchor="middle">A legközelebbi elérhető</text>
+<text x="580" y="313" text-anchor="middle">mezőig megy, ott megáll</text>
+<circle cx="728" cy="300" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="300" r="7" fill="#000"/>
+<rect x="150.0" y="355.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="385" text-anchor="middle">Halad a célpont felé</text>
+<path d="M260,433 L290,455 L260,477 L230,455 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="430.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="460" text-anchor="middle">Megáll, új parancsra vár</text>
+<circle cx="728" cy="455" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="455" r="7" fill="#000"/>
+<path d="M260,513 L290,535 L260,557 L230,535 Z" fill="#fff" stroke="#000"/>
+<rect x="150.0" y="590.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="260" y="612" text-anchor="middle">Támad, a sebzés levonódik</text>
+<text x="260" y="628" text-anchor="middle">a célpont életerejéből</text>
+<path d="M260,673 L290,695 L260,717 L230,695 Z" fill="#fff" stroke="#000"/>
+<rect x="470.0" y="670.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
+<text x="580" y="700" text-anchor="middle">A célpont megsemmisül</text>
+<circle cx="728" cy="695" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="695" r="7" fill="#000"/>
+<path d="M260,40 L260,60.0" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M260,110.0 L260,130.0" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M260,180.0 L260,200.0" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M260,250.0 L260,278" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M290,300 L470.0,300" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="380.0" y="293" font-size="12" text-anchor="middle">[nincs érvényes útvonal]</text>
+<path d="M690.0,300 L716,300" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M260,322 L260,355.0" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="268" y="342.5" font-size="12" text-anchor="start">[van útvonal]</text>
+<path d="M260,405.0 L260,433" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M290,455 L470.0,455" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="380.0" y="448" font-size="12" text-anchor="middle">[a célpont már meghalt]</text>
+<path d="M690.0,455 L716,455" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M260,477 L260,513" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="268" y="499.0" font-size="12" text-anchor="start">[a célpont él]</text>
+<path d="M230,535 L100,535 L100,372 L150.0,372" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="108" y="528" font-size="12" text-anchor="start">[hatótávon kívül]</text>
+<path d="M260,557 L260,590.0" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="268" y="577.5" font-size="12" text-anchor="start">[hatótávon belül]</text>
+<path d="M260,640.0 L260,673" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M290,695 L470.0,695" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="380.0" y="688" font-size="12" text-anchor="middle">[életerő = 0]</text>
+<path d="M690.0,695 L716,695" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<path d="M230,695 L55,695 L55,388 L150.0,388" fill="none" stroke="#000" marker-end="url(#ah3)"/>
+<text x="63" y="688" font-size="12" text-anchor="start">[életerő &gt; 0]</text>
+</svg>
+<figcaption>4.3. ábra: UC-03 aktivitásdiagram</figcaption>
+</figure>
+
+
+</body>
+</html>

@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Stonehold - Analízis modell</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; line-height: 1.45; }
+  table { border-collapse: collapse; margin: 8px 0 16px; }
+  th, td { padding: 4px 8px; vertical-align: top; text-align: left; }
+  figure { margin: 16px 0; text-align: center; }
+  figure img { max-width: 100% !important; height: auto; }
+  figcaption { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Stonehold - Analízis modell</h1>
+
+<p>
+Analízis modell<br>
+Csapat: TeamFive<br>
+Csapattagok: Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)<br>
+Miskolci Egyetem, Informatikai Intézet
+</p>
+
+<h2>Történet</h2>
+
+<table border="1" cellpadding="6">
+<tr><th>Dátum</th><th>Verzió</th><th>Leírás</th><th>Szerző</th></tr>
+<tr><td>2026.11.11-17.</td><td>0.1</td><td>A fejezetek megírása külön fájlokban a feladatfelosztás szerint</td><td>Mindenki</td></tr>
+<tr><td>2026.11.17.</td><td>0.2</td><td>Összefésülés, ábraszámok és hivatkozások egyeztetése</td><td>Lőrincz Loránd László</td></tr>
+<tr><td>2026.11.18.</td><td>1.0</td><td>Leadott változat</td><td>Mindenki</td></tr>
+</table>
+
+<h2>Tartalomjegyzék</h2>
+
+<ul>
+<li><a href="#f1">1. Bevezetés</a></li>
+<li><a href="#f2">2. Kezdeti osztálydiagram</a>
+<ul>
+<li><a href="#f2-1">2.1. Osztálydiagram</a></li>
+<li><a href="#f2-2">2.2. Osztályok felsorolása</a></li>
+<li><a href="#f2-3">2.3. Alrendszerek</a></li>
+</ul></li>
+<li><a href="#f3">3. Motor alrendszer</a>
+<ul>
+<li><a href="#f3-1">3.1. Statikus modell</a></li>
+<li><a href="#f3-2">3.2. Dinamikus modell</a></li>
+<li><a href="#f3-3">3.3. Funkcionális modell</a></li>
+<li><a href="#f3-4">3.4. Operációk</a></li>
+<li><a href="#f3-5">3.5. Az alrendszer osztálydiagramja</a></li>
+<li><a href="#f3-6">3.6. Osztályok listája</a></li>
+</ul></li>
+<li><a href="#f4">4. Kezelőfelület alrendszer</a>
+<ul>
+<li><a href="#f4-1">4.1. Statikus modell</a></li>
+<li><a href="#f4-2">4.2. Dinamikus modell</a></li>
+<li><a href="#f4-3">4.3. Funkcionális modell</a></li>
+<li><a href="#f4-4">4.4. Operációk</a></li>
+<li><a href="#f4-5">4.5. Az alrendszer osztálydiagramja</a></li>
+<li><a href="#f4-6">4.6. Osztályok listája</a></li>
+</ul></li>
+<li><a href="#f5">5. Gazdaság és építkezés alrendszer</a>
+<ul>
+<li><a href="#f5-1">5.1. Statikus modell</a></li>
+<li><a href="#f5-2">5.2. Dinamikus modell</a></li>
+<li><a href="#f5-3">5.3. Funkcionális modell</a></li>
+<li><a href="#f5-4">5.4. Operációk</a></li>
+<li><a href="#f5-5">5.5. Az alrendszer osztálydiagramja</a></li>
+<li><a href="#f5-6">5.6. Osztályok listája</a></li>
+</ul></li>
+<li><a href="#f6">6. Egységek és harc alrendszer</a>
+<ul>
+<li><a href="#f6-1">6.1. Statikus modell</a></li>
+<li><a href="#f6-2">6.2. Dinamikus modell</a></li>
+<li><a href="#f6-3">6.3. Funkcionális modell</a></li>
+<li><a href="#f6-4">6.4. Operációk</a></li>
+<li><a href="#f6-5">6.5. Az alrendszer osztálydiagramja</a></li>
+<li><a href="#f6-6">6.6. Osztályok listája</a></li>
+</ul></li>
+<li><a href="#f7">7. Gépi ellenfél alrendszer</a>
+<ul>
+<li><a href="#f7-1">7.1. Statikus modell</a></li>
+<li><a href="#f7-2">7.2. Dinamikus modell</a></li>
+<li><a href="#f7-3">7.3. Funkcionális modell</a></li>
+<li><a href="#f7-4">7.4. Operációk</a></li>
+<li><a href="#f7-5">7.5. Az alrendszer osztálydiagramja</a></li>
+<li><a href="#f7-6">7.6. Osztályok listája</a></li>
+</ul></li>
+</ul>
+
+<h2 id="f1">1. Bevezetés</h2>
+<p>Ez a dokumentum a Stonehold nevű 2D-s valós idejű stratégiai játék analízis modellje. A játékot a TeamFive csapat tervezi a Szoftvertechnológia tárgyhoz. A modell a vízióra és főleg az SRS-re (1.1-es változat) épül, az osztályok és a műveletek abból jöttek, amit ott a játéknak tudnia kell.</p>
+<p>A 2. fejezetben van a kezdeti osztálydiagram, az osztályok rövid leírása és a rendszer felbontása alrendszerekre. A 3-7. fejezet alrendszerenként írja le a modellt: a statikus modellt, a dinamikus modellt (szekvencia- és állapotdiagramok), a funkcionális modellt, a műveleteket és az osztályok listáját.</p>
+<p>Amit a dokumentumban végig így csináltunk:</p>
+<ul>
+  <li>Az osztályok, attribútumok, műveletek és állapotok neve angol (az SRS 8.5 szerint a kód is angol lesz), a szöveg magyar. A nevek magyar jelentése a szótárban van.</li>
+  <li>Minden osztály csak egy fejezetben van leírva. Ha egy másik fejezet ábráján is kell, ott szürkén szerepel, és odaírtuk, melyik fejezetben van.</li>
+  <li>A követelményekre az SRS azonosítóival hivatkozunk (pl. F-MOT-02), a use case-ekre a számukkal és a nevükkel (pl. UC-01 Épület lerakása).</li>
+  <li>Típusoknál az int, float, bool, string és List&lt;X&gt; neveket használjuk, a pontos C++ típusok a rendszertervben vannak.</li>
+</ul>
+
+<h2 id="f2">2. Kezdeti osztálydiagram</h2>
+<p>Az SRS-ből kigyűjtöttük azokat a dolgokat, amik szinte biztosan osztályok lesznek. Ez még csak a játék fogalmait tartalmazza, ezért itt csak a nevük, egy rövid leírás és a kapcsolataik vannak. A részletesebb osztályokat (pl. képzési sor, sebzésszámítás, menüképernyők) a 3-7. fejezetben vettük fel, amikor egy-egy alrendszert részletesen kidolgoztunk.</p>
+
+<h3 id="f2-1">2.1. Osztálydiagram</h3>
+<p>A nyilakat a nyíl irányában kell olvasni, pl. Building képez Unit, Worker gyűjt ResourceNode. Az üres háromszögű nyíl öröklés: a Building, a Unit és a ResourceNode egy fajta Entity, a Soldier és a Worker egy fajta Unit. Az AIController és a Faction között 0..1 van, mert a gép oldalát az AIController irányítja, a játékos oldalát viszont senki, azt a játékos a felületen keresztül.</p>
+<figure>
+  <img src="kepek/anal2_kezdeti_osztalydiagram.png" alt="2.1. ábra: Kezdeti osztálydiagram" style="max-width: 100%; height: auto;">
+  <figcaption>2.1. ábra: Kezdeti osztálydiagram</figcaption>
+</figure>
+
+<h3 id="f2-2">2.2. Osztályok felsorolása</h3>
+
+<p><b>Game</b><br>
+Egy játszma. Ő tartja a pályát és mindent, ami rajta van, és frissíti őket.</p>
+
+<p><b>Map</b><br>
+A pálya. Csempékből álló rács, fájlból töltődik be.</p>
+
+<p><b>Tile</b><br>
+Egy mező a pályán. Tudja, hogy járható-e, és hogy áll-e rajta valami.</p>
+
+<p><b>Entity</b><br>
+Minden, ami a pályán van: épület, egység, lelőhely. Ez a közös ős, itt van a helye és az életereje.</p>
+
+<p><b>Menu</b><br>
+A menük: főmenü, új játék beállításai, beállítások, szünet menü. Innen indul a játék.</p>
+
+<p><b>HUD</b><br>
+A játék közbeni felület: a nyersanyagok, a minimap és a kijelölt egység vagy épület adatai.</p>
+
+<p><b>Camera</b><br>
+A pálya éppen látható része. A játékos billentyűvel, az egérrel a képernyő szélén vagy a minimapen mozgatja.</p>
+
+<p><b>Faction</b><br>
+Az egyik fél a játszmában, a játékosé vagy a gépé. Övé a nyersanyag, az épületek és az egységek. Egy játszmában kettő van belőle.</p>
+
+<p><b>Resources</b><br>
+Egy fél nyersanyagai: fa, arany, kő, acél, étel, és a népesség.</p>
+
+<p><b>TechTree</b><br>
+A fejlődési szintek és fejlesztések. Megmondja, mit lehet már építeni vagy képezni.</p>
+
+<p><b>Building</b><br>
+Egy épület, pl. főépület, kaszárnya, farm. Egyes épületek egységeket képeznek.</p>
+
+<p><b>ResourceNode</b><br>
+Egy lelőhely a pályán: erdő, aranyér, kőbánya, érc. A munkások innen gyűjtenek, és egyszer kiürül.</p>
+
+<p><b>Unit</b><br>
+Egy egység. Tud mozogni és támadni, parancsot a játékostól vagy az MI-től kap.</p>
+
+<p><b>Worker</b><br>
+A munkás. Nyersanyagot gyűjt és épít.</p>
+
+<p><b>Soldier</b><br>
+Katona: közelharci, íjász vagy nehéz egység. Csak harcol.</p>
+
+<p><b>PathFinder</b><br>
+Az útvonalkereső (A*). Megmondja egy egységnek, merre menjen, hogy ne ütközzön akadályba.</p>
+
+<p><b>AIController</b><br>
+A gépi ellenfél. A gép oldalát irányítja: gyűjt, épít, egységet képez és támad.</p>
+
+<h3 id="f2-3">2.3. Alrendszerek</h3>
+<p>A rendszert öt alrendszerre bontottuk. Nagyjából az SRS 8.1-ben leírt három rész szerint mentünk (motor, játéklogika, kezelőfelület), csak a játéklogikát szétszedtük háromra, mert az egy embernek túl sok lett volna, és így könnyebb volt szétosztani. Minden alrendszernek van egy felelőse, ő írta a hozzá tartozó fejezetet. Molnár Levente nem kapott alrendszert: ő felel a szótárért és a konzisztencia-ellenőrzésért, vagyis hogy a fejezetekben ugyanazok legyenek a nevek és a hivatkozások. A rendszertervben ő írta az adatmodellt és a use case-ek kivételes eseteit.</p>
+<p>A csomagdiagramon a szaggatott nyíl azt jelenti, hogy az egyik alrendszer használja a másikat. Mindenki használja a Motort. A Motorból csak pár értesítés megy vissza a többiekhez (pl. a Game szól a Selectionnek, ha valami megsemmisült, lásd 3.2. ábra), ezeket a csomagdiagramon nem rajzoltuk be. A Kezelőfelület használja a játéklogikát, de fordítva nem, a felület csak kiolvassa, amit meg kell mutatni.</p>
+<figure>
+  <img src="kepek/anal2_csomagdiagram.png" alt="2.2. ábra: Az alrendszerek csomagdiagramja" style="max-width: 650px; height: auto;">
+  <figcaption>2.2. ábra: Az alrendszerek csomagdiagramja</figcaption>
+</figure>
+
+<h4>2.3.1. Motor alrendszer</h4>
+<p>Az ablak, a rajzolás, a bemenet, az időzítés, a fájlok betöltése és a pálya. Erre épül minden más. Felelős: Lőrincz Loránd László. Részletesen a 3. fejezetben.</p>
+<p>Osztályok: Game, Map, Tile, Entity.</p>
+
+<h4>2.3.2. Kezelőfelület alrendszer</h4>
+<p>A menük, a HUD, a kamera és a kijelölés. A játékos ezen keresztül ad parancsot. Felelős: Martis Milán. Részletesen a 4. fejezetben.</p>
+<p>Osztályok: Menu, HUD, Camera.</p>
+
+<h4>2.3.3. Gazdaság és építkezés alrendszer</h4>
+<p>A nyersanyagok, a gyűjtés, az épületek és a technológiafa. Felelős: Pozsgai Marcell. Részletesen az 5. fejezetben.</p>
+<p>Osztályok: Faction, Resources, TechTree, Building, ResourceNode.</p>
+
+<h4>2.3.4. Egységek és harc alrendszer</h4>
+<p>Az egységek, a mozgás, az útvonalkeresés és a harc. Felelős: Kiss Balázs. Részletesen a 6. fejezetben.</p>
+<p>Osztályok: Unit, Worker, Soldier, PathFinder.</p>
+
+<h4>2.3.5. Gépi ellenfél alrendszer</h4>
+<p>A gép oldalának irányítása: bázisépítés és támadás. Felelős: Kiss Balázs. Részletesen a 7. fejezetben.</p>
+<p>Osztályok: AIController.</p>
+
+
+<h2 id="f3">3. Motor alrendszer</h2>
+<p>A motor a játék alja, erre épül a másik négy alrendszer. Ide tartozik az ablak, a rajzolás, az egér és a billentyűzet kezelése, az időzítés, a képek és a konfigurációs fájlok betöltése, a naplózás, a térkép és a közös ős, az Entity. Az SRS-ből az F-MOT követelmények tartoznak ide, use case nincs hozzá. A motor maga nem tud semmit a nyersanyagokról, az egységekről vagy az MI-ről, csak futtatja őket.</p>
+<p>Néhány osztály, amit itt használunk, más fejezetben van leírva. Ezek a rajzokon szürkén szerepelnek, leírás nélkül:</p>
+<ul>
+  <li>ScreenManager, Camera, Selection: 4. Kezelőfelület alrendszer;</li>
+  <li>Faction, Building, ResourceNode: 5. Gazdaság és építkezés alrendszer;</li>
+  <li>Unit, PathFinder: 6. Egységek és harc alrendszer;</li>
+  <li>AIController: 7. Gépi ellenfél alrendszer.</li>
+</ul>
+
+<h3 id="f3-1">3.1. Statikus modell</h3>
+<h4>3.1.1. Kapcsolatok</h4>
+<p>A kezdeti osztálydiagramon a Game volt a fő osztály. Az analízis közben kiderült, hogy ez így nem jó, mert a Game egy mérkőzés: a ScreenManager hozza létre, amikor a játékos megnyomja a Start gombot, és megszűnik, ha kilép a főmenübe (4.1. ábra). A program viszont a főmenüben is fut. Ezért bekerült egy új osztály, az Engine, ami a program elejétől a végéig él, és a fő ciklust futtatja.</p>
+<ul>
+  <li>Az Engine-hez tartozik egy-egy Window, Renderer, InputHandler, Timer, ResourceManager, Settings és Logger. Ezek az Engine-nel együtt jönnek létre és szűnnek meg.</li>
+  <li>Az Engine-nek van egy ScreenManagere (4. fejezet). Minden eseményt neki ad tovább, és minden körben őt frissíti és rajzoltatja ki.</li>
+  <li>A ScreenManagernek legfeljebb egy Game-je van. Ha nincs mérkőzés (pl. a főmenüben), nincs Game sem.</li>
+  <li>A Game-hez tartozik a Map, a két Faction, az AIController és a PathFinder, és ő tartja számon a pályán lévő összes Entityt.</li>
+  <li>A Map csempékből (Tile) áll. Egy Tile tudja, kié a hely, vagyis melyik Entity áll rajta, ha áll valami.</li>
+  <li>Minden Entitynek van tulajdonosa (Faction), kivéve a lelőhelyeket, és egy vagy több mezőt foglal el a térképen.</li>
+  <li>A Settings a ConfigLoaderrel olvassa be a beállításfájlt, a Window pedig a Settingsből tudja, mekkora legyen és teljes képernyős-e.</li>
+</ul>
+
+<h4>3.1.2. Attribútumok</h4>
+<p>A legtöbb motorosztálynak kevés adata van, mert inkább csak továbbad dolgokat. A fontosabbak:</p>
+<ul>
+  <li>Timer: a frissítés lépésköze fix, 1/60 másodperc (F-MOT-02), és egy gyűjtő (accumulator), amibe az eltelt idő kerül.</li>
+  <li>Map: a mérete csempében (legfeljebb 128x128) és a csempe mérete pixelben (32x32), F-MOT-03.</li>
+  <li>Tile: a terep fajtája, járható-e, és ki áll rajta.</li>
+  <li>Entity: hol van, mekkora, mennyi az életereje és a maximális életereje.</li>
+  <li>Game: a pályán lévő entitások, a két fél és az egységlimit (alapból 200, a konfigurációs fájlból jön, F-HARC-07).</li>
+  <li>Settings: a hangerők, a felbontás és a teljes képernyő. Ugyanazok, mint az RTERV 3.4-ben.</li>
+</ul>
+<p>A pontos listák a 3.6 pontban vannak.</p>
+
+<h4>3.1.3. Bázisosztályok</h4>
+<p>Az Entity a közös ős, ezt már a 2. fejezetben rögzítettük. Ebből származik a Building (5. fejezet), a Unit (6. fejezet) és a ResourceNode (5. fejezet). Azért kell, hogy a Game, a Map és a Renderer ne foglalkozzon azzal, hogy éppen egységről, épületről vagy lelőhelyről van szó. A Game minden körben minden Entitynek meghívja az update() és a draw() műveletét, a többit a leszármazott dönti el.</p>
+<p>Az Entityből közvetlenül nem lesz példány, ezért absztrakt osztály. Az életereje mindegyiknek van, a lelőhelynél is, mert így minden ugyanúgy kezelhető, ha valami megsemmisül vagy kiürül.</p>
+<p>A motor többi osztálya nem származik semmiből, és belőlük sem származik semmi.</p>
+
+<h3 id="f3-2">3.2. Dinamikus modell</h3>
+<h4>3.2.1. A játékhurok egy köre</h4>
+<p>Az Engine run() művelete egy ciklus, ami addig megy, amíg a játékos ki nem lép. Egy körben három dolog történik:</p>
+<ol>
+  <li>Bemenet: az InputHandler összegyűjti az egér- és billentyűeseményeket. Az F3-at és az ablak bezárását az Engine maga kezeli, minden mást továbbad a ScreenManagernek. A ScreenManager dönti el, hogy a HUD-é vagy a játéktéré az esemény (F-MOT-05).</li>
+  <li>Frissítés: a Timer megmondja, hány lépés esedékes. Minden lépésben a ScreenManager frissül, és ha éppen játék megy, a Game is, 1/60 másodperccel (F-MOT-02). Szünetben a Game nem frissül, így minden megáll.</li>
+  <li>Rajzolás: a Renderer letörli a képet, a ScreenManager kirajzolja az aktuális képernyőt (játék közben a Game-mel együtt), végül a Renderer megjeleníti.</li>
+</ol>
+<figure>
+  <img src="kepek/anal3_szekv_jatekhurok.png" alt="3.1. ábra: A játékhurok egy köre (szekvenciadiagram)" style="max-width: 100%; height: auto;">
+  <figcaption>3.1. ábra: A játékhurok egy köre (szekvenciadiagram)</figcaption>
+</figure>
+
+<h4>3.2.2. Egy megsemmisült entitás eltávolítása</h4>
+<p>Ezt a Kezelőfelület és az Egységek és harc fejezet is használja, ezért itt külön is leírjuk. Ha egy egység vagy épület sebzést kap, és elfogy az életereje, szól a Game-nek (removeEntity). A Game kiveszi a listából, a Map felszabadítja a mezőit, és ha épület volt, szól a PathFindernek, hogy ezek a mezők megint járhatók (F-UTV-07). A Selection is kiveszi a kijelölésből. Ha főépület volt, a mérkőzés véget ér, és a Game szól a ScreenManagernek, hogy nyert vagy vesztett a játékos (F-HARC-18).</p>
+<figure>
+  <img src="kepek/anal3_szekv_eltavolitas.png" alt="3.2. ábra: Egy megsemmisült entitás eltávolítása (szekvenciadiagram)" style="max-width: 100%; height: auto;">
+  <figcaption>3.2. ábra: Egy megsemmisült entitás eltávolítása (szekvenciadiagram)</figcaption>
+</figure>
+
+<h4>3.2.3. Az Engine állapotai</h4>
+<ul>
+  <li>Starting: a program elindult, a Logger megnyitja a naplófájlt.</li>
+  <li>Loading: betöltődnek a beállítások, megnyílik az ablak, betöltődnek a képek és a betűtípusok. Ha az ablak nem nyílik meg (pl. nincs megfelelő videókártya), a hiba bekerül a naplóba, és a program leáll.</li>
+  <li>Running: fut a játékhurok (3.1. ábra). A menük, a játék és a szünet mind ebben az állapotban vannak, ezeket már a ScreenManager kezeli (4.3. ábra).</li>
+  <li>ShuttingDown: a játékos kilépett, vagy bezárta az ablakot. A ResourceManager felszabadítja a képeket, az ablak bezárul (F-MOT-09).</li>
+</ul>
+<figure>
+  <img src="kepek/anal3_allapot_engine.png" alt="3.3. ábra: Az Engine állapotdiagramja" style="max-width: 100%; height: auto;">
+  <figcaption>3.3. ábra: Az Engine állapotdiagramja</figcaption>
+</figure>
+
+<h3 id="f3-3">3.3. Funkcionális modell</h3>
+<h4>3.3.1. A fix időlépés</h4>
+<p>Amit tudni kell hozzá: mennyi idő telt el az előző kör óta. Az eredmény, hogy hányszor kell frissíteni.</p>
+<ol>
+  <li>A Timer hozzáadja az eltelt időt a gyűjtőhöz.</li>
+  <li>Amíg a gyűjtőben legalább 1/60 másodperc van, levon belőle 1/60-ot, és eggyel több frissítés esedékes.</li>
+  <li>Ha ez több mint 5 lenne, csak 5 frissítés lesz, a maradékot eldobja. Ha a gép nagyon lassú, a játék így lelassul, de nem akad be teljesen.</li>
+</ol>
+<p>Így a játék ugyanolyan gyorsan megy egy lassabb gépen is, csak kevesebb lesz az FPS (SRS 8.1).</p>
+
+<h4>3.3.2. Egy kép betöltése</h4>
+<p>Amit tudni kell hozzá: a kép neve. Az eredmény a kép, vagy ha nincs meg, a helyettesítő kép.</p>
+<ol>
+  <li>A ResourceManager megnézi, hogy be van-e már töltve. Ha igen, azt adja vissza, így minden kép csak egyszer töltődik be.</li>
+  <li>Ha nincs, megpróbálja betölteni a fájlt az erőforrásmappából.</li>
+  <li>Ha a fájl hiányzik vagy hibás, a játék nem áll le. A hiba bekerül a naplóba, és egy feltűnő lila kép kerül a helyére, hogy teszteléskor rögtön látszódjon (F-MOT-06).</li>
+</ol>
+
+<h4>3.3.3. Mit kell kirajzolni</h4>
+<p>Amit tudni kell hozzá: a kamera helye és a képernyő mérete. Az eredmény a kirajzolandó csempék és entitások.</p>
+<ol>
+  <li>A kamera téglalapjából kiszámoljuk, melyik az első és az utolsó látható csempe sorban és oszlopban. Ha kilógna a pályáról, levágjuk a pálya széléhez.</li>
+  <li>Először ezek a csempék rajzolódnak ki, utána az épületek és a lelőhelyek, utána az egységek, végül a kijelölés és az életerőcsíkok. A HUD és a menük ezek fölé kerülnek (F-MOT-04).</li>
+  <li>Ami nincs a kamerában, az nem rajzolódik ki, így egy nagy pályán sem lassul a rajzolás.</li>
+</ol>
+
+<h3 id="f3-4">3.4. Operációk</h3>
+<p>Az osztályok fő műveletei (hogy mit kapnak és mit csinálnak, az a 3.6 pont táblázataiban van):</p>
+<ul>
+  <li>Engine: init(), run(), quit(), shutdown()</li>
+  <li>Window: open(), applySettings(), isFocused(), close()</li>
+  <li>Renderer: clear(), drawImage(), drawText(), toggleFps(), present()</li>
+  <li>InputHandler: poll(), isKeyDown(), mousePosition()</li>
+  <li>Timer: tick()</li>
+  <li>ResourceManager: getImage(), getFont(), unloadAll()</li>
+  <li>ConfigLoader: load(), getNumber(), getString(), sections()</li>
+  <li>Settings: load(), save(), resetToDefaults()</li>
+  <li>Logger: log()</li>
+  <li>Game: newGame(), update(), draw(), entityAt(), unitsInRect(), entitiesInRange(), hasRoom(), spawn(), removeEntity()</li>
+  <li>Map: load(), tileAt(), worldToTile(), isFree(), setOccupied(), draw()</li>
+  <li>Tile: isPassable()</li>
+  <li>Entity: update(), draw(), takeDamage(), isAlive()</li>
+</ul>
+<p>A Game műveletei közül többet a többi alrendszer kért: az entityAt() és a unitsInRect() a kijelöléshez kell (4.2. ábra), a hasRoom() és a spawn() az egységképzéshez (UC-02 Egység kiképzése), az entitiesInRange() a harchoz és az MI-hez, a removeEntity() pedig a 3.2. ábrához.</p>
+
+<h3 id="f3-5">3.5. Az alrendszer osztálydiagramja</h3>
+<p>A szürke osztályok más fejezetekhez tartoznak, ott vannak leírva.</p>
+<figure>
+  <img src="kepek/anal3_osztalydiagram.png" alt="3.4. ábra: A Motor alrendszer osztálydiagramja" style="max-width: 100%; height: auto;">
+  <figcaption>3.4. ábra: A Motor alrendszer osztálydiagramja</figcaption>
+</figure>
+
+<h3 id="f3-6">3.6. Osztályok listája</h3>
+
+<h4>Engine</h4>
+<p><b>Felelősség:</b> a program elejétől a végéig él, létrehozza a motor többi részét, és futtatja a fő ciklust (F-MOT-01, F-MOT-02, F-MOT-09).</p>
+<p><b>Együttműködők:</b> Window, Renderer, InputHandler, Timer, ResourceManager, Settings, Logger, ScreenManager (4. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>running</td><td>bool</td><td>Amíg igaz, megy a fő ciklus.</td></tr>
+  <tr><td>window, renderer, input, timer, resources, settings, logger</td><td>a motor osztályai</td><td>A motor részei, az Engine hozza létre őket.</td></tr>
+  <tr><td>screens</td><td>ScreenManager</td><td>A képernyőket kezelő osztály (4. fejezet).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>init</td><td>nincs</td><td>Megnyitja a naplót, betölti a beállításokat, megnyitja az ablakot, és létrehozza a ScreenManagert. Ha az ablak nem nyílik meg, hamisat ad (3.3. ábra).</td></tr>
+  <tr><td>run</td><td>nincs</td><td>A fő ciklus a 3.1. ábra szerint, amíg a running igaz.</td></tr>
+  <tr><td>quit</td><td>nincs</td><td>A running hamis lesz, így a ciklus a kör végén leáll. A Kilépés gomb és az ablak bezárása is ezt hívja.</td></tr>
+  <tr><td>shutdown</td><td>nincs</td><td>Felszabadítja a képeket, bezárja az ablakot és a naplót.</td></tr>
+</table>
+
+<h4>Window</h4>
+<p><b>Felelősség:</b> a játék ablaka (F-MOT-01).</p>
+<p><b>Együttműködők:</b> Engine, Settings, Camera (4. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>width, height</td><td>int</td><td>Az ablak mérete pixelben, legalább 1280x720.</td></tr>
+  <tr><td>fullscreen</td><td>bool</td><td>Teljes képernyős-e.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>open</td><td>w, h: int, fullscreen: bool</td><td>Megnyitja az ablakot. Ha nem sikerül, hamisat ad.</td></tr>
+  <tr><td>applySettings</td><td>s: Settings</td><td>Átállítja a méretet és a módot, ha a játékos a beállításokban megváltoztatta.</td></tr>
+  <tr><td>isFocused</td><td>nincs</td><td>Igaz, ha az ablak aktív. A kamera csak ilyenkor mozog a képernyő szélénél (F-UI-09).</td></tr>
+  <tr><td>close</td><td>nincs</td><td>Bezárja az ablakot.</td></tr>
+</table>
+
+<h4>Renderer</h4>
+<p><b>Felelősség:</b> mindent ez rajzol ki a képernyőre. Csak ez a rész hívja közvetlenül az SDL rajzoló függvényeit (SRS 8.1).</p>
+<p><b>Együttműködők:</b> Engine, ResourceManager, Camera (4. fejezet), Game, Map, Entity.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>showFps</td><td>bool</td><td>Ki van-e írva a sarokban az FPS (F-MOT-08).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>clear</td><td>nincs</td><td>Letörli az előző képet.</td></tr>
+  <tr><td>drawImage</td><td>img: Image, x, y: int</td><td>Kirajzol egy képet a megadott helyre.</td></tr>
+  <tr><td>drawText</td><td>text: string, x, y: int</td><td>Kiír egy szöveget (feliratok, HUD, üzenetek).</td></tr>
+  <tr><td>toggleFps</td><td>nincs</td><td>F3-ra be- vagy kikapcsolja az FPS kiírását.</td></tr>
+  <tr><td>present</td><td>nincs</td><td>Megjeleníti a kész képet. Ha a showFps igaz, előtte kiírja az FPS-t.</td></tr>
+</table>
+
+<h4>InputHandler</h4>
+<p><b>Felelősség:</b> összegyűjti az egér- és billentyűeseményeket, és megmondja, mi van éppen lenyomva.</p>
+<p><b>Együttműködők:</b> Engine, ScreenManager (4. fejezet), Camera (4. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<p>Nincs saját adata, az aktuális állapotot az SDL-től kérdezi.</p>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>poll</td><td>nincs</td><td>Visszaadja az előző kör óta jött eseményeket (kattintás, mozgás, billentyű, ablak bezárása) List&lt;InputEvent&gt; formában.</td></tr>
+  <tr><td>isKeyDown</td><td>key: Key</td><td>Igaz, ha a billentyű éppen le van nyomva. A kamera mozgatása ezt használja (F-UI-08).</td></tr>
+  <tr><td>mousePosition</td><td>nincs</td><td>Az egér helye az ablakban.</td></tr>
+</table>
+
+<h4>Timer</h4>
+<p><b>Felelősség:</b> megmondja, hányszor kell frissíteni a játékot, hogy másodpercenként 60 frissítés legyen (F-MOT-02).</p>
+<p><b>Együttműködők:</b> Engine.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>step</td><td>float</td><td>Egy frissítés hossza, 1/60 másodperc.</td></tr>
+  <tr><td>accumulator</td><td>float</td><td>Az eltelt, még fel nem használt idő.</td></tr>
+  <tr><td>maxSteps</td><td>int</td><td>Egy körben legfeljebb ennyi frissítés lehet (5).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>tick</td><td>nincs</td><td>Megméri az előző óta eltelt időt, és visszaadja, hány frissítés esedékes (3.3.1).</td></tr>
+</table>
+
+<h4>ResourceManager</h4>
+<p><b>Felelősség:</b> betölti a képeket és a betűtípusokat, és megőrzi őket, hogy mindegyik csak egyszer töltődjön be (F-MOT-06).</p>
+<p><b>Együttműködők:</b> Engine, Renderer, Logger.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>images</td><td>Map&lt;string, Image&gt;</td><td>A már betöltött képek név szerint.</td></tr>
+  <tr><td>fonts</td><td>Map&lt;string, Font&gt;</td><td>A már betöltött betűtípusok.</td></tr>
+  <tr><td>placeholder</td><td>Image</td><td>A lila kép, ami a hiányzó képek helyére kerül.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>getImage</td><td>name: string</td><td>Visszaadja a képet a 3.3.2 szerint. Ha nincs meg, a helyettesítőt adja, és naplóz.</td></tr>
+  <tr><td>getFont</td><td>name: string, size: int</td><td>Ugyanígy a betűtípusokra.</td></tr>
+  <tr><td>unloadAll</td><td>nincs</td><td>Kilépéskor felszabadít mindent.</td></tr>
+</table>
+
+<h4>ConfigLoader</h4>
+<p><b>Felelősség:</b> beolvas egy kulcs = érték formátumú fájlt, és szakaszonként eltárolja az értékeket. A részletes terve és a fájlok formátuma az RTERV 3. fejezetében van (F-MOT-07).</p>
+<p><b>Együttműködők:</b> Settings, Logger, és mindenki, akinek adat kell a konfigurációs fájlból (BuildingType, UnitType, DamageCalculator, Difficulty).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>fileName</td><td>string</td><td>Melyik fájlt olvasta be.</td></tr>
+  <tr><td>values</td><td>szakasz, kulcs, érték</td><td>A beolvasott értékek.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>fileName: string</td><td>Beolvassa a fájlt. Ha nincs meg, hamisat ad és naplóz.</td></tr>
+  <tr><td>getNumber</td><td>section, key: string, default: float</td><td>Visszaadja a számot. Ha a kulcs hiányzik vagy nem szám, az alapértéket adja, és naplóz.</td></tr>
+  <tr><td>getString</td><td>section, key, default: string</td><td>Ugyanez szövegre.</td></tr>
+  <tr><td>sections</td><td>nincs</td><td>A fájl szakaszainak nevei, pl. az összes egységtípus.</td></tr>
+</table>
+
+<h4>Settings</h4>
+<p><b>Felelősség:</b> a játékos beállításai, amik a következő indításkor is megmaradnak (F-UI-05, F-UI-06).</p>
+<p><b>Együttműködők:</b> ConfigLoader, Window, SettingsMenu (4. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>musicVolume, effectsVolume</td><td>int (0-100)</td><td>A zene és a hangeffektek hangereje.</td></tr>
+  <tr><td>resolutionWidth, resolutionHeight</td><td>int</td><td>A felbontás, alapból 1280x720.</td></tr>
+  <tr><td>fullscreen</td><td>bool</td><td>Teljes képernyő vagy ablak, alapból ablak.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>nincs</td><td>Beolvassa a beállításfájlt. Ha nincs meg vagy hibás, az alapértékeket használja (F-MOT-01).</td></tr>
+  <tr><td>save</td><td>nincs</td><td>Kiírja a beállításokat a fájlba.</td></tr>
+  <tr><td>resetToDefaults</td><td>nincs</td><td>Visszaállítja az alapértékeket.</td></tr>
+</table>
+
+<h4>Logger</h4>
+<p><b>Felelősség:</b> a hibákat a konzolra és egy naplófájlba írja, hogy fejlesztés közben gyorsan meg lehessen találni őket (SRS 7.4).</p>
+<p><b>Együttműködők:</b> Engine, ResourceManager, ConfigLoader.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>fileName</td><td>string</td><td>A naplófájl neve.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>log</td><td>message: string</td><td>Kiírja az üzenetet az idővel együtt.</td></tr>
+</table>
+
+<h4>Game</h4>
+<p><b>Felelősség:</b> egy mérkőzés. Tartja a térképet, a két felet és a pályán lévő összes entitást, és minden körben frissíti és kirajzolja őket.</p>
+<p><b>Együttműködők:</b> ScreenManager, Selection (4. fejezet), Faction (5. fejezet), PathFinder (6. fejezet), AIController (7. fejezet), Map, Entity, Renderer, Camera.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>map</td><td>Map</td><td>A pálya.</td></tr>
+  <tr><td>entities</td><td>List&lt;Entity&gt;</td><td>Minden, ami a pályán van.</td></tr>
+  <tr><td>factions</td><td>List&lt;Faction&gt;</td><td>A két fél: a játékos és a gépi ellenfél.</td></tr>
+  <tr><td>ai</td><td>AIController</td><td>A gépi ellenfél (7. fejezet).</td></tr>
+  <tr><td>pathFinder</td><td>PathFinder</td><td>Az útvonalkereső (6. fejezet).</td></tr>
+  <tr><td>unitLimit</td><td>int</td><td>Legfeljebb ennyi egysége lehet egy félnek, alapból 200 (F-HARC-07).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>newGame</td><td>difficulty: string</td><td>Az új játék beállításai után a ScreenManager hívja. Betölti a pályát, létrehozza a két felet a kezdő főépülettel és munkásokkal, és az MI-t a kiválasztott nehézséggel. Visszaadja a játékos főépületét, hogy a kamera oda álljon.</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Frissíti az összes entitást, a feleket, a PathFindert és az MI-t.</td></tr>
+  <tr><td>draw</td><td>renderer: Renderer, camera: Camera</td><td>Kirajzolja a pálya látható részét és a rajta lévő entitásokat a 3.3.3 szerint.</td></tr>
+  <tr><td>entityAt</td><td>p: Point</td><td>Visszaadja azt az egységet vagy épületet, ami a ponton van, vagy semmit. Ha egység és épület is van ott, az egységet. A Selection hívja egy kattintásnál.</td></tr>
+  <tr><td>unitsInRect</td><td>r: Rect, owner: Faction</td><td>Visszaadja a tulajdonos összes egységét, ami a téglalapban van. Épületet nem ad vissza. A Selection hívja a téglalapos kijelölésnél (4.2. ábra).</td></tr>
+  <tr><td>entitiesInRange</td><td>p: Point, range: float</td><td>Visszaadja az entitásokat egy ponttól adott távolságon belül. A harc és az MI ezzel keresi a közeli ellenséget.</td></tr>
+  <tr><td>hasRoom</td><td>owner: Faction</td><td>Igaz, ha a félnek még az egységlimit alatt van az egységszáma (F-HARC-07).</td></tr>
+  <tr><td>spawn</td><td>type: UnitType, owner: Faction, tile: Tile</td><td>Létrehoz egy új egységet a megadott mezőn, és felveszi a listába (UC-02 Egység kiképzése).</td></tr>
+  <tr><td>removeEntity</td><td>e: Entity</td><td>Kiveszi a megsemmisült egységet vagy épületet a pályáról, és szól a Selectionnek, hogy vegye ki a kijelölésből (Selection.remove()). Ha főépület volt, véget ér a mérkőzés, és szól a ScreenManagernek, hogy a játékos nyert vagy vesztett (ScreenManager.gameOver(), F-HARC-18).</td></tr>
+</table>
+
+<h4>Map</h4>
+<p><b>Felelősség:</b> a pálya csempékből álló rácsa. Tudja, melyik mező szabad, és szól, ha valami változik rajta (F-MOT-03).</p>
+<p><b>Együttműködők:</b> Game, Tile, Entity, PathFinder (6. fejezet), Building (5. fejezet), Renderer, Camera.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>width, height</td><td>int</td><td>A pálya mérete csempében, legfeljebb 128x128.</td></tr>
+  <tr><td>tileSize</td><td>int</td><td>Egy csempe mérete pixelben (32).</td></tr>
+  <tr><td>tiles</td><td>List&lt;Tile&gt;</td><td>A csempék soronként.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>fileName: string</td><td>Beolvassa a pályát a fájlból (SRS 7.2).</td></tr>
+  <tr><td>tileAt</td><td>x, y: int</td><td>Visszaadja a csempét a sor és oszlop alapján, vagy semmit, ha kívül esik.</td></tr>
+  <tr><td>worldToTile</td><td>p: Point</td><td>Megmondja, melyik csempén van egy pont a pályán.</td></tr>
+  <tr><td>isFree</td><td>tiles: List&lt;Tile&gt;</td><td>Igaz, ha mind járható és senki nem áll rajtuk. A Building.canPlaceAt() ezt használja (UC-01 Épület lerakása).</td></tr>
+  <tr><td>setOccupied</td><td>tiles: List&lt;Tile&gt;, value: bool</td><td>Foglaltra vagy szabadra állítja a mezőket. Ha épület miatt változtak, szól a PathFindernek (PathFinder.mapChanged()).</td></tr>
+  <tr><td>draw</td><td>renderer: Renderer, camera: Camera</td><td>Kirajzolja a látható csempéket.</td></tr>
+</table>
+
+<h4>Tile</h4>
+<p><b>Felelősség:</b> egy mező a pályán. A PathFinder és az építkezés ebből tudja, hova lehet menni és építeni.</p>
+<p><b>Együttműködők:</b> Map, Entity, PathFinder (6. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>x, y</td><td>int</td><td>Hányadik oszlop és sor.</td></tr>
+  <tr><td>terrain</td><td>Terrain: Grass, Dirt, Water</td><td>A terep fajtája, ettől függ a képe.</td></tr>
+  <tr><td>walkable</td><td>bool</td><td>Járható-e a terep miatt (a víz pl. nem).</td></tr>
+  <tr><td>occupant</td><td>Entity (lehet üres)</td><td>Az épület vagy lelőhely, ami a mezőn áll.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>isPassable</td><td>nincs</td><td>Igaz, ha a terep járható és nem áll rajta semmi.</td></tr>
+</table>
+
+<h4>Entity (közös ős)</h4>
+<p><b>Felelősség:</b> minden, ami a pályán van: épület, egység, lelőhely. Tudja, hol van, mekkora, és mennyi életereje maradt.</p>
+<p><b>Együttműködők:</b> Game, Map, Tile, Faction (5. fejezet), Building, ResourceNode (5. fejezet), Unit (6. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>position</td><td>Point</td><td>Hol van a pályán, pixelben.</td></tr>
+  <tr><td>size</td><td>int</td><td>Hány csempe széles és magas (egységnél 1).</td></tr>
+  <tr><td>owner</td><td>Faction (lehet üres)</td><td>Kié. A lelőhelyeknél üres.</td></tr>
+  <tr><td>health, maxHealth</td><td>int</td><td>A mostani és a legnagyobb életerő.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>dt: float</td><td>Minden frissítésnél meghívódik. Itt nem csinál semmit, a leszármazottak írják felül.</td></tr>
+  <tr><td>draw</td><td>renderer: Renderer, camera: Camera</td><td>Kirajzolja a képét, és ha ki van jelölve vagy sérült, az életerőcsíkját is.</td></tr>
+  <tr><td>takeDamage</td><td>damage: int</td><td>Levonja a sebzést az életerőből. Ha nullára vagy alá csökken, szól a Game-nek (3.2. ábra).</td></tr>
+  <tr><td>isAlive</td><td>nincs</td><td>Igaz, ha az életereje nagyobb nullánál.</td></tr>
+</table>
+
+
+<h2 id="f4">4. Kezelőfelület alrendszer</h2>
+<p>Ez a fejezet a kezelőfelületről szól, vagyis az SRS F-UI pontjairól. Ide tartoznak a menük (főmenü, új játék beállításai, szünet menü, beállítások, súgó, játék vége), a kamera, a HUD a minimappel, az információs panellel és a parancsmenüvel, az egységek kijelölése és a tooltipek. Saját use case-e nincs, de mindhárom use case itt kezdődik: a játékos a felületen kattint, és a felület adja tovább a parancsot a játéklogikának (UC-01 Épület lerakása, UC-02 Egység kiképzése, UC-03 Ellenség megtámadása).</p>
+<p>Az SRS 8.1 szerint a felület nem számol semmit, csak megmutatja, ami a játéklogikában van, és továbbadja a játékos parancsait. Ezért itt egyik osztály sem változtat közvetlenül életerőt vagy nyersanyagot, ezt mindig az 5. és a 6. fejezet osztályai csinálják.</p>
+<p>Néhány osztály, amit itt használunk, más fejezetben van leírva. Ezek a rajzokon szürkén szerepelnek, leírás nélkül:</p>
+<ul>
+  <li>Entity: közös ős (2. fejezet);</li>
+  <li>Game, Map, Settings: 3. Motor alrendszer;</li>
+  <li>Building, Faction: 5. Gazdaság és építkezés alrendszer;</li>
+  <li>MoveCommand, AttackCommand: 6. Egységek és harc alrendszer;</li>
+  <li>Difficulty: 7. Gépi ellenfél alrendszer.</li>
+</ul>
+<h3 id="f4-1">4.1. Statikus modell</h3>
+<h4>4.1.1. Kapcsolatok</h4>
+<ul>
+  <li>A képernyőket a ScreenManager kezeli. Egy van belőle, és mindig tudja, melyik képernyő látszik éppen. A motor játékhurka minden körben neki adja oda az egér- és billentyűeseményeket, és őt kéri meg a rajzolásra.</li>
+  <li>A ScreenManagerhez tartozik az összes menü (Menu). Ezek a programmal együtt jönnek létre, és a program végéig megmaradnak.</li>
+  <li>Egy menüben akárhány gomb (Button) lehet. A NewGameMenu, a SettingsMenu és a HelpScreen a Menuből származik.</li>
+  <li>Amikor a játékos elindít egy mérkőzést, a ScreenManager létrehozza a Game-et, és mellé a HUD-ot, a Camerát és a Selectiont. Ezek csak a mérkőzés alatt léteznek, a főmenübe visszalépéskor törlődnek.</li>
+  <li>A HUD-nak négy része van: Minimap, InfoPanel, CommandMenu és Tooltip. Mindegyikből pontosan egy van, és a HUD-dal együtt jönnek létre és szűnnek meg.</li>
+  <li>A HUD a játékos frakciójától (Faction) kérdezi meg, mennyi nyersanyaga és népessége van.</li>
+  <li>A Selection tartja számon a kijelölt egységeket vagy épületet (Entity), ebből akárhány lehet, akár egy sem. Jobb klikknél a Selection csinál MoveCommandot vagy AttackCommandot a kijelölt egységeknek.</li>
+  <li>Az InfoPanel és a CommandMenu a Selectiontől tudja, mit kell mutatnia.</li>
+  <li>A CommandMenuben akárhány gomb lehet, a kijelöléstől függ, mennyi. Ha a játékos épületet választ, a CommandMenu indít egy BuildPlacementet (az épület szellemképe), ebből egyszerre legfeljebb egy van.</li>
+  <li>A Camera mutatja a térkép (Map) egy részét. A Minimap a Camerát mozgatja, ha a játékos rákattint.</li>
+  <li>A SettingsMenu a Settings osztályon keresztül olvassa és menti a beállításokat, a NewGameMenu pedig a nehézségi szintet (Difficulty) választja ki.</li>
+</ul>
+<h4>4.1.2. Attribútumok</h4>
+<p>A felület szinte semmit nem tárol a játékról. A nyersanyagokat, az életerőt és a képzési sort mindig a játéklogikától kérdezi le, amikor rajzol, így nem fordulhat elő, hogy a HUD mást mutat, mint ami a játékban van. Amit a felület maga tárol, az csak a saját állapota: melyik képernyő látszik, hol van a kamera, mi van kijelölve, melyik gomb fölött van az egér, és milyen üzenetek látszanak éppen.</p>
+<p>A beállításokat (felbontás, ablakos mód, hangerő) nem a felület tárolja, hanem a Settings osztály (RTERV 3.4). A SettingsMenu csak addig tart meg egy másolatot, amíg a játékos el nem menti vagy el nem veti a változtatást. Az egyes osztályok adatai részletesen a 4.6 pontban vannak.</p>
+<h4>4.1.3. Bázisosztályok</h4>
+<p>A Menu közös ős minden menünek. Tud gombokat rajzolni, kiemeli azt, amelyik fölött az egér van, és ha a játékos rákattint, szól a gombnak. A főmenü, a szünet menü, a játék vége képernyő és a kilépés előtti kérdés ("Quit to main menu?") csak abban különbözik, hogy milyen gombok vannak rajtuk és mi a címük. Ezért ezek nem kaptak külön osztályt, mindegyik egy-egy Menu példány.</p>
+<p>A NewGameMenu, a SettingsMenu és a HelpScreen viszont tud mást is, mint gombot nyomni: az elsőben nehézséget kell választani, a másodikban csúszkák és egy felbontáslista vannak, a harmadik pedig fájlból olvas be szöveget és görgethető. Ezek külön osztályok, de a gombkezelést a Menutől öröklik.</p>
+<h3 id="f4-2">4.2. Dinamikus modell</h3>
+<h4>4.2.1. Új játék indítása</h4>
+<p>A játékos a főmenüben a New Game gombra kattint. A ScreenManager átvált az új játék beállításaira, ahol alapból a normál nehézség van kiválasztva (F-UI-02). Ha a játékos a könnyűt akarja, rákattint. A Back gombbal a főmenübe jut vissza, a Start gombra pedig a ScreenManager létrehozza a Game-et a kiválasztott nehézséggel. A pálya, a két fél és az MI létrehozása már a Game dolga (3., 5. és 7. fejezet). Ha ez kész, a ScreenManager létrehozza a kamerát és a HUD-ot, a kamerát a játékos főépületére állítja, és átvált a játék képernyőre.</p>
+<figure>
+  <img src="kepek/anal4_szekv_ujjatek.png" alt="4.1. ábra: Új játék indítása (szekvenciadiagram)">
+  <figcaption>4.1. ábra: Új játék indítása (szekvenciadiagram)</figcaption>
+</figure>
+<h4>4.2.2. Egységek kijelölése téglalappal</h4>
+<p>A játékos lenyomja a bal egérgombot a játéktéren. A ScreenManager először a HUD-ot kérdezi meg, hogy az ő területére esik-e a kattintás. Ha igen, a HUD kezeli (pl. gombot nyomtak), és a játéktér nem kap semmit (F-MOT-05). Ha nem, a Selection elkezdi a húzást. Amíg a gomb le van nyomva, a Selection minden mozdulatnál újrarajzolja a téglalapot. Amikor a játékos elengedi a gombot, a Selection a kamerával átszámolja a téglalap sarkait a pálya koordinátáira, és megkérdezi a Game-et, mely saját egységek vannak benne. Ha a Shift le volt nyomva, ezeket hozzáadja az eddigi kijelöléshez, ha nem, lecseréli vele (F-UI-12). A végén szól az InfoPanelnek és a CommandMenunek, hogy frissüljenek.</p>
+<p>Ha a téglalap nagyon kicsi (4 pixelnél kisebb), az nem húzás, hanem sima kattintás. Ilyenkor a Selection azt az egy egységet vagy épületet jelöli ki, ami a kattintás helyén van. Ellenséges egységet is ki lehet így jelölni, hogy látszódjanak az adatai, de parancsot neki nem lehet adni. Téglalappal csak saját egységek jelölődnek ki, épület nem.</p>
+<figure>
+  <img src="kepek/anal4_szekv_kijeloles.png" alt="4.2. ábra: Egységek kijelölése téglalappal (szekvenciadiagram)">
+  <figcaption>4.2. ábra: Egységek kijelölése téglalappal (szekvenciadiagram)</figcaption>
+</figure>
+<h4>4.2.3. A ScreenManager állapotai</h4>
+<p>Az állapot azt mondja meg, melyik képernyő látszik. Egyszerre mindig csak egy:</p>
+<ul>
+  <li>MainMenu (főmenü): a program indítása után ez jön be (F-UI-01). Innen lehet új játékot kezdeni, a beállításokba vagy a súgóba menni, vagy kilépni.</li>
+  <li>NewGameSetup (új játék beállításai): itt lehet nehézséget választani (F-UI-02). Start után Playing lesz, Back után MainMenu.</li>
+  <li>Playing (játék): fut a mérkőzés, minden képkockán frissül a Game, és látszik a HUD.</li>
+  <li>Paused (szünet): ESC-re vagy a felső sáv Pause gombjára jön elő (F-UI-03). A játék közben nem frissül, de a háttérben látszik, sötétítve. Újabb ESC-re vagy a Resume gombra visszamegy Playing állapotba.</li>
+  <li>ConfirmExit (megerősítés): ha a szünet menüből a főmenübe akar kilépni, a játék előbb rákérdez (F-UI-04). No-ra visszamegy a szünet menübe, Yes-re a mérkőzés törlődik, és a főmenü jön.</li>
+  <li>Settings és Help (beállítások, súgó): a főmenüből és a szünet menüből is elérhetők. A Back gomb oda visz vissza, ahonnan a játékos jött, ezt a ScreenManager az előző állapotból tudja.</li>
+  <li>GameOver (játék vége): ha valamelyik főépület megsemmisül (F-HARC-18), kiírja, hogy nyert vagy vesztett a játékos. Innen csak a főmenübe lehet menni (F-UI-07).</li>
+</ul>
+<p>Az ablak X gombja bármelyik állapotban ugyanazt csinálja, mint a főmenü Exit gombja (F-MOT-09). Ezt nem rajzoltuk be, hogy az ábra átlátható maradjon.</p>
+<figure>
+  <img src="kepek/anal4_allapot_kepernyo.png" alt="4.3. ábra: A ScreenManager állapotdiagramja">
+  <figcaption>4.3. ábra: A ScreenManager állapotdiagramja</figcaption>
+</figure>
+<h3 id="f4-3">4.3. Funkcionális modell</h3>
+<h4>4.3.1. A kamera mozgatása</h4>
+<p>Amit tudni kell hozzá: mely billentyűk vannak lenyomva, hol van az egér, aktív-e az ablak, mennyi idő telt el az előző frissítés óta, és mekkora a pálya. Az eredmény a kamera új helye.</p>
+<ol>
+  <li>Megnézzük a billentyűket. A W vagy a fel nyíl felfelé, az S vagy a le nyíl lefelé, az A vagy a bal nyíl balra, a D vagy a jobb nyíl jobbra viszi a kamerát. Ha két irány is le van nyomva (pl. W és D), mindkettő számít, így a kamera átlósan megy (F-UI-08).</li>
+  <li>Ha az ablak aktív, és az egér 10 pixelen belül van a képernyő valamelyik szélétől, az is hozzáad egy irányt (F-UI-09). A sarokban így két irány jön ki.</li>
+  <li>Az irányt megszorozzuk a kamera sebességével és az eltelt idővel, és ennyivel arrébb tesszük a kamerát. Átlósan sem lehet gyorsabb, mint egyenesen, ezért ilyenkor mindkét irányt kb. 0,7-tel szorozzuk.</li>
+  <li>Végül a kamerát visszahúzzuk a pálya területére: a bal felső sarka nem lehet 0-nál kisebb, a jobb alsó sarka nem lehet nagyobb a pálya méreténél (F-UI-11).</li>
+</ol>
+<p>Ha a játékos a minimapre kattint, a kattintás helyét átszámoljuk a pályára (a minimap minden pixele adott számú csempének felel meg), a kamera közepét oda tesszük, és utána ugyanúgy visszahúzzuk a pályára (F-UI-10). Húzásnál ez minden egérmozdulatnál megtörténik.</p>
+<h4>4.3.2. Parancs jobb klikkre</h4>
+<p>Amit tudni kell hozzá: mi van kijelölve, és mire kattintott a játékos. Az eredmény az, hogy a kijelölt egységek milyen parancsot kapnak.</p>
+<ol>
+  <li>Ha nincs kijelölve saját egység (pl. semmi, egy épület vagy egy ellenséges egység), nem történik semmi.</li>
+  <li>Ha a kattintás helyén ellenséges egység vagy épület van, minden kijelölt egység AttackCommandot kap rá (F-HARC-10).</li>
+  <li>Ha nyersanyaglelőhely vagy kitermelő épület van ott, a kijelölt munkások gyűjteni mennek (5. fejezet), a katonák csak odamennek.</li>
+  <li>Ha félkész saját épület van ott, a kijelölt munkások építeni mennek (F-EPIT-06).</li>
+  <li>Minden más esetben a kijelölt egységek MoveCommandot kapnak a kattintott mezőre.</li>
+</ol>
+<p>Ha épp épületet akar lerakni a játékos, a jobb klikk nem parancs, hanem megszakítja a lerakást (F-EPIT-04).</p>
+<h4>4.3.3. A tooltip helye</h4>
+<p>Amit tudni kell hozzá: melyik gomb fölött van az egér, és mennyi ideje. Az eredmény a tooltip szövege és helye.</p>
+<ol>
+  <li>Ha az egér fél másodpercig ugyanazon a gombon van, megjelenik a tooltip (SRS 9.1). Ha közben elmegy a gombról, az időmérés újraindul.</li>
+  <li>A szöveg a gomb nevéből, a költségéből, egy rövid leírásból és a gyorsbillentyűből áll. Ha a gomb szürke, azt is kiírja, mi hiányzik (pl. "Requires: Level 2", F-TECH-03).</li>
+  <li>A dobozt alapból a gomb fölé, balra igazítva tesszük. Ha így kilógna a képernyő tetején vagy jobb oldalán, a másik oldalra kerül.</li>
+  <li>Ha az egér elhagyja a gombot, a tooltip eltűnik.</li>
+</ol>
+<h3 id="f4-4">4.4. Operációk</h3>
+<p>Az osztályok fő műveletei (hogy mit kapnak és mit csinálnak, az a 4.6 pont táblázataiban van):</p>
+<ul>
+  <li>ScreenManager: switchTo(), goBack(), handleEvent(), update(), draw(), startGame(), gameOver()</li>
+  <li>Menu: click(), mouseMove(), keyPress(), draw()</li>
+  <li>Button: contains(), press()</li>
+  <li>NewGameMenu: selectDifficulty(), start()</li>
+  <li>SettingsMenu: open(), apply()</li>
+  <li>HelpScreen: load(), scroll()</li>
+  <li>HUD: click(), isOver(), update(), draw(), showMessage()</li>
+  <li>Minimap: click(), drag(), draw()</li>
+  <li>InfoPanel: update(), clickIcon()</li>
+  <li>CommandMenu: update(), pressButton(), pressHotkey()</li>
+  <li>Selection: click(), beginDrag(), dragTo(), endDrag(), issueCommand(), remove(), clear()</li>
+  <li>BuildPlacement: start(), mouseMove(), place(), cancel()</li>
+  <li>Tooltip: hover(), hide()</li>
+  <li>Camera: update(), jumpTo(), screenToWorld(), clamp()</li>
+</ul>
+<p>A Game-nek a kijelöléshez két lekérdezés kell: entityAt() és unitsInRect(). Ezek a Game-hez tartoznak, a 3. fejezetben vannak leírva.</p>
+<h3 id="f4-5">4.5. Az alrendszer osztálydiagramja</h3>
+<p>A szürke osztályok más fejezetekhez tartoznak, ott vannak leírva.</p>
+<figure>
+  <img src="kepek/anal4_osztalydiagram.png" alt="4.4. ábra: A Kezelőfelület alrendszer osztálydiagramja">
+  <figcaption>4.4. ábra: A Kezelőfelület alrendszer osztálydiagramja</figcaption>
+</figure>
+<h3 id="f4-6">4.6. Osztályok listája</h3>
+<h4>ScreenManager</h4>
+<p><b>Felelősség:</b> tudja, melyik képernyő látszik, átvált a képernyők között, és a bejövő egér- és billentyűeseményeket a megfelelő helyre küldi (F-UI-01, F-UI-03, F-UI-07).</p>
+<p><b>Együttműködők:</b> Menu, HUD, Camera, Selection, Game.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>current</td><td>ScreenState: MainMenu, NewGameSetup, Settings, Help, Playing, Paused, ConfirmExit vagy GameOver</td><td>Melyik képernyő látszik (4.3. ábra).</td></tr>
+  <tr><td>previous</td><td>ScreenState</td><td>Honnan jött a játékos. Ebből tudja a Settings és a Help, hova vigyen vissza.</td></tr>
+  <tr><td>menus</td><td>List&lt;Menu&gt;</td><td>Az összes menü.</td></tr>
+  <tr><td>game</td><td>Game (lehet üres)</td><td>A futó mérkőzés. Üres, ha nincs mérkőzés.</td></tr>
+  <tr><td>hud, camera, selection</td><td>HUD, Camera, Selection (lehetnek üresek)</td><td>A mérkőzés alatti felület részei.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>switchTo</td><td>newState: ScreenState</td><td>Megjegyzi a régi állapotot az előzőben, és átáll az újra.</td></tr>
+  <tr><td>goBack</td><td>nincs</td><td>Visszaáll az előző állapotra (pl. a beállításokból a szünet menübe).</td></tr>
+  <tr><td>handleEvent</td><td>e: InputEvent</td><td>Az állapottól függően továbbadja az eseményt. Menüben a menünek. Játékban először a HUD-nak, és ha az nem kezelte, a Selectionnek vagy a BuildPlacementnek (F-MOT-05). Az ESC-t mindig ő kezeli.</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Playing állapotban frissíti a kamerát, a Game-et és a HUD-ot. Szünetben a Game-et nem frissíti, így minden megáll.</td></tr>
+  <tr><td>draw</td><td>nincs</td><td>Kirajzolja az aktuális képernyőt. Szünetben előbb a játékot, utána a sötétített hátteret és a menüt.</td></tr>
+  <tr><td>startGame</td><td>difficulty: string</td><td>Létrehozza a Game-et, a HUD-ot, a kamerát és a kijelölést, a kamerát a főépületre állítja, és átvált Playing állapotba.</td></tr>
+  <tr><td>gameOver</td><td>won: bool</td><td>A Game hívja, ha egy főépület megsemmisült. Beállítja a GameOver képernyő szövegét, és átvált rá.</td></tr>
+</table>
+<h4>Menu</h4>
+<p><b>Felelősség:</b> egy menüképernyő gombokkal. Kiemeli a gombot, ami fölött az egér van, és kattintáskor szól a gombnak. A főmenü, a szünet menü, a játék vége képernyő és a kilépés előtti kérdés egy-egy Menu.</p>
+<p><b>Együttműködők:</b> ScreenManager, Button, Tooltip.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>title</td><td>string</td><td>A menü tetején látszik, pl. "Paused".</td></tr>
+  <tr><td>buttons</td><td>List&lt;Button&gt;</td><td>A menü gombjai, középre igazítva, egymás alatt (SRS 11.1).</td></tr>
+  <tr><td>dimBackground</td><td>bool</td><td>Igaz, ha a menü a játék fölé rajzolódik (szünet menü, kilépés előtti kérdés).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>click</td><td>x, y: int</td><td>Megkeresi a gombot, amelyikre kattintottak, és megnyomja. Ha nincs ott gomb, nem csinál semmit.</td></tr>
+  <tr><td>mouseMove</td><td>x, y: int</td><td>Kiemeli azt a gombot, amelyik fölött az egér van, a többit nem.</td></tr>
+  <tr><td>keyPress</td><td>key: Key</td><td>Ha valamelyik gombnak ez a gyorsbillentyűje, megnyomja.</td></tr>
+  <tr><td>draw</td><td>nincs</td><td>Kirajzolja a hátteret, a címet és a gombokat.</td></tr>
+</table>
+<h4>Button</h4>
+<p><b>Felelősség:</b> egy gomb a menükben vagy a parancsmenüben. Tudja, hol van, mi van ráírva, és mi történjen, ha megnyomják.</p>
+<p><b>Együttműködők:</b> Menu, CommandMenu, Tooltip.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>rect</td><td>Rect (x, y, width, height)</td><td>Hol van a gomb a képernyőn.</td></tr>
+  <tr><td>label</td><td>string vagy Image</td><td>Ami a gombon látszik.</td></tr>
+  <tr><td>enabled</td><td>bool</td><td>Ha hamis, a gomb szürke, és nem lehet megnyomni (F-EPIT-02, F-TECH-03).</td></tr>
+  <tr><td>highlighted</td><td>bool</td><td>Igaz, ha az egér fölötte van, ilyenkor más a színe (SRS 3.2.1).</td></tr>
+  <tr><td>hotkey</td><td>Key (lehet üres)</td><td>Ezzel a billentyűvel is meg lehet nyomni.</td></tr>
+  <tr><td>tooltipText</td><td>string (lehet üres)</td><td>Ezt írja ki a tooltip.</td></tr>
+  <tr><td>action</td><td>Action</td><td>Mi történjen megnyomáskor, pl. átváltás a beállításokra.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>contains</td><td>x, y: int</td><td>Igaz, ha a pont a gomb téglalapjában van.</td></tr>
+  <tr><td>press</td><td>nincs</td><td>Ha a gomb engedélyezett, végrehajtja a műveletét. Ha nem, nem csinál semmit.</td></tr>
+</table>
+<h4>NewGameMenu</h4>
+<p><b>Felelősség:</b> az új játék beállításai. Itt választja ki a játékos az MI nehézségét, alapból normál (F-UI-02).</p>
+<p><b>Együttműködők:</b> Menu (ős), ScreenManager, Difficulty.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>difficulty</td><td>Easy vagy Normal</td><td>A kiválasztott szint. Minden megnyitáskor Normalra áll vissza.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>selectDifficulty</td><td>d: Easy vagy Normal</td><td>Megjegyzi a szintet, és a hozzá tartozó gombot kiemelve rajzolja.</td></tr>
+  <tr><td>start</td><td>nincs</td><td>A Start gomb hívja. Szól a ScreenManagernek, hogy indítsa el a mérkőzést ezzel a nehézséggel.</td></tr>
+</table>
+<h4>SettingsMenu</h4>
+<p><b>Felelősség:</b> a beállítások képernyő: felbontás, ablakos vagy teljes képernyős mód, és ha lesz hang, a zene és az effektek hangereje (F-UI-05, F-UI-06).</p>
+<p><b>Együttműködők:</b> Menu (ős), ScreenManager, Settings.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>resolution</td><td>Resolution (width x height)</td><td>A listában kiválasztott felbontás, legalább 1280x720.</td></tr>
+  <tr><td>fullscreen</td><td>bool</td><td>Teljes képernyőn vagy ablakban fusson-e.</td></tr>
+  <tr><td>musicVolume, sfxVolume</td><td>int (0-100)</td><td>A két csúszka állása. Csak akkor látszanak, ha van hang.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>open</td><td>nincs</td><td>Átmásolja a Settings mostani értékeit a csúszkákba és a listába.</td></tr>
+  <tr><td>apply</td><td>nincs</td><td>Az Apply gomb hívja. Beírja az értékeket a Settingsbe, elmenti a fájlba, és ha a felbontás vagy a mód változott, átállítja az ablakot. A Back gomb mentés nélkül lép ki.</td></tr>
+</table>
+<h4>HelpScreen</h4>
+<p><b>Felelősség:</b> a súgó képernyő. A játék célját, az irányítást és a fontosabb épületeket és egységeket írja le. A szöveget egy külön szövegfájlból olvassa be, nem a kódban van (SRS 9.2).</p>
+<p><b>Együttműködők:</b> Menu (ős), ScreenManager.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>lines</td><td>List&lt;string&gt;</td><td>A beolvasott súgószöveg soronként.</td></tr>
+  <tr><td>scrollOffset</td><td>int</td><td>Hányadik sortól látszik a szöveg.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>file: string</td><td>Beolvassa a súgófájlt. Ha nincs meg, egy rövid hibaüzenetet mutat a súgó helyén, és beírja a naplóba.</td></tr>
+  <tr><td>scroll</td><td>dir: Up vagy Down</td><td>Egérgörgővel vagy a nyilakkal görgeti a szöveget, de a végén túl nem.</td></tr>
+</table>
+<h4>HUD</h4>
+<p><b>Felelősség:</b> a játék közbeni felület. Kirajzolja a felső sávot (nyersanyagok, népesség, Pause gomb), és összefogja a minimapet, az információs panelt, a parancsmenüt és a tooltipet. A játék közbeni üzeneteket is ő mutatja (F-UI-13, F-GAZD-07, SRS 9.3).</p>
+<p><b>Együttműködők:</b> ScreenManager, Faction, Minimap, InfoPanel, CommandMenu, Tooltip, TrainingQueue (6. fejezet, ez küld üzenetet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>player</td><td>Faction</td><td>Akinek a nyersanyagait és népességét mutatja.</td></tr>
+  <tr><td>messages</td><td>List&lt;(string, float)&gt;</td><td>A látszó üzenetek, pl. "Not enough gold!". Kb. 3 másodperc után eltűnnek.</td></tr>
+  <tr><td>minimap, infoPanel, commandMenu, tooltip</td><td>Minimap, InfoPanel, CommandMenu, Tooltip</td><td>A HUD részei.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>click</td><td>x, y: int</td><td>Ha a kattintás a HUD valamelyik részére esik, odaadja neki, és igazat ad vissza. Ha a játéktérre esik, hamisat (F-MOT-05).</td></tr>
+  <tr><td>isOver</td><td>x, y: int</td><td>Igaz, ha a pont a HUD valamelyik részén van. Ilyenkor nincs edge scroll a felső és alsó szélen, ha a HUD takarja.</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Csökkenti az üzenetek idejét, a lejártakat kiveszi, és frissíti a tooltipet.</td></tr>
+  <tr><td>draw</td><td>nincs</td><td>Kirajzolja a felső sávot, a részeit és az üzeneteket. A számokat mindig a Factiontől kérdezi le.</td></tr>
+  <tr><td>showMessage</td><td>text: string</td><td>Új üzenetet tesz ki. Ha ugyanez már látszik, csak az idejét indítja újra, hogy ne legyen tele a képernyő ugyanazzal.</td></tr>
+</table>
+<h4>Minimap</h4>
+<p><b>Felelősség:</b> a bal alsó sarokban kicsiben mutatja a teljes pályát, a saját és az ellenséges egységeket más színnel, és egy fehér téglalappal, hogy hol van a kamera. Kattintásra és húzásra odaviszi a kamerát (F-UI-10).</p>
+<p><b>Együttműködők:</b> HUD, Camera, Map, Game.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>rect</td><td>Rect (x, y, width, height)</td><td>Hol van a minimap a képernyőn.</td></tr>
+  <tr><td>scale</td><td>float</td><td>Hány pixel jut a minimapen egy csempére.</td></tr>
+  <tr><td>dragging</td><td>bool</td><td>Igaz, amíg a játékos lenyomva tartja a gombot a minimapen.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>click</td><td>x, y: int</td><td>Átszámolja a pontot a pályára, és a kamerát odaugratja (Camera.jumpTo()).</td></tr>
+  <tr><td>drag</td><td>x, y: int</td><td>Amíg a gomb le van nyomva, a kamera követi az egeret.</td></tr>
+  <tr><td>draw</td><td>nincs</td><td>Kirajzolja a terepet, az egységeket és épületeket pontként (kék a saját, piros az ellenség), és a kamera téglalapját.</td></tr>
+</table>
+<h4>InfoPanel</h4>
+<p><b>Felelősség:</b> alul középen mutatja a kijelölt egység vagy épület nevét, képét és életerejét. Épületnél a képzési sort is, a hátralévő idővel. Ha több egység van kijelölve, kis ikonokat mutat (F-HARC-17).</p>
+<p><b>Együttműködők:</b> HUD, Selection, Entity, TrainingQueue.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>icons</td><td>List&lt;(Unit, Rect)&gt;</td><td>Több kijelölt egységnél az ikonok és a helyük.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>selected: List&lt;Entity&gt;</td><td>Ha egy dolog van kijelölve, az adatait mutatja. Ha több, felépíti az ikonok listáját. Ha semmi, üres.</td></tr>
+  <tr><td>clickIcon</td><td>i: int</td><td>Csak azt az egy egységet hagyja kijelölve, amelyiknek az ikonjára kattintottak.</td></tr>
+</table>
+<h4>CommandMenu</h4>
+<p><b>Felelősség:</b> jobb alul a kijelöléstől függő gombok. Munkásnál az építhető épületek, épületnél a képezhető egységek (főépületnél a szintlépés is), katonánál a Stop (SRS 11.1).</p>
+<p><b>Együttműködők:</b> HUD, Selection, Button, BuildPlacement, Building, Faction.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>buttons</td><td>List&lt;Button&gt;</td><td>A most látszó gombok, legfeljebb 9 (3 x 3).</td></tr>
+  <tr><td>placement</td><td>BuildPlacement (lehet üres)</td><td>Az éppen zajló épületlerakás.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>selected: List&lt;Entity&gt;</td><td>Összerakja a gombokat. Minden képkockán megnézi, van-e elég nyersanyag és megvan-e a szint, és ha nincs, szürkére állítja a gombot (F-EPIT-02, F-TECH-03).</td></tr>
+  <tr><td>pressButton</td><td>i: int</td><td>Épületgombnál BuildPlacementet indít. Egységgombnál szól a kijelölt épületnek, hogy képezze ki (requestTraining(), 6.1. ábra). Stopnál a kijelölt katonák parancsát törli.</td></tr>
+  <tr><td>pressHotkey</td><td>key: Key</td><td>Az 1-9 számbillentyűk a gombokat nyomják meg balról jobbra, fentről lefelé.</td></tr>
+</table>
+<h4>Selection</h4>
+<p><b>Felelősség:</b> a kijelölés. Kezeli a kattintást, a téglalapos és a Shiftes kijelölést, kirajzolja a kört a kijelölt egységek alá, és jobb klikkre parancsot ad nekik (F-UI-12, F-HARC-10).</p>
+<p><b>Együttműködők:</b> ScreenManager, Camera, Game, Entity, Unit, MoveCommand, AttackCommand, InfoPanel, CommandMenu.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>selected</td><td>List&lt;Entity&gt;</td><td>Ami ki van jelölve: saját egységek, vagy egy épület, vagy egy ellenséges egység.</td></tr>
+  <tr><td>dragStart</td><td>Point (x, y)</td><td>Hol nyomta le a játékos a gombot.</td></tr>
+  <tr><td>dragging</td><td>bool</td><td>Igaz, amíg a bal gomb le van nyomva a játéktéren.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>click</td><td>x, y: int, shift: bool</td><td>Kijelöli, ami a ponton van. Shifttel hozzáadja vagy kiveszi. Üres helyre kattintva megszünteti a kijelölést.</td></tr>
+  <tr><td>beginDrag</td><td>x, y: int</td><td>Megjegyzi a kezdőpontot.</td></tr>
+  <tr><td>dragTo</td><td>x, y: int</td><td>Frissíti a téglalapot, amit kirajzol.</td></tr>
+  <tr><td>endDrag</td><td>x, y: int, shift: bool</td><td>Kijelöli a téglalapban lévő saját egységeket a 4.2. ábra szerint.</td></tr>
+  <tr><td>issueCommand</td><td>x, y: int</td><td>Jobb klikkre a 4.3.2 pont szerint MoveCommandot vagy AttackCommandot ad a kijelölt egységeknek (Unit.receiveCommand()).</td></tr>
+  <tr><td>remove</td><td>e: Entity</td><td>Kiveszi a kijelölésből. A Game hívja, ha valami megsemmisült.</td></tr>
+  <tr><td>clear</td><td>nincs</td><td>Megszünteti a kijelölést.</td></tr>
+</table>
+<h4>BuildPlacement</h4>
+<p><b>Felelősség:</b> az épület lerakása közben az épület áttetsző képe, ami követi az egeret. Zöld, ha oda lehet építeni, piros, ha nem (F-EPIT-03). Hogy hova lehet építeni, és mi történik a lerakás után, az az 5. fejezetben van, ez az osztály csak a felület része.</p>
+<p><b>Együttműködők:</b> CommandMenu, Camera, Map, Building, Faction, HUD.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>buildingType</td><td>BuildingType</td><td>Melyik épületet akarja lerakni a játékos.</td></tr>
+  <tr><td>tile</td><td>Tile</td><td>Melyik mezőn van most a kép bal felső sarka.</td></tr>
+  <tr><td>valid</td><td>bool</td><td>Le lehet-e rakni ide. Ettől függ a kép színe.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>start</td><td>t: BuildingType</td><td>Elkezdi a lerakást, a kép megjelenik az egérnél.</td></tr>
+  <tr><td>mouseMove</td><td>x, y: int</td><td>Átteszi a képet a mezőre, ami alatt az egér van, és megkérdezi a térképtől, szabad-e.</td></tr>
+  <tr><td>place</td><td>nincs</td><td>Bal klikkre: ha a hely szabad, átadja a lerakást a gazdaságnak (5. fejezet, UC-01), és véget ér. Ha nem szabad, nem csinál semmit, és a HUD kiírja: "Can't build here!".</td></tr>
+  <tr><td>cancel</td><td>nincs</td><td>Jobb klikkre vagy ESC-re véget ér, nem vonódik le semmi (F-EPIT-04).</td></tr>
+</table>
+<h4>Tooltip</h4>
+<p><b>Felelősség:</b> a gombok fölött megjelenő kis szövegdoboz (SRS 9.1), a 4.3.3 pont szerint.</p>
+<p><b>Együttműködők:</b> HUD, Menu, Button.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>button</td><td>Button (lehet üres)</td><td>A gomb, ami fölött az egér van.</td></tr>
+  <tr><td>hoverTime</td><td>float (mp)</td><td>Mióta van az egér ezen a gombon.</td></tr>
+  <tr><td>text</td><td>string</td><td>Ami a dobozban van.</td></tr>
+  <tr><td>position</td><td>Point (x, y)</td><td>Hova kerül a doboz.</td></tr>
+  <tr><td>visible</td><td>bool</td><td>Látszik-e éppen.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>hover</td><td>b: Button, dt: float</td><td>Ha ugyanaz a gomb, mint eddig, növeli a várakozást, és fél másodperc után megjeleníti a dobozt. Ha másik gomb, újraindítja az időt.</td></tr>
+  <tr><td>hide</td><td>nincs</td><td>Eltünteti a dobozt, ha az egér nincs gomb fölött.</td></tr>
+</table>
+<h4>Camera</h4>
+<p><b>Felelősség:</b> megmondja, a pálya melyik része látszik. Mozog a billentyűkre és a képernyő szélére vitt egérre, és nem mehet ki a pályáról (F-UI-08, F-UI-09, F-UI-11). Zoom nincs.</p>
+<p><b>Együttműködők:</b> ScreenManager, Map, Minimap, Selection, BuildPlacement.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>x, y</td><td>float (pixel)</td><td>A látható rész bal felső sarka a pályán.</td></tr>
+  <tr><td>width, height</td><td>int (pixel)</td><td>Mekkora rész látszik, a felbontásból jön.</td></tr>
+  <tr><td>speed</td><td>float (pixel/mp)</td><td>Milyen gyorsan megy a kamera. A konfigurációs fájlból jön.</td></tr>
+  <tr><td>edgeMargin</td><td>int (pixel)</td><td>Milyen közel kell lennie az egérnek a szélhez, hogy mozogjon a kamera (alapból 10).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>dt: float</td><td>A 4.3.1 pont szerint arrébb teszi a kamerát.</td></tr>
+  <tr><td>jumpTo</td><td>x, y: float</td><td>A kamera közepét a megadott pontra teszi, és meghívja a clamp() részt.</td></tr>
+  <tr><td>screenToWorld</td><td>x, y: int</td><td>Egy képernyőpontot átszámol a pálya koordinátáira (hozzáadja a kamera helyét).</td></tr>
+  <tr><td>clamp</td><td>nincs</td><td>Visszahúzza a kamerát a pálya területére.</td></tr>
+</table>
+
+<h2 id="f5">5. Gazdaság és építkezés alrendszer</h2>
+<p>Ebben a részben a gazdaságról, az építkezésről és a technológiafáról van szó, vagyis az SRS F-GAZD, F-EPIT és F-TECH pontjairól. Ide tartozik az öt nyersanyag és a népesség kezelése, a lelőhelyek és a kitermelő épületek működése, az épületek lerakása és felépítése, valamint a fejlődési szintek és a kovácsműhely fejlesztései. A use case-ek közül az UC-01 Épület lerakása tartozik ide.</p>
+<p>Néhány osztály, amit itt használunk, más fejezetben van leírva. Ezek a rajzokon szürkén szerepelnek, leírás nélkül:</p>
+<ul>
+  <li>Entity: közös ős (2. fejezet);</li>
+  <li>Game, Map, Tile, ConfigLoader: 3. Motor alrendszer;</li>
+  <li>CommandMenu, HUD: 4. Kezelőfelület alrendszer;</li>
+  <li>Worker, TrainingQueue: 6. Egységek és harc alrendszer.</li>
+</ul>
+
+<h3 id="f5-1">5.1. Statikus modell</h3>
+<h4>5.1.1. Kapcsolatok</h4>
+<ul>
+  <li>A Building és a ResourceNode is az Entityből származik, így ugyanúgy van helyük és életerejük a térképen, ráadásul az ellenség az épületeket is megtámadhatja.</li>
+  <li>A Faction fogja össze az egyik oldal (a játékos vagy a gépi ellenfél) dolgait: van egy saját nyersanyagkészlete (Resources), egy technológiafája (TechTree), és ide tartoznak a saját épületei és egységei is.</li>
+  <li>Minden épületnek pontosan egy típusa van (BuildingType), amiben az állandó adatai szerepelnek. Egy típusból több épület is állhat egyszerre a pályán.</li>
+  <li>A Buildingből származik a DropOffBuilding (főépület, raktár), a ProductionBuilding (farm, kőfejtő, kohó), a House (lakóház), a Watchtower (őrtorony) és a Blacksmith (kovácsműhely). A fal egy egyszerű Building, különösebb működése nincs.</li>
+  <li>A főépületnek és a kaszárnyának van egy TrainingQueue-ja (6. fejezet), amiben az egységeket lehet képezni.</li>
+  <li>A kőfejtő és a kohó egy ResourceNode-ra (sziklára vagy érclelőhelyre) épül rá, míg a farm üres területre húzható fel.</li>
+  <li>Ha egy munkás (Worker, 6. fejezet) gyűjt, kap egy GatherTaskot, ami pontosan tudja, hogy melyik forráshoz vagy kitermelő épülethez jár, és mennyi nyersanyagot visz éppen.</li>
+  <li>A TechTree tartalmazza a megvásárolható fejlesztéseket (Upgrade), amiket egy meccs alatt egyszer lehet megvenni.</li>
+</ul>
+
+<h4>5.1.2. Attribútumok</h4>
+<p>Az épületek állandó adatai (költség, építési idő, életerő, szükséges fejlődési szint) a konfigurációs fájlban találhatók (F-EPIT-07), és a játék induláskor tölti be őket a BuildingType-ba. Ugyanígy a konfigurációs fájlból jönnek a szintlépés meg a fejlesztések árai, valamint az épületekbe beosztható munkások maximális száma is (F-TECH-05).</p>
+<p>Egy konkrét épületnél csak az van eltárolva, ami játék közben változik: mennyi életereje maradt (ezt az Entitytől kapja), milyen állapotban van (szellemkép, épül, kész, lerombolva), és hol tart az építése. A Resources osztály egész számokban tárolja az öt nyersanyagot (fa, arany, kő, acél, étel), valamint a jelenlegi és a maximális népességet, hogy kerekítési hiba miatt se vesszen el egyetlen egységnyi nyersanyag sem (F-GAZD-05). Az egyes osztályok adatai részletesen az 5.6 pontban találhatók.</p>
+
+<h4>5.1.3. Bázisosztályok</h4>
+<p>A Building a közös ős minden épülethez: megnézi, hogy szabad-e a hely a lerakáshoz, számolja az építés menetét, és kezeli az épület megsemmisülését. Magából a Buildingből csak a fal készül, mert annak nincs külön feladata, csupán elzárja az utat.</p>
+<p>A többi épület azért kapott külön osztályt, mert mindegyik mást csinál játék közben: a DropOffBuilding átveszi a munkásoktól a nyersanyagot, a ProductionBuilding a beosztott munkások száma alapján folyamatosan termel, a House megnöveli a népességi korlátot, a Watchtower magától lövi a közelbe érő ellenséget (F-EPIT-08), a Blacksmithben pedig fejlesztéseket lehet vásárolni (F-TECH-04).</p>
+
+<h3 id="f5-2">5.2. Dinamikus modell</h3>
+<h4>5.2.1. UC-01 Épület lerakása</h4>
+<p>A játékos kijelöl egy munkást, megnyitja az építési menüt, és kiválaszt egy épületet (F-EPIT-01). Ha az adott épület a technológiafa miatt még nem érhető el, vagy nincs rá elég nyersanyag, a gomb szürke marad, és kattintáskor a HUD kiírja az okot (F-EPIT-02, F-TECH-03). Ha minden rendben, az épület Szellemkép állapotban megjelenik az egér alatt.</p>
+<p>Amíg a játékos mozgatja az egeret, a rendszer minden mezőnél ellenőrzi, hogy szabad-e a hely: ha igen, zöld, ha foglalt, piros a körvonal (F-EPIT-03). Jobb klikkre vagy ESC-re az építés megszakad, és nem vonódik le semmi (F-EPIT-04). Bal klikkre a Resources levonja az épület árát, az épület Épül állapotba kerül, a mezők járhatatlanná válnak, a munkás pedig elindul, hogy felépítse (F-EPIT-05).</p>
+<figure>
+  <img src="kepek/anal5_szekv_uc01.png" alt="5.1. ábra: UC-01 Épület lerakása (szekvenciadiagram)" style="max-width: 850px; max-height: 75vh; width: auto; height: auto;">
+  <figcaption>5.1. ábra: UC-01 Épület lerakása (szekvenciadiagram)</figcaption>
+</figure>
+
+<h4>5.2.2. Az Épület állapotai</h4>
+<p>Egy épület négyféle állapotban lehet:</p>
+<ul>
+  <li>Szellemkép: a játékos még csak keresi neki a helyet a térképen. Ekkor még nincs levonva az ára, és nem akadályozza a mozgást. Megszakítással eltűnik, bal klikkel pedig átmegy Épül állapotba.</li>
+  <li>Épül: az épület már a pályán van, de még félkész. A munkás folyamatosan növeli a készültségét. Ha a munkást elterelik vagy megölik, egy másik saját munkás bármikor folytathatja (F-EPIT-06).</li>
+  <li>Kész: elérte a 100%-os készültséget, innentől működik (lehet benne képezni, kutatni, termelni vagy lőni).</li>
+  <li>Lerombolva: elfogyott az életereje (építés közben is lerombolhatják). Ekkor eltűnik a térképről, és az alatta lévő mezők újra járhatóvá válnak. Ha a főépület semmisül meg, a tulajdonos elveszíti a meccset (F-HARC-18).</li>
+</ul>
+<figure>
+  <img src="kepek/anal5_allapot_epulet.png" alt="5.2. ábra: Az Épület állapotdiagramja" style="max-width: 850px; max-height: 75vh; width: auto; height: auto;">
+  <figcaption>5.2. ábra: Az Épület állapotdiagramja</figcaption>
+</figure>
+
+<h4>5.2.3. A munkás gyűjtési ciklusa</h4>
+<p>Amikor a munkás gyűjtési parancsot kap (GatherTask), a nyersanyag típusától függően kétféleképpen működik:</p>
+<ul>
+  <li>Kézi gyűjtés (fa, aranyér): a munkás odamegy a lelőhelyhez (MoveToSource), és kitermeli az adagot (Harvest). Ha megtelt a keze, elviszi a legközelebbi főépületbe vagy raktárba (MoveToDropOff), leadja, majd magától visszamegy ugyanoda (F-GAZD-03). Ha a lelőhely kiürül, eltűnik a térképről, a munkás pedig keres egy közelit, vagy megáll (F-GAZD-04).</li>
+  <li>Épületben végzett munka (kő, acél, étel): a munkás odamegy a kitermelő épülethez (farm, kőfejtő, kohó), és belép oda (WorkingInBuilding). Innentől nem hordja a nyersanyagot, hanem az épület folyamatosan termel, amíg új parancsot nem kap a munkás (F-GAZD-02).</li>
+</ul>
+<figure>
+  <img src="kepek/anal5_allapot_gyujtes.png" alt="5.3. ábra: A munkás gyűjtési ciklusának állapotdiagramja" style="max-width: 850px; max-height: 75vh; width: auto; height: auto;">
+  <figcaption>5.3. ábra: A munkás gyűjtési ciklusának állapotdiagramja</figcaption>
+</figure>
+
+<h3 id="f5-3">5.3. Funkcionális modell</h3>
+<h4>5.3.1. Nyersanyag-termelés és levonás</h4>
+<p>Amit tudni kell hozzá: a munkás mit gyűjt, vagy hány munkás dolgozik egy kitermelő épületben, illetve mennyibe kerül egy épület vagy egység. Az eredmény a frissített nyersanyagkészlet.</p>
+<ol>
+  <li>Kézi gyűjtésnél a munkás minden csapással csökkenti a ResourceNode maradék készletét. Amikor eléri a teherbírását és odaér a főépülethez vagy raktárhoz, a Resources add() metódusa egész számmal megnöveli a fát vagy az aranyat.</li>
+  <li>Kitermelő épületnél (farm, kőfejtő, kohó) minden képkockán a beosztott munkások számával arányosan nő az épület belső tört számlálója (accumulator). Amint ez eléri az 1-et, levonunk belőle 1-et, és +1 egész nyersanyag kerül a Resources-be. Így a kerekítés miatt nem vész el nyersanyag (SRS 5.5).</li>
+  <li>Levonás előtt a Resources hasEnough() metódusa ellenőrzi, hogy minden kért nyersanyagból van-e elegendő. Csak ha mindegyik megvan, akkor vonja le egyszerre az árat, így egyetlen érték sem mehet mínuszba (F-GAZD-05).</li>
+</ol>
+
+<h4>5.3.2. A szintlépés feldolgozási lépései</h4>
+<p>Amit tudni kell hozzá: a frakció jelenlegi szintje, a meglévő kész épületei és a nyersanyagkészlete. Az eredmény a következő fejlődési szint elérése.</p>
+<ol>
+  <li>A játékos a főépületben rákattint a szintlépés gombra.</li>
+  <li>A TechTree ellenőrzi, hogy nem értük-e még el a 3. szintet, nem folyik-e már szintlépés, megvan-e az ára, és áll-e már a kötelező épület: a 2. szinthez kell egy kész kaszárnya, a 3. szinthez egy kész kovácsműhely (F-TECH-02).</li>
+  <li>Ha minden feltétel teljesül, a Resources levonja a szintlépés árát, és elindul a visszaszámlálás.</li>
+  <li>Minden képkockán csökken a hátralévő idő. Amikor eléri a nullát, az aktuális szint eggyel nő.</li>
+  <li>A HUD frissíti az építési és képzési gombokat: az új szinthez tartozó épületek és katonák innentől nem szürkék, hanem választhatók (F-TECH-03).</li>
+</ol>
+
+<h3 id="f5-4">5.4. Operációk</h3>
+<p>Az osztályok fő műveletei (hogy mit kapnak és mit csinálnak, az az 5.6 pont táblázataiban szerepel):</p>
+<ul>
+  <li>Resources: hasEnough(), deduct(), add(), increaseMaxPopulation(), hasFreePopulation()</li>
+  <li>ResourceNode: harvest(), isDepleted()</li>
+  <li>GatherTask: update(), findNearestDropOff()</li>
+  <li>Building: canPlaceAt(), advanceBuild(), destroy()</li>
+  <li>BuildingType: load()</li>
+  <li>DropOffBuilding: deposit()</li>
+  <li>ProductionBuilding: assignWorker(), removeWorker(), update()</li>
+  <li>House: onComplete()</li>
+  <li>Watchtower: update()</li>
+  <li>Blacksmith: research()</li>
+  <li>TechTree: canAdvance(), startAdvance(), update(), isUnlocked()</li>
+  <li>Upgrade: apply()</li>
+</ul>
+
+<h3 id="f5-5">5.5. Az alrendszer osztálydiagramja</h3>
+<p>A szürke osztályok más fejezetekhez tartoznak, ott vannak leírva.</p>
+<figure>
+  <img src="kepek/anal5_osztalydiagram.png" alt="5.4. ábra: A Gazdaság és építkezés alrendszer osztálydiagramja" style="max-width: 1050px; max-height: 95vh; width: auto; height: auto;">
+  <figcaption>5.4. ábra: A Gazdaság és építkezés alrendszer osztálydiagramja</figcaption>
+</figure>
+
+<h3 id="f5-6">5.6. Osztályok listája</h3>
+
+<h4>Faction</h4>
+<p><b>Felelősség:</b> egy résztvevő fél (a játékos vagy a gépi ellenfél) gazdasági és technológiai adatait fogja össze.</p>
+<p><b>Együttműködők:</b> Resources, TechTree, Building, Unit (6. fejezet), AIController (7. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>name</td><td>szöveg</td><td>A fél neve (pl. "Player" vagy "AI").</td></tr>
+  <tr><td>isPlayer</td><td>igaz/hamis</td><td>Megmondja, hogy ember irányítja-e vagy az MI.</td></tr>
+  <tr><td>resources</td><td>Resources</td><td>A fél saját nyersanyag- és népesség-nyilvántartása.</td></tr>
+  <tr><td>techTree</td><td>TechTree</td><td>A fél aktuális fejlődési szintje és megvett fejlesztései.</td></tr>
+</table>
+
+<h4>Resources</h4>
+<p><b>Felelősség:</b> nyilvántartja az öt nyersanyagot és a népességet, és gondoskodik róla, hogy egyik se mehessen mínuszba (F-GAZD-01, F-GAZD-05, F-GAZD-06).</p>
+<p><b>Együttműködők:</b> Faction, Building, TrainingQueue (6. fejezet), HUD (4. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>wood, gold, stone, steel, food</td><td>egész szám</td><td>Az egyes nyersanyagok aktuális mennyisége.</td></tr>
+  <tr><td>population</td><td>egész szám</td><td>Hány élő egysége van éppen a félnek.</td></tr>
+  <tr><td>maxPopulation</td><td>egész szám</td><td>Mennyi egysége lehet maximum (lakóházakkal nő, de legfeljebb 200).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>hasEnough</td><td>cost: ResourceCost</td><td>Igazat ad, ha mind az öt nyersanyagból megvan a kért mennyiség.</td></tr>
+  <tr><td>deduct</td><td>cost: ResourceCost</td><td>Ha van elég nyersanyag, levonja az árat és igazat ad, különben hamisat.</td></tr>
+  <tr><td>add</td><td>type: ResourceType, amount: int</td><td>Megnöveli a megadott nyersanyag mennyiségét.</td></tr>
+  <tr><td>increaseMaxPopulation</td><td>val: int</td><td>Megnöveli a maxPopulation értékét, de nem engedi a konfigurációs fájlban megadott egységlimit fölé.</td></tr>
+  <tr><td>hasFreePopulation</td><td>nincs</td><td>Igaz, ha a népesség kisebb a maxPopulationnél.</td></tr>
+</table>
+
+<h4>ResourceNode</h4>
+<p><b>Felelősség:</b> egy nyersanyag-lelőhely a térképen (erdő, aranyér, szikla, érclelőhely). Véges mennyiséget tartalmaz, az életerejét az Entity ősosztálytól kapja (F-GAZD-04).</p>
+<p><b>Együttműködők:</b> Entity (ős), GatherTask, ProductionBuilding, Game.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>type</td><td>ResourceType</td><td>Milyen nyersanyagot ad (Fa, Arany, Szikla vagy Érc).</td></tr>
+  <tr><td>remainingAmount</td><td>egész szám</td><td>Mennyi kitermelhető nyersanyag van még benne.</td></tr>
+  <tr><td>requiresBuilding</td><td>igaz/hamis</td><td>Igaz a sziklánál és az ércnél (kőfejtő vagy kohó kell rá), hamis a fánál és az aranyérnél.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>harvest</td><td>amount: int</td><td>Levon a maradék mennyiségből, és visszaadja, mennyit sikerült kivenni. Ha elfogyott, eltávolítja magát a pályáról.</td></tr>
+  <tr><td>isDepleted</td><td>nincs</td><td>Igaz, ha a maradék mennyiség elérte a nullát.</td></tr>
+</table>
+
+<h4>GatherTask</h4>
+<p><b>Felelősség:</b> egy munkás gyűjtési folyamatát irányítja az 5.3. ábra szerint (F-GAZD-03).</p>
+<p><b>Együttműködők:</b> Worker (6. fejezet), ResourceNode, ProductionBuilding, DropOffBuilding, PathFinder (6. fejezet).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>source</td><td>ResourceNode (lehet üres)</td><td>Melyik erdőből vagy aranyérből gyűjt a munkás.</td></tr>
+  <tr><td>building</td><td>ProductionBuilding (lehet üres)</td><td>Melyik farmban, kőfejtőben vagy kohóban dolgozik a munkás.</td></tr>
+  <tr><td>state</td><td>GatherState</td><td>Hol tart éppen a gyűjtési ciklusban (MoveToSource, Harvest, MoveToDropOff, WorkingInBuilding).</td></tr>
+  <tr><td>carriedAmount</td><td>egész szám</td><td>Mennyi fát vagy aranyat cipel éppen a munkás.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>dt: float</td><td>Minden képkockán lépteti a gyűjtést: ha a lelőhelynél van, termel; ha megtelt, elindítja a legközelebbi leadópontra.</td></tr>
+  <tr><td>findNearestDropOff</td><td>nincs</td><td>Megkeresi a munkáshoz legközelebbi kész főépületet vagy raktárat.</td></tr>
+</table>
+
+<h4>Building (közös ős)</h4>
+<p><b>Felelősség:</b> egy épület a térképen. Kezeli a lerakást, a felépülést és a megsemmisülést (F-EPIT-03 - F-EPIT-06).</p>
+<p><b>Együttműködők:</b> Entity (ős), BuildingType, Map, Tile, Worker, TrainingQueue.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>type</td><td>BuildingType</td><td>Milyen épület ez, innen tudja az árát, életerejét és építési idejét.</td></tr>
+  <tr><td>state</td><td>BuildingState</td><td>Hol tart az épület az életciklusában (Ghost, Constructing, Complete, Destroyed).</td></tr>
+  <tr><td>buildProgress</td><td>tört szám (mp)</td><td>Mennyi idő telt el eddig az építésből.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>canPlaceAt</td><td>tile: Tile</td><td>Megnézi, hogy az épület alatti összes mező szabad-e (és kőfejtő vagy kohó esetén megfelelő lelőhelyen van-e).</td></tr>
+  <tr><td>advanceBuild</td><td>dt: float</td><td>Növeli a készültséget. Ha eléri az építési időt, Complete állapotba vált.</td></tr>
+  <tr><td>destroy</td><td>nincs</td><td>Destroyed állapotba kerül, újra járhatóvá teszi a mezőket, és szól a Game-nek, hogy vegye ki.</td></tr>
+</table>
+
+<h4>BuildingType</h4>
+<p><b>Felelősség:</b> egy épületfajta állandó adatai a konfigurációs fájlból (F-EPIT-07).</p>
+<p><b>Együttműködők:</b> ConfigLoader, Building, TechTree.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>name</td><td>szöveg</td><td>Az épület neve a felületen (pl. "Barracks").</td></tr>
+  <tr><td>cost</td><td>ResourceCost</td><td>Mennyi fa, arany, kő és acél kell hozzá.</td></tr>
+  <tr><td>buildTime</td><td>tört szám (mp)</td><td>Mennyi ideig tart felépíteni.</td></tr>
+  <tr><td>maxHealth</td><td>egész szám</td><td>Ennyi életereje van kész állapotban.</td></tr>
+  <tr><td>requiredAge</td><td>egész szám (1-3)</td><td>Melyik fejlődési szinttől építhető.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>config: ConfigLoader</td><td>Beolvassa az épületek adatait. Hibás vagy hiányzó adatnál alapértéket használ (F-MOT-07).</td></tr>
+</table>
+
+<h4>DropOffBuilding, ProductionBuilding, House, Watchtower, Blacksmith</h4>
+<p><b>Felelősség:</b> a Building konkrét leszármazottai, amelyek a saját feladataikat látják el, ha már Complete állapotban vannak.</p>
+<p><b>Együttműködők:</b> Building (ős), Resources, GatherTask, TechTree, Upgrade, Entity.</p>
+<p><b>Attribútumok és operációk</b></p>
+<table border="1">
+  <tr><th>Osztály</th><th>Saját attribútumok</th><th>Főbb operációk</th></tr>
+  <tr><td>DropOffBuilding</td><td>isMainBuilding: bool</td><td><code>deposit(resources, type, amount)</code>: átveszi a munkástól a fát vagy aranyat és jóváírja. Ha főépület és megsemmisül, vége a játéknak.</td></tr>
+  <tr><td>ProductionBuilding</td><td>producedType, assignedWorkers, maxWorkers, accumulator</td><td><code>assignWorker(w)</code>, <code>removeWorker(w)</code>, <code>update(dt, resources)</code>: a beosztott munkások alapján folyamatosan termeli a követ, acélt vagy ételt (F-GAZD-02).</td></tr>
+  <tr><td>House</td><td>populationBonus: int</td><td><code>onComplete(resources)</code>: felépüléskor megnöveli a maxPopulation értékét (F-GAZD-06).</td></tr>
+  <tr><td>Watchtower</td><td>damage, range, attackInterval</td><td><code>update(dt)</code>: megkeresi a hatótávján belüli legközelebbi ellenséget, és meglövi (F-EPIT-08).</td></tr>
+  <tr><td>Blacksmith</td><td>nincs saját adat</td><td><code>research(upgrade, resources)</code>: elindítja egy Upgrade megvásárlását (F-TECH-04).</td></tr>
+</table>
+
+<h4>TechTree és Upgrade</h4>
+<p><b>Felelősség:</b> kezelik a három fejlődési szintet és a kovácsműhelyben megvásárolható egyszeri fejlesztéseket (F-TECH-01 - F-TECH-05).</p>
+<p><b>Együttműködők:</b> Faction, Resources, Building, Blacksmith, ConfigLoader.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>currentAge</td><td>egész szám (1, 2 vagy 3)</td><td>A frakció jelenlegi fejlődési szintje.</td></tr>
+  <tr><td>isUpgrading</td><td>igaz/hamis</td><td>Éppen zajlik-e szintlépés a főépületben.</td></tr>
+  <tr><td>remainingTime</td><td>tört szám (mp)</td><td>Mennyi idő van még hátra a szintlépésből.</td></tr>
+  <tr><td>upgrades</td><td>Upgrade-ek listája</td><td>A kovácsműhelyben elérhető kutatások (név, ár, szorzó, kutatva jelző).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>canAdvance</td><td>resources: Resources</td><td>Ellenőrzi, van-e elég nyersanyag, és megvan-e a kész kaszárnya (2. szint) vagy kovácsműhely (3. szint).</td></tr>
+  <tr><td>startAdvance</td><td>resources: Resources</td><td>Levonja az árat és elindítja a szintlépés időzítőjét.</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Csökkenti a hátralévő időt; ha lejár, növeli a currentAge értékét.</td></tr>
+  <tr><td>isUnlocked</td><td>requiredAge: int</td><td>Igazat ad, ha a currentAge eléri a megadott értéket (a HUD ez alapján szürkíti a gombokat).</td></tr>
+</table>
+
+<h2 id="f6">6. Egységek és harc alrendszer</h2>
+<p>Ebben a részben az egységekről és a harcról van szó, vagyis az SRS F-HARC és F-UTV pontjairól. Ide tartozik az egységek képzése, a mozgás- és támadásparancs, a sebzés kiszámolása és az, hogy az egységek hogyan találnak utat a térképen (A*). A use case-ek közül az UC-02 Egység kiképzése és az UC-03 Ellenség megtámadása tartozik ide.</p>
+<p>Néhány osztály, amit itt használunk, más fejezetben van leírva. Ezek a rajzokon szürkén szerepelnek, leírás nélkül:</p>
+<ul>
+  <li>Entity: közös ős (2. fejezet);</li>
+  <li>Game, Map, Tile, ConfigLoader: 3. Motor alrendszer;</li>
+  <li>Selection, CommandMenu, HUD: 4. Kezelőfelület alrendszer;</li>
+  <li>Building, Faction, Resources, ResourceNode, GatherTask: 5. Gazdaság és építkezés alrendszer;</li>
+  <li>AIController: 7. Gépi ellenfél alrendszer.</li>
+</ul>
+<h3 id="f6-1">6.1. Statikus modell</h3>
+<h4>6.1.1. Kapcsolatok</h4>
+<ul>
+  <li>A Unit őse az Entity. A Building is az Entityből származik, így egységet és épületet ugyanúgy lehet támadni.</li>
+  <li>A Worker és a Soldier a Unitból származik.</li>
+  <li>Minden egységnek pontosan egy típusa van (UnitType). Egy típusból akárhány egység lehet a pályán.</li>
+  <li>Az összes egységet a Game tartja számon. Egy Game van, egység akárhány, akár egy sem. A Game hozza létre és törli is őket.</li>
+  <li>Egy egységnek egyszerre legfeljebb egy parancsa van. A parancs kétféle lehet: MoveCommand vagy AttackCommand. Az AttackCommand tudja, kit kell megtámadni.</li>
+  <li>A főépületnek és a kaszárnyának (Building) is van egy saját TrainingQueue-ja, ami az épülettel együtt jön létre és szűnik meg. A sorban egységtípusok várnak.</li>
+  <li>A TrainingQueue a Resources-ből veszi le az árat, a kész egységet pedig a Game-mel csináltatja meg.</li>
+  <li>A sebzést az egység a DamageCalculatorral számolja ki.</li>
+  <li>Utat az egység a PathFindertől kér. A PathFinder a kéréseket (PathRequest) sorban tartja, ebből egyszerre akárhány lehet.</li>
+  <li>Ha egy keresés kész, abból egy Path lesz, ami mezők (Tile) listája, legalább egy mezővel. Egy egységnek egyszerre legfeljebb egy útvonala van.</li>
+  <li>A Map minden kockája egy Tile. Ez tudja, hogy rá lehet-e lépni, és hogy éppen melyik egység áll rajta.</li>
+</ul>
+<h4>6.1.2. Attribútumok</h4>
+<p>Az egységtípusok adatai (ár, képzési idő, életerő, sebzés, hatótáv, sebesség) a konfigurációs fájlban vannak (F-HARC-04), a játék ezeket a UnitType-ba tölti be. Kell még három adat típusonként, ami az SRS felsorolásából kimaradt: a védelem a sebzés képletéhez (F-HARC-14), a látótáv és a két ütés közti idő pedig az automatikus támadáshoz (F-HARC-12, F-HARC-13). Ezek is a konfigurációs fájlba kerülnek.</p>
+<p>Egy konkrét egységnél csak az van eltárolva, ami játék közben változik: hány életereje maradt (ezt az Entitytől kapja), mit csinál éppen, mi a parancsa, merre megy, és mennyi idő telt el az utolsó ütése óta. A szorzó attól függ, hogy ki kit üt, ezért a szorzókat egy táblázatban a DamageCalculator tárolja. Azt, hogy legfeljebb hány egység lehet a pályán (F-HARC-07), a Game tudja. Az egyes osztályok adatai részletesen a 6.6 pontban vannak.</p>
+<h4>6.1.3. Bázisosztályok</h4>
+<p>A Unit csak közös ős, magából nem csinálunk egységet, csak a Workerből vagy a Soldierből. Ez a kettő azért külön osztály, mert másképp viselkednek: a munkás gyűjt és épít, és magától nem támad (F-HARC-02), a katona viszont rátámad az ellenségre, ha az a közelébe jön (F-HARC-12).</p>
+<p>A közelharci katona, az íjász és a nehézegység ugyanúgy viselkedik, csak a számaik mások (hatótáv, sebzés, sebesség stb.). Ezért nem kaptak külön osztályt, mindhárom egy-egy UnitType. Ha később új egységet akarunk, elég beírni a konfigurációs fájlba.</p>
+<p>A Command is csak közös ős. A MoveCommand és az AttackCommand a saját execute() részében mondja meg az egységnek, mit csináljon és hová menjen.</p>
+<h3 id="f6-2">6.2. Dinamikus modell</h3>
+<h4>6.2.1. UC-02 Egység kiképzése</h4>
+<p>A játékos rákattint a kaszárnyájára (vagy a főépületére), aztán a menüben kiválaszt egy egységet. A kaszárnya (Building) ezt továbbadja a saját TrainingQueue-jának. A sor először megkérdezi a Game-et, hogy belefér-e még egy egység a limitbe, utána a Resources-t, hogy van-e elég fa és arany. Ha minden rendben, rögtön levonja az árat, és beteszi az egységet a sor végére. Minden képkockán csökken a sor elején álló egység hátralévő ideje, és amikor eléri a nullát, a Game megcsinálja az új egységet az épület melletti első szabad mezőn.</p>
+<p>Ha nincs elég nyersanyag, a képzés el sem indul, és a HUD kiírja, hogy mi a gond (F-HARC-06). A többi hibás esetet (tele van a létszám, lerombolták a kaszárnyát) az RTERV 4. fejezete rajzolja le.</p>
+<figure>
+  <img src="kepek/anal6_szekv_uc02.png" alt="6.1. ábra: UC-02 Egység kiképzése (szekvenciadiagram)">
+  <figcaption>6.1. ábra: UC-02 Egység kiképzése (szekvenciadiagram)</figcaption>
+</figure>
+<h4>6.2.2. UC-03 Ellenség megtámadása</h4>
+<p>A játékos kijelöl egy vagy több egységet, és jobb gombbal rákattint egy ellenséges egységre vagy épületre (F-HARC-10). Ekkor a Selection minden kijelölt egységnek ad egy AttackCommandot. Ha a célpont túl messze van, az egység utat kér a PathFindertől, és elindul felé (F-HARC-11). Amikor elég közel ér, megáll és ütni kezdi. Az ütések között mindig eltelik a típusnál megadott idő. Minden ütésnél a DamageCalculator kiszámolja, mennyit sebez, és ennyi lejön a célpont életerejéből (F-HARC-13, F-HARC-15). Ha a célpont életereje elfogy, eltűnik a térképről (F-HARC-16), a támadó pedig megáll. Ha egy főépület tűnt el, vége a meccsnek (F-HARC-18).</p>
+<figure>
+  <img src="kepek/anal6_szekv_uc03.png" alt="6.2. ábra: UC-03 Ellenség megtámadása (szekvenciadiagram)">
+  <figcaption>6.2. ábra: UC-03 Ellenség megtámadása (szekvenciadiagram)</figcaption>
+</figure>
+<h4>6.2.3. A Unit állapotai</h4>
+<p>Egy egység négyféle állapotban lehet:</p>
+<ul>
+  <li>Idle (tétlen): áll, nincs dolga. A katona közben figyel, és ha ellenség kerül a látótávjába, nekimegy (F-HARC-12).</li>
+  <li>Moving (mozog): megy az útján. Ha mozgásparancsot kapott, akkor az ellenség miatt sem áll meg. Ha a célt nem lehet elérni, a hozzá legközelebbi elérhető mezőig megy, és ott megáll (F-UTV-04).</li>
+  <li>Attacking (támad): elég közel van a célponthoz, és üti. Ha a célpont elmegy, az egység utánamegy, vagyis újra Moving állapotba kerül.</li>
+  <li>Dead (meghal): elfogyott az életereje. Innen már nem kerül más állapotba, egyszerűen eltűnik a térképről.</li>
+</ul>
+<p>Új parancsot bármikor kaphat, amíg él, és ilyenkor a régit elfelejti. Hogy a munkás hogyan gyűjt és épít, az az 5. fejezetben van, a munkás gyűjtésénél.</p>
+<figure>
+  <img src="kepek/anal6_allapot_egyseg.png" alt="6.3. ábra: A Unit állapotdiagramja">
+  <figcaption>6.3. ábra: A Unit állapotdiagramja</figcaption>
+</figure>
+<h3 id="f6-3">6.3. Funkcionális modell</h3>
+<h4>6.3.1. Sebzésszámítás</h4>
+<p>Amit tudni kell hozzá: a támadó típusa (mennyit sebez és milyen fajta), meg a célpont fajtája és védelme. A fajta lehet munkás, közelharci, íjász, nehéz vagy épület. Az eredmény az, hogy mennyi életereje marad a célpontnak.</p>
+<ol>
+  <li>A DamageCalculator megkeresi a táblázatban, hogy ez a fajta támadó ennél a fajta célpontnál mekkora szorzót kap.</li>
+  <li>A támadó sebzését megszorozza ezzel, és lefelé kerekíti egész számra.</li>
+  <li>Kivonja belőle a célpont védelmét.</li>
+  <li>Ha 1-nél kevesebb jön ki, akkor is 1 lesz (F-HARC-14). Véletlen nincs benne (F-HARC-15).</li>
+  <li>Ennyit levon a célpont életerejéből. Ha az életerő 0 vagy kevesebb lesz, a célpont meghal.</li>
+</ol>
+<p>Egy példa kitalált számokkal (az igaziak majd a konfigurációs fájlban lesznek). Az SRS szerint a nehézegység főleg épületek ellen jó. Mondjuk 20-at sebez, épület ellen 2-es a szorzója, és az épület védelme 5. Ekkor 20 x 2 - 5 = 35 a sebzés. Egy íjász (8-as sebzés, 0,5-ös szorzó) ugyanennek az épületnek csak max(1, 4 - 5) = 1-et sebez.</p>
+<h4>6.3.2. Az A* útvonalkeresés lépései</h4>
+<p>Amit tudni kell hozzá: honnan indul az egység, hová akar menni, és melyik mezőre lehet lépni. Az eredmény egy Path, vagyis mezők listája, ami üres is lehet.</p>
+<ol>
+  <li>Az induló mezőt felírjuk a még megnézendő mezők közé. Odáig 0 lépés kell, a célig pedig a légvonalbeli távolsággal becsüljük az utat.</li>
+  <li>A megnézendők közül mindig azt vesszük elő, amelyiken át várhatóan a legrövidebb úton érünk célba. Ha ez maga a cél, kész vagyunk.</li>
+  <li>Ezt a mezőt kipipáljuk, és megnézzük a 8 szomszédját. Amelyikre nem lehet lépni, vagy már ki van pipálva, azzal nem foglalkozunk. Átlósan csak akkor lehet lépni, ha a két mellette lévő mezőre is lehet, így az egység nem vágja le az épületek sarkát.</li>
+  <li>Egyenesen egy lépés 1-be kerül, átlósan 1,4-be. Ha egy szomszédhoz így rövidebb utat találtunk, mint eddig, felírjuk az új hosszt és azt, honnan jöttünk.</li>
+  <li>Közben azt is figyeljük, melyik mező volt eddig a legközelebb a célhoz.</li>
+  <li>Ha elfogynak a megnézendő mezők, a célhoz nem lehet eljutni. Ilyenkor a célhoz legközelebbi mezőig adjuk vissza az utat (F-UTV-04). Ha ez éppen az induló mező, az út üres, és az egység nem mozdul.</li>
+  <li>Az utat a végéről visszafelé rakjuk össze, mindig megnézve, melyik mezőről jöttünk.</li>
+</ol>
+<p>Minden mezőt csak egyszer pipálunk ki, ezért a keresés biztosan véget ér akkor is, ha nincs út (F-UTV-05).</p>
+<h4>6.3.3. A keresés elosztása több képkockára</h4>
+<p>Ha 100 egység egyszerre kap parancsot, és mindegyiknek egyszerre számolnánk utat, megakadna a játék (F-UTV-08, F-HARC-19). Ezért a PathFinder sorba állítja a kéréseket, és egy képkockán csak annyi mezőt néz meg, amennyit a konfigurációs fájl enged. Ha egy keresés nem fér bele, ott folytatja a következő képkockán, ahol abbahagyta, mert a PathRequest megjegyzi, hol tartott. Amíg az egység az útjára vár, egy helyben áll.</p>
+<p>Ha valaki épületet tesz le, a Map szól a PathFindernek, hogy mely mezők változtak. Akinek az útja ezeken megy át, az új utat kap (F-UTV-07). Az egységek nem mehetnek át egymáson (F-UTV-06), ezért lépés előtt minden egység megnézi, áll-e valaki a következő mezőn. Ha igen, vár egy kicsit, és ha a mező utána sem szabadul fel, új utat kér. Először ezt az egyszerű megoldást csináljuk meg, az alakzatban mozgás csak akkor jön, ha tényleg kell (F-UTV-09).</p>
+<h3 id="f6-4">6.4. Operációk</h3>
+<p>Az osztályok fő műveletei (hogy mit kapnak és mit csinálnak, az a 6.6 pont táblázataiban van):</p>
+<ul>
+  <li>Unit: receiveCommand(), update(), pathReady(), inRange(), attack(), takeDamage(), destroy()</li>
+  <li>Worker: startGathering(), startBuilding()</li>
+  <li>Soldier: findEnemy()</li>
+  <li>UnitType: load()</li>
+  <li>TrainingQueue: enqueue(), update()</li>
+  <li>Command, MoveCommand, AttackCommand: execute(), isValid()</li>
+  <li>DamageCalculator: calculate(), load()</li>
+  <li>PathFinder: request(), update(), mapChanged()</li>
+  <li>PathRequest: step(), result()</li>
+  <li>Path: next(), isFinished(), crosses()</li>
+</ul>
+<h3 id="f6-5">6.5. Az alrendszer osztálydiagramja</h3>
+<p>A szürke osztályok más fejezetekhez tartoznak, ott vannak leírva.</p>
+<figure>
+  <img src="kepek/anal6_osztalydiagram.png" alt="6.4. ábra: Az Egységek és harc alrendszer osztálydiagramja">
+  <figcaption>6.4. ábra: Az Egységek és harc alrendszer osztálydiagramja</figcaption>
+</figure>
+<h3 id="f6-6">6.6. Osztályok listája</h3>
+<h4>Unit (közös ős)</h4>
+<p><b>Felelősség:</b> egy egység a pályán. Megcsinálja, amit parancsba kapott, megy az útján, támad, és meghal, ha elfogy az életereje.</p>
+<p><b>Együttműködők:</b> UnitType, Command, Path, PathFinder, DamageCalculator, Game, Tile, Entity (ős).</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>type</td><td>UnitType</td><td>Milyen egység ez, innen tudja a sebzését, hatótávját, sebességét stb.</td></tr>
+  <tr><td>state</td><td>UnitState: Idle, Moving, Attacking vagy Dead</td><td>Mit csinál éppen (6.3. ábra).</td></tr>
+  <tr><td>command</td><td>Command (lehet üres)</td><td>Az éppen kapott parancs.</td></tr>
+  <tr><td>path</td><td>Path (lehet üres)</td><td>Az út, amin éppen megy.</td></tr>
+  <tr><td>timeSinceAttack</td><td>float (mp)</td><td>Mennyi idő telt el az utolsó ütés óta. Ha eléri a két ütés közti időt, jöhet a következő.</td></tr>
+</table>
+<p>Az életerőt, a gazdáját és a helyét az Entitytől kapja.</p>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>receiveCommand</td><td>p: Command</td><td>Elfelejti a régi parancsot, megjegyzi az újat, és szól neki, hogy induljon (p.execute(this)).</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Minden képkockán lefut. Ha az egység mozog, lép egyet az útján. Ha támad, növeli az utolsó ütés óta eltelt időt, és ha letelt, üt.</td></tr>
+  <tr><td>pathReady</td><td>u: Path</td><td>Ezt a PathFinder hívja, amikor megvan az út. Ha az út üres, az egység áll tovább, különben elindul.</td></tr>
+  <tr><td>inRange</td><td>c: Entity</td><td>Megmondja, hogy a célpont elég közel van-e ahhoz, hogy üsse.</td></tr>
+  <tr><td>attack</td><td>c: Entity</td><td>Kiszámoltatja a sebzést, levonja a célponttól (c.takeDamage()), és újraindítja az időmérést.</td></tr>
+  <tr><td>takeDamage</td><td>damage: int</td><td>Levonja az életerőből. Ha elfogyott, meghívja a destroy() részt.</td></tr>
+  <tr><td>destroy</td><td>nincs</td><td>Dead állapotba kerül, felszabadítja a mezőt, és szól a Game-nek, hogy vegye ki.</td></tr>
+</table>
+<h4>Worker</h4>
+<p><b>Felelősség:</b> a munkás. Mindent tud, amit egy egység, de ezen felül gyűjteni és építeni is tud. Magától nem támad, csak ha a játékos megmondja neki (F-HARC-02).</p>
+<p><b>Együttműködők:</b> Unit (ős), GatherTask, Building, ResourceNode.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>task</td><td>GatherTask vagy Building (lehet üres)</td><td>Amit éppen gyűjt vagy épít. A gyűjtés menete az 5. fejezetben van.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>startGathering</td><td>node: ResourceNode</td><td>Elindítja a gyűjtést ennél a forrásnál, és utat kér mellé.</td></tr>
+  <tr><td>startBuilding</td><td>b: Building</td><td>Megjegyzi, mit kell építenie, és utat kér mellé.</td></tr>
+</table>
+<h4>Soldier</h4>
+<p><b>Felelősség:</b> harcos egység (közelharci, íjász vagy nehéz). Ha áll, figyel, és ha ellenség jön a látótávjába, megtámadja (F-HARC-12).</p>
+<p><b>Együttműködők:</b> Unit (ős), Game, AttackCommand.</p>
+<p>Saját adata nincs, mindent a Unittól és a típusától kap.</p>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>findEnemy</td><td>nincs</td><td>Akkor fut le, ha a katona áll. Megkérdezi a Game-et, van-e ellenség a látótávjában, és ha van, a legközelebbit megtámadja. Ha a katona mozgásparancsot kapott, ez nem fut le.</td></tr>
+</table>
+<h4>UnitType</h4>
+<p><b>Felelősség:</b> egy egységfajta adatai, amik játék közben nem változnak. A konfigurációs fájlból jönnek (F-HARC-04). Minden fajtából egy van, és az összes ilyen egység ezt használja.</p>
+<p><b>Együttműködők:</b> ConfigLoader, Unit, TrainingQueue, DamageCalculator.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>name</td><td>string</td><td>Ez látszik a HUD-on, pl. "Archer".</td></tr>
+  <tr><td>category</td><td>Worker, Melee, Archer vagy Heavy</td><td>Ez alapján keressük a szorzót, és ebből derül ki, hogy munkás vagy katona lesz belőle.</td></tr>
+  <tr><td>woodCost, goldCost</td><td>int</td><td>Ennyibe kerül a képzés.</td></tr>
+  <tr><td>trainTime</td><td>float (mp)</td><td>Ennyi ideig tart a képzés.</td></tr>
+  <tr><td>maxHealth</td><td>int</td><td>Ennyi életerővel születik az egység.</td></tr>
+  <tr><td>baseDamage</td><td>int</td><td>Ebből indul a sebzés kiszámolása.</td></tr>
+  <tr><td>armor</td><td>int</td><td>Ennyivel kevesebbet sebeznek rajta.</td></tr>
+  <tr><td>range</td><td>float (mező)</td><td>Milyen messziről tud ütni.</td></tr>
+  <tr><td>sightRange</td><td>float (mező)</td><td>Milyen messziről veszi észre az ellenséget.</td></tr>
+  <tr><td>speed</td><td>float (mező/mp)</td><td>Milyen gyorsan megy.</td></tr>
+  <tr><td>attackInterval</td><td>float (mp)</td><td>Mennyi idő telik el két ütés között.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>cfg: ConfigLoader</td><td>Beolvassa az összes fajta adatait. Ha valami hiányzik vagy rossz, egy alapértéket használ helyette (F-MOT-07).</td></tr>
+</table>
+<h4>TrainingQueue</h4>
+<p><b>Felelősség:</b> egy épület (főépület vagy kaszárnya) képzési sora. Megnézi, van-e elég nyersanyag, levonja az árat, méri az időt, és a végén megcsináltatja az egységet (F-HARC-05, F-HARC-06).</p>
+<p><b>Együttműködők:</b> Building, UnitType, Resources, Game, HUD.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>items</td><td>Queue&lt;UnitType&gt;</td><td>A képzésre váró egységek sorrendben.</td></tr>
+  <tr><td>remainingTime</td><td>float (mp)</td><td>Mennyi van még hátra a sor elején álló egységből.</td></tr>
+  <tr><td>building</td><td>Building</td><td>Melyik épület sora ez. Az új egység mellette jelenik meg.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>enqueue</td><td>t: UnitType</td><td>Megnézi a limitet és a nyersanyagot. Ha valami nem stimmel, nemet mond, és a HUD kiírja, mi a baj. Ha minden jó, levonja az árat, és beteszi az egységet a sor végére.</td></tr>
+  <tr><td>update</td><td>dt: float</td><td>Csökkenti a hátralévő időt. Ha elfogyott, megcsináltatja az egységet a Game-mel, és jön a következő.</td></tr>
+</table>
+<h4>Command (közös ős)</h4>
+<p><b>Felelősség:</b> ami minden parancsban közös.</p>
+<p><b>Együttműködők:</b> Unit, Selection (ez csinálja a játékos parancsait), AIController.</p>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>execute</td><td>e: Unit</td><td>Itt nincs kidolgozva, a MoveCommand és az AttackCommand mondja meg, mit csináljon az egység.</td></tr>
+  <tr><td>isValid</td><td>nincs</td><td>Megmondja, hogy a parancsot még végre lehet-e hajtani.</td></tr>
+</table>
+<h4>MoveCommand</h4>
+<p><b>Felelősség:</b> elküldi az egységet egy adott mezőre. Útközben az egység nem áll meg harcolni.</p>
+<p><b>Együttműködők:</b> Command (ős), PathFinder.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>destination</td><td>Tile</td><td>Ide kell menni.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>execute</td><td>e: Unit</td><td>Utat kér az egységnek a célhoz.</td></tr>
+  <tr><td>isValid</td><td>nincs</td><td>Mindig igaz.</td></tr>
+</table>
+<h4>AttackCommand</h4>
+<p><b>Felelősség:</b> megtámadtat egy célpontot. Ha kell, az egység előbb odamegy (F-HARC-11).</p>
+<p><b>Együttműködők:</b> Command (ős), Entity, PathFinder.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>target</td><td>Entity</td><td>Az egység vagy épület, amit meg kell támadni.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>execute</td><td>e: Unit</td><td>Ha a célpont elég közel van, az egység rögtön támad. Ha nincs, utat kér mellé.</td></tr>
+  <tr><td>isValid</td><td>nincs</td><td>Igaz, amíg a célpont él.</td></tr>
+</table>
+<h4>DamageCalculator</h4>
+<p><b>Felelősség:</b> kiszámolja, mennyit sebez egy ütés, a 6.3.1 pont szerint (F-HARC-14, F-HARC-15).</p>
+<p><b>Együttműködők:</b> Unit, UnitType, Entity, ConfigLoader.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>multipliers</td><td>Map&lt;(Category, Category), float&gt;</td><td>A szorzók, pl. nehézegység épület ellen 2,0. A konfigurációs fájlból jön.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>calculate</td><td>t: UnitType, c: Entity</td><td>Visszaadja a sebzést: max(1, alapsebzés x szorzó - védelem).</td></tr>
+  <tr><td>load</td><td>cfg: ConfigLoader</td><td>Beolvassa a szorzókat. Ahol nincs megadva szorzó, ott 1-et használ.</td></tr>
+</table>
+<h4>PathFinder</h4>
+<p><b>Felelősség:</b> A*-gal utat keres, a munkát elosztja több képkockára (F-UTV-03, F-UTV-08), és új utat keres, ha a térkép megváltozik (F-UTV-07).</p>
+<p><b>Együttműködők:</b> PathRequest, Path, Tile, Map, Unit.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>requests</td><td>Queue&lt;PathRequest&gt;</td><td>A még be nem fejezett keresések.</td></tr>
+  <tr><td>budgetPerFrame</td><td>int</td><td>Egy képkockán legfeljebb ennyi mezőt néz meg. A konfigurációs fájlból jön.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>request</td><td>u: Unit, goal: Tile</td><td>Új kérést tesz a sor végére. Ha az egységnek már volt kérése, azt eldobja.</td></tr>
+  <tr><td>update</td><td>nincs</td><td>Képkockánként egyszer fut le. A sor elején lévő kéréseken dolgozik, amíg el nem fogy a keret. Ha egy út elkészült, odaadja az egységnek (pathReady()).</td></tr>
+  <tr><td>mapChanged</td><td>tiles: List&lt;Tile&gt;</td><td>Akinek az útja ezeken a mezőkön megy át, annak újra keres utat.</td></tr>
+</table>
+<h4>PathRequest</h4>
+<p><b>Felelősség:</b> egy félbehagyott keresés, hogy a következő képkockán ott lehessen folytatni, ahol abbamaradt.</p>
+<p><b>Együttműködők:</b> PathFinder, Tile, Unit, Path.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>requester</td><td>Unit</td><td>Kinek kell az út.</td></tr>
+  <tr><td>start, goal</td><td>Tile</td><td>Honnan indul és hová megy.</td></tr>
+  <tr><td>openList</td><td>PriorityQueue&lt;Tile&gt; (becsült úthossz szerint)</td><td>A még megnézendő mezők.</td></tr>
+  <tr><td>closedList</td><td>List&lt;Tile&gt;</td><td>A már kipipált mezők.</td></tr>
+  <tr><td>closest</td><td>Tile</td><td>Az eddig talált, célhoz legközelebbi mező (F-UTV-04).</td></tr>
+  <tr><td>done</td><td>bool</td><td>Véget ért-e már a keresés.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>step</td><td>n: int</td><td>Legfeljebb n mezőt néz meg a 6.3.2 pont szerint, és visszaadja, hányat nézett meg.</td></tr>
+  <tr><td>result</td><td>nincs</td><td>Ha kész a keresés, összerakja belőle az utat.</td></tr>
+</table>
+<h4>Path</h4>
+<p><b>Felelősség:</b> az út, amin egy egység megy, és hogy hol tart rajta.</p>
+<p><b>Együttműködők:</b> Unit, Tile.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>tiles</td><td>List&lt;Tile&gt;</td><td>Az út mezői sorban.</td></tr>
+  <tr><td>index</td><td>int</td><td>Hányadik mező jön.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>next</td><td>nincs</td><td>Visszaadja a következő mezőt.</td></tr>
+  <tr><td>isFinished</td><td>nincs</td><td>Igaz, ha az egység már az utolsó mezőn van.</td></tr>
+  <tr><td>crosses</td><td>tiles: List&lt;Tile&gt;</td><td>Igaz, ha a hátralévő út átmegy valamelyik megadott mezőn.</td></tr>
+</table>
+
+<h2 id="f7">7. Gépi ellenfél alrendszer</h2>
+<p>Ez a rész a gépi ellenfélről szól, vagyis az SRS F-MI pontjairól. Az ellenfél előre megírt szabályok szerint játszik (F-MI-01). A Use case nem tartozik hozzá, mivel nem a játékos kezeli, hanem a játékos ellen játszik.</p>
+<p>Az MI pontosan úgy játszik, ahogy a játékos. Egységet a TrainingQueue enqueue() résszel képez, parancsot a Unit receiveCommand() résszel ad, építeni pedig ugyanúgy épít, ahogy az 5. fejezetben le van írva. Van saját Factionje és saját Resources-e, így nem tud csalni ezáltal nem kap több nyersanyagot, és jobb szorzói sincsenek (F-MI-02).</p>
+<p>Más fejezetből használt osztályok, amiket itt nem írunk le újra: Game, Map, Tile, ConfigLoader (3. fejezet), Faction, Building, Resources, ResourceNode (5. fejezet), Unit, Worker, Soldier, TrainingQueue, MoveCommand, AttackCommand, PathFinder (6. fejezet).</p>
+<h3 id="f7-1">7.1. Statikus modell</h3>
+<h4>7.1.1. Kapcsolatok</h4>
+<ul>
+  <li>Egy meccsen egy AIController van, és ez egy Factiont irányít.</li>
+  <li>Az AIController egy Difficultyt használ. A szintek (könnyű, normál) a konfigurációs fájlban vannak.</li>
+  <li>Az AIControllernek két része van: egy BaseBuildingBehavior és egy AttackBehavior. Ezek vele együtt jönnek létre és szűnnek meg.</li>
+  <li>A BaseBuildingBehavior egy BuildOrdert követ, ami egyszerűen azoknak az épületeknek a listája, amiket sorban fel kell húzni.</li>
+  <li>Az AttackBehaviornak egyszerre legfeljebb egy AttackWave-je van. Egy hullám az MI néhány katonájából áll, legalább egyből.</li>
+  <li>Hogy hol vannak a saját és az ellenséges egységek, azt mindkét rész a Game-től kérdezi meg. Cselekedni a TrainingQueue-val, a MoveCommanddal és az AttackCommanddal tudnak.</li>
+</ul>
+<h4>7.1.2. Attribútumok</h4>
+<p>Az MI összes beállítható száma a Difficultyben van, és a konfigurációs fájlból jön (F-MI-18). Ezek a: mennyi idő telik el két döntés között (ez az MI reakcióideje), legalább mennyi idő kell két építés között, hány munkást akar, hány katona kell egy támadáshoz, mennyi idő teljen el két támadás között, hány katona alatt vonul vissza, és mekkora területet véd a bázisa körül. A könnyű és a normál szint csak ezekben a számokban tér el (F-MI-16). Az építési sorrend is a konfigurációs fájlban van. Így az MI-t újrafordítás nélkül lehet könnyebbre vagy nehezebbre állítani, és erre szükség is lesz, hogy a játék kiegyensúlyozott legyen (F-MI-17).</p>
+<h4>7.1.3. Bázisosztályok</h4>
+<p>Itt az egyik osztály sem származik a másikból. Az építést és a támadást két külön osztályba tettük, mert más dolgokkal foglalkoznak, az egyik a gazdasággal, a másik a katonákkal. Így külön is ki lehet próbálni őket, hogy az MI éppen mire figyel, azt az AIController tartja számon.</p>
+<h3 id="f7-2">7.2. Dinamikus modell</h3>
+<h4>7.2.1. Az AIController állapotai</h4>
+<p>Az állapot azt mutatja, mire figyel éppen az MI. A munkások elosztása és a lerombolt épületek pótlása mindig megy, bármelyik állapotban van. Az állapotból csak az derül ki, mire költ, és mit csinálnak a katonái.</p>
+<ul>
+  <li>Constructing (építkezés): van elég nyersanyag a következő épületre a listából, ezért az MI keres neki helyet, és lerakja. Ha lerakta, vagy kiderül, hogy mégsem futja rá, átmegy Gathering állapotba.</li>
+  <li>Gathering (gyűjtés): munkásokat képez, amíg el nem éri a kívánt számot, katonákat képez, és a kész katonákat a gyülekezőhelyre küldi. Ha összegyűlt a következő épület ára, és eltelt a két építés közti idő, visszamegy Constructing állapotba. Ha elég katona gyűlt össze, és eltelt a két támadás közti idő, támadást indít.</li>
+  <li>WaveAttack (támadási hullám): az összegyűlt katonák elindulnak a játékos bázisa felé (F-MI-12). Ha annyian meghalnak, hogy a létszám a visszavonulási határ alá esik, a maradék hazajön a gyülekezőhelyre, és az MI visszamegy Gathering állapotba (F-MI-15).</li>
+  <li>Defending (védekezés): bármelyik állapotból ide kerül, ha ellenség lép a bázisa köré (F-MI-14). Ha elmentek az ellenségek, visszamegy Gathering állapotba.</li>
+</ul>
+<p>Ha az MI főépülete elpusztul, vége a meccsnek, és az MI leáll.</p>
+<figure>
+  <img src="kepek/anal7_allapot_mivezerlo.png" alt="7.1. ábra: Az AIController állapotdiagramja">
+  <figcaption>7.1. ábra: Az AIController állapotdiagramja</figcaption>
+</figure>
+<h4>7.2.2. Egy döntési kör</h4>
+<p>Az MI nem gondolkodik minden képkockán, csak bizonyos időnként, amit a nehézségi szint ad meg (F-MI-10). Egy ilyen körben ez történik:</p>
+<ol>
+  <li>Körülnéz: mennyi fája és aranya van, hány munkása és katonája, megvan-e minden épülete, és van-e ellenség a bázisa közelében.</li>
+  <li>Ha ellenség van a bázisnál, védekezik: a közeli katonáit rájuk küldi. Ha a támadók többen vannak, mint a katonái, a munkásait is beveti.</li>
+  <li>Ha az előző kör óta eltűnt egy épülete, azt a lista elejére teszi, hogy minél előbb újraépítse (F-MI-09).</li>
+  <li>Elosztja a munkásokat: aki éppen nem csinál semmit, azt ahhoz a nyersanyaghoz küldi, amiből kevesebb van. Ha az egyikből nagyon kevés maradt, a másiktól is átküld oda egy munkást (F-MI-08).</li>
+  <li>Ha van elég nyersanyaga a következő épületre a listából, lerakja (F-MI-05, F-MI-06, F-MI-07).</li>
+  <li>Ha kevesebb munkása van, mint amennyit akar, munkást képez (F-MI-04), különben katonát (F-MI-11).</li>
+  <li>Ha elég katona gyűlt össze, támad. Ha egy támadó csapat túl kicsire fogyott, hazahívja.</li>
+</ol>
+<figure>
+  <img src="kepek/anal7_aktivitas_dontesi_kor.png" alt="7.2. ábra: Az MI egy döntési köre (aktivitásdiagram)">
+  <figcaption>7.2. ábra: Az MI egy döntési köre (aktivitásdiagram)</figcaption>
+</figure>
+<h3 id="f7-3">7.3. Funkcionális modell</h3>
+<h4>7.3.1. Munkások beosztása</h4>
+<p>Amit tudni kell hozzá, hogy mennyi fája és aranya van az MI-nek, és melyik munkás mit csinál. Az eredmény az, hogy melyik munkás mit gyűjtsön.</p>
+<ol>
+  <li>Megnézzük hogy, mennyi fa és arany kell a lista következő épületéhez meg egy katonához.</li>
+  <li>Összevetjük, hogy a meglévő készlet melyik nyersanyagból fedezi kevésbé a szükségletet. Ez lesz a "fogyó" nyersanyag.</li>
+  <li>Minden munkás, aki éppen nem dolgozik, a fogyó nyersanyag legközelebbi lelőhelyére megy.</li>
+  <li>Ha a fogyóból még a szükséges mennyiség fele sincs meg, a másik nyersanyagtól is átküldünk egy munkást.</li>
+</ol>
+<h4>7.3.2. Hely keresése egy új épületnek</h4>
+<p>Amit tudni kell hozzá: mekkora az épület, hol van a főépület, és melyik mező szabad. Az eredmény az, hogy hova kerüljön az épület, vagy az, hogy nincs neki hely.</p>
+<ol>
+  <li>A főépület körül egyre nagyobb négyzetekben nézzük végig a mezőket, így előbb a közeli helyekre kerül sor.</li>
+  <li>Egy hely akkor jó, ha az épület alatt minden mező szabad, és körülötte is marad egy mező széles szabad sáv. Ettől a sávtól nem zárja el az MI a saját egységei útját (F-MI-07).</li>
+  <li>Az első jó helyet használjuk. Ha a megadott távolságon belül nincs ilyen, ebben a körben nem épít.</li>
+</ol>
+<h4>7.3.3. Célpont választása</h4>
+<p>A támadó katonák ebben a sorrendben választanak célpontot (F-MI-13):</p>
+<ol>
+  <li>a legközelebbi ellenséges egység, amit a katona lát (először a katonák, munkás csak akkor, ha katona nincs a közelben);</li>
+  <li>ha ilyen nincs, a legközelebbi ellenséges épület, de a főépület még nem;</li>
+  <li>ha már nincs más épület, a főépület.</li>
+</ol>
+<p>Egy ellenséges munkás nem veszélyes, ezért a katonák előbb a katonákat támadják. Ha csak munkás van a közelben, akkor azt, és csak utána mennek az épületekre. Hogy mit lát egy katona, az a látótávjától függ (6. fejezet, UnitType).</p>
+<h3 id="f7-4">7.4. Operációk</h3>
+<ul>
+  <li>AIController: update(), decide(), changeState()</li>
+  <li>Difficulty: load()</li>
+  <li>BuildOrder: next(), advance(), requeue()</li>
+  <li>BaseBuildingBehavior: assignWorkers(), manageBuilding(), findPlace(), checkLosses(), trainWorker()</li>
+  <li>AttackBehavior: trainSoldier(), rally(), launchWave(), chooseTarget(), defend(), retreat()</li>
+  <li>AttackWave: launch(), size(), hasFailed()</li>
+</ul>
+<h3 id="f7-5">7.5. Az alrendszer osztálydiagramja</h3>
+<p>A szürke osztályok a 3., 5. és 6. fejezethez tartoznak, ott vannak leírva.</p>
+<figure>
+  <img src="kepek/anal7_osztalydiagram.png" alt="7.3. ábra: A Gépi ellenfél alrendszer osztálydiagramja">
+  <figcaption>7.3. ábra: A Gépi ellenfél alrendszer osztálydiagramja</figcaption>
+</figure>
+<h3 id="f7-6">7.6. Osztályok listája</h3>
+<h4>AIController</h4>
+<p><b>Felelősség:</b> ez irányítja a gépi ellenfelet. Időnként döntést hoz, tudja, mire figyel éppen az MI, és szól a két részének, hogy dolgozzanak.</p>
+<p><b>Együttműködők:</b> Faction, Difficulty, BaseBuildingBehavior, AttackBehavior, Game.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>faction</td><td>Faction</td><td>Az MI által irányított fél. Hozzá tartozik a nyersanyag, az egységek és az épületek.</td></tr>
+  <tr><td>difficulty</td><td>Difficulty</td><td>A választott nehézség számai.</td></tr>
+  <tr><td>state</td><td>AIState: Gathering, Constructing, WaveAttack vagy Defending</td><td>Mire figyel éppen (7.1. ábra).</td></tr>
+  <tr><td>timer</td><td>float (mp)</td><td>Mennyi idő telt el az előző döntés óta.</td></tr>
+  <tr><td>baseBuilder</td><td>BaseBuildingBehavior</td><td>Ez a rész foglalkozik a gazdasággal és az építéssel.</td></tr>
+  <tr><td>attacker</td><td>AttackBehavior</td><td>Ez a rész irányítja a katonákat.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>update</td><td>dt: float</td><td>Minden képkockán lefut, de csak az időt méri. Ha letelt a döntések közti idő, nullázza az időt, és meghívja a decide() részt.</td></tr>
+  <tr><td>decide</td><td>nincs</td><td>Lefuttat egy döntési kört a 7.2. ábra szerint.</td></tr>
+  <tr><td>changeState</td><td>newState: AIState</td><td>Átállítja, mire figyeljen az MI. Ha Gathering állapotba vált, a katonákat a gyülekezőhelyre küldi.</td></tr>
+</table>
+<h4>Difficulty</h4>
+<p><b>Felelősség:</b> egy nehézségi szint számai (F-MI-16, F-MI-18).</p>
+<p><b>Együttműködők:</b> ConfigLoader, AIController, BaseBuildingBehavior, AttackBehavior.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>name</td><td>string</td><td>"Easy" vagy "Normal".</td></tr>
+  <tr><td>decisionInterval</td><td>float (mp)</td><td>Ennyi idő telik el két döntés között, vagyis ilyen gyorsan reagál az MI.</td></tr>
+  <tr><td>buildInterval</td><td>float (mp)</td><td>Két építés között legalább ennyi időnek el kell telnie.</td></tr>
+  <tr><td>targetWorkers</td><td>int</td><td>Eddig képez munkást.</td></tr>
+  <tr><td>waveSize</td><td>int</td><td>Ennyi katona kell egy támadáshoz.</td></tr>
+  <tr><td>waveInterval</td><td>float (mp)</td><td>Két támadás között legalább ennyi idő telik el.</td></tr>
+  <tr><td>retreatThreshold</td><td>int</td><td>Ha a támadó csapat ennél kisebbre fogy, az MI hazahívja.</td></tr>
+  <tr><td>defenseRadius</td><td>float (mező)</td><td>Ekkora terület a főépület körül számít a bázisnak. Ha ide ellenség jön, az MI védekezik.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>load</td><td>cfg: ConfigLoader, name: string</td><td>Beolvassa a kért szint számait. Ha valami hiányzik, a normál szint számát használja helyette.</td></tr>
+</table>
+<h4>BuildOrder</h4>
+<p><b>Felelősség:</b> ebben a sorrendben épít az MI (F-MI-05), például először kaszárnyát, aztán további épületeket, ahol egységet lehet képezni.</p>
+<p><b>Együttműködők:</b> BaseBuildingBehavior, ConfigLoader.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>steps</td><td>List&lt;BuildingType&gt;</td><td>Az épületek abban a sorrendben, ahogy fel kell húzni őket.</td></tr>
+  <tr><td>index</td><td>int</td><td>Hányadik épület jön.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>next</td><td>nincs</td><td>Megmondja, melyik épület jön, vagy azt, hogy a lista végére ért.</td></tr>
+  <tr><td>advance</td><td>nincs</td><td>Ha az épületet lerakta, továbblép a következőre.</td></tr>
+  <tr><td>requeue</td><td>t: BuildingType</td><td>A lerombolt épületet a következő helyre teszi a listában, így azt építi meg legközelebb.</td></tr>
+</table>
+<h4>BaseBuildingBehavior</h4>
+<p><b>Felelősség:</b> az MI gazdasága. Elosztja a munkásokat, munkást képez, épít, és pótolja a lerombolt épületeket (F-MI-03-tól F-MI-09-ig).</p>
+<p><b>Együttműködők:</b> AIController, BuildOrder, Difficulty, Resources, ResourceNode, Worker, Building, TrainingQueue, Tile.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>plan</td><td>BuildOrder</td><td>Az építési sorrend.</td></tr>
+  <tr><td>knownBuildings</td><td>List&lt;Building&gt;</td><td>Az előző körben meglévő épületek. Ebből látszik, ha valami eltűnt.</td></tr>
+  <tr><td>timeSinceBuild</td><td>float (mp)</td><td>Ezzel méri, eltelt-e már a két építés közti idő.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>assignWorkers</td><td>nincs</td><td>A 7.3.1 pont szerint elküldi a munkásokat gyűjteni.</td></tr>
+  <tr><td>manageBuilding</td><td>nincs</td><td>Ha van elég nyersanyag a következő épületre, és eltelt a két építés közti idő, helyet keres, lerakja az épületet, és egy munkást küld építeni. Megmondja, sikerült-e.</td></tr>
+  <tr><td>findPlace</td><td>t: BuildingType</td><td>A 7.3.2 pont szerint megkeresi, hova kerüljön az épület.</td></tr>
+  <tr><td>checkLosses</td><td>nincs</td><td>Összeveti a mostani épületeket az előző körben megjegyzettekkel. Ami eltűnt, azt az requeue() résszel visszateszi a listába.</td></tr>
+  <tr><td>trainWorker</td><td>nincs</td><td>Ha kevesebb munkás van, mint amennyit akar, beállít egyet a főépület képzési sorába.</td></tr>
+</table>
+<h4>AttackBehavior</h4>
+<p><b>Felelősség:</b> az MI katonái. Katonát képez, összegyűjti őket, támad, védekezik, és ha kell, hazahívja őket (F-MI-11-től F-MI-15-ig).</p>
+<p><b>Együttműködők:</b> AIController, AttackWave, Difficulty, Soldier, Building, TrainingQueue, Game, MoveCommand, AttackCommand.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>rallyPoint</td><td>Tile</td><td>Egy mező a bázison, ahol a katonák a támadásra várnak.</td></tr>
+  <tr><td>wave</td><td>AttackWave (lehet üres)</td><td>Az éppen úton lévő támadó csapat.</td></tr>
+  <tr><td>timeSinceWave</td><td>float (mp)</td><td>Ezzel méri, eltelt-e már a két támadás közti idő.</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>trainSoldier</td><td>nincs</td><td>Ha van rá nyersanyag, beállít egy katonát a kaszárnya képzési sorába.</td></tr>
+  <tr><td>rally</td><td>nincs</td><td>Azokat a katonákat, akik nem tartoznak támadó csapathoz és épp nem csinálnak semmit, a gyülekezőhelyre küldi.</td></tr>
+  <tr><td>launchWave</td><td>nincs</td><td>Ha elég katona van a gyülekezőhelyen, és eltelt a két támadás közti idő, csapatot csinál belőlük, és elindítja őket.</td></tr>
+  <tr><td>chooseTarget</td><td>s: Soldier</td><td>A 7.3.3 pont szerint megmondja, kit támadjon a katona.</td></tr>
+  <tr><td>defend</td><td>attackers: List&lt;Unit&gt;</td><td>A bázisnál lévő katonákat a legközelebbi támadóra küldi. Ha a támadók többen vannak, mint a katonák, a munkásokat is beveti.</td></tr>
+  <tr><td>retreat</td><td>nincs</td><td>A támadó csapat maradékát hazaküldi a gyülekezőhelyre, és feloszlatja a csapatot.</td></tr>
+</table>
+<h4>AttackWave</h4>
+<p><b>Felelősség:</b> egy együtt támadó katonacsapat.</p>
+<p><b>Együttműködők:</b> AttackBehavior, Soldier.</p>
+<p><b>Attribútumok</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Típus</th><th>Leírás</th></tr>
+  <tr><td>members</td><td>List&lt;Soldier&gt;</td><td>A csapat élő katonái.</td></tr>
+  <tr><td>target</td><td>Tile</td><td>A játékos bázisa (egy mező a főépülete mellett).</td></tr>
+</table>
+<p><b>Operációk</b></p>
+<table border="1">
+  <tr><th>Név</th><th>Argumentumok</th><th>Működés</th></tr>
+  <tr><td>launch</td><td>nincs</td><td>Minden tagot elküld a cél felé.</td></tr>
+  <tr><td>size</td><td>nincs</td><td>Kiveszi a meghalt katonákat, és megmondja, hányan élnek még.</td></tr>
+  <tr><td>hasFailed</td><td>threshold: int</td><td>Igaz, ha a csapat a megadott létszám alá fogyott.</td></tr>
+</table>
+
+</body>
+</html>
