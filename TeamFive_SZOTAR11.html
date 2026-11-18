@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Stonehold - Szótár</title>
+</head>
+<body>
+
+<h1>Stonehold - Szótár</h1>
+
+<p>
+TeamFive<br>
+Csapattagok: Lőrincz Loránd László (B2BW8K), Pozsgai Marcell (KVM857), Kiss Balázs (NQO45X), Molnár Levente (DCTSXC), Martis Milán (ZYFITZ)<br>
+Miskolci Egyetem, Informatikai Intézet<br>
+Verzió: 1.1
+</p>
+
+<h2>Történet</h2>
+
+<table border="1" cellpadding="6">
+<tr><th>Dátum</th><th>Verzió</th><th>Leírás</th><th>Szerző</th></tr>
+<tr><td>2026.10.28.</td><td>1.0</td><td>A vízió szótára (10. fejezet) és az SRS fogalomtára (13.1)</td><td>Mindenki</td></tr>
+<tr><td>2026.11.16.</td><td>1.1</td><td>Önálló dokumentum a két korábbi szótárból, kiegészítve az analízis modell és a rendszerterv fogalmaival</td><td>Molnár Levente</td></tr>
+</table>
+
+<h2>Fogalmak</h2>
+
+<dl>
+	<dt><b>A* algoritmus</b></dt>
+	<dd>Útvonalkereső algoritmus, ami a rácsos térképen a legrövidebb akadálymentes utat keresi meg.</dd>
+
+	<dt><b>AI (Artificial Intelligence)</b></dt>
+	<dd>Lásd: Gépi ellenfél (MI).</dd>
+
+	<dt><b>Aktivitásdiagram</b></dt>
+	<dd>UML diagram, ami egy folyamat lépéseit és elágazásait mutatja. A rendszertervben a use case-ek alternatív és kivételes eseteit rajzoltuk le vele.</dd>
+
+	<dt><b>Alapérték</b></dt>
+	<dd>Az az érték, amit a játék akkor használ, ha a konfigurációs fájlban egy érték hiányzik vagy hibás.</dd>
+
+	<dt><b>Állapotdiagram</b></dt>
+	<dd>UML diagram, ami egy osztály lehetséges állapotait és a köztük lévő átmeneteket mutatja, például hogy egy épület épül, kész vagy lerombolták.</dd>
+
+	<dt><b>Alrendszer</b></dt>
+	<dd>Az összetartozó osztályok csoportja az analízis modellben. Nálunk öt van: Motor, Kezelőfelület, Gazdaság és építkezés, Egységek és harc, Gépi ellenfél.</dd>
+
+	<dt><b>Analízis modell</b></dt>
+	<dd>A tervezés első dokumentuma. Az SRS alapján leírja a rendszer osztályait, a köztük lévő kapcsolatokat és a működésüket.</dd>
+
+	<dt><b>Asztali játék</b></dt>
+	<dd>Számítógépre telepített, önállóan futó játék, amelyhez nem kell böngésző.</dd>
+
+	<dt><b>Attribútum</b></dt>
+	<dd>Egy osztály adata, például egy egység életereje.</dd>
+
+	<dt><b>Bázis</b></dt>
+	<dd>A játékos épületeinek összessége a térképen.</dd>
+
+	<dt><b>Bázisosztály (ősosztály)</b></dt>
+	<dd>Olyan osztály, amelyből más osztályok származnak, és amelyben a közös adataik és műveleteik vannak. Ilyen lesz például az egységek és az épületek közös őse.</dd>
+
+	<dt><b>Bővíthetőség</b></dt>
+	<dd>A játék azon tulajdonsága, hogy később új egységekkel, épületekkel, térképekkel és játékmódokkal egészíthető ki.</dd>
+
+	<dt><b>C++</b></dt>
+	<dd>Nagy teljesítményű programozási nyelv, amelyen a játék kódját írjuk. Közvetlen hozzáférést enged a számítógép erőforrásaihoz, így gyors működést biztosít.</dd>
+
+	<dt><b>Csempe</b></dt>
+	<dd>A térkép egy négyzet alakú mezője (32x32 pixel). A pálya ilyenekből álló rács.</dd>
+
+	<dt><b>Csomagdiagram</b></dt>
+	<dd>UML diagram, ami az alrendszereket és a köztük lévő kapcsolatokat mutatja.</dd>
+
+	<dt><b>draw.io / StarUML</b></dt>
+	<dd>Grafikus tervezőprogramok, amelyekkel a szoftver szerkezetét és folyamatait bemutató UML ábrákat rajzoljuk meg.</dd>
+
+	<dt><b>Edge scroll</b></dt>
+	<dd>A kamera mozgatása úgy, hogy az egeret a képernyő szélére visszük.</dd>
+
+	<dt><b>Egység</b></dt>
+	<dd>A játékos által irányítható szereplő a térképen, például munkás vagy katona.</dd>
+
+	<dt><b>Egységlimit</b></dt>
+	<dd>Egy félnek egyszerre a pályán lévő egységeinek legnagyobb száma.</dd>
+
+	<dt><b>Épület</b></dt>
+	<dd>A játékos bázisán felépített szerkezet.</dd>
+
+	<dt><b>Érdekelt (stakeholder)</b></dt>
+	<dd>Bárki, akit érint a projekt, vagy akinek érdeke fűződik hozzá, például a felhasználók, a fejlesztők és a megrendelő.</dd>
+
+	<dt><b>Erőforrásfájlok (assets)</b></dt>
+	<dd>A játék képei, sprite-jai, betűtípusai és konfigurációs fájljai, amelyeket a program induláskor betölt.</dd>
+
+	<dt><b>Fejlődési szint</b></dt>
+	<dd>A technológiafa három lépcsője.</dd>
+
+	<dt><b>Felhasználó (játékos)</b></dt>
+	<dd>Az a személy, aki a játékot használja, vagyis játszik vele.</dd>
+
+	<dt><b>Fix időlépés</b></dt>
+	<dd>A játék állapota mindig ugyanakkora időközönként frissül, függetlenül attól, hány képkockát rajzol ki a gép.</dd>
+
+	<dt><b>Főépület</b></dt>
+	<dd>Ezzel az épülettel kezd mindkét fél. Itt lehet munkást képezni, nyersanyagot leadni és szintet lépni. Ha megsemmisül, az a fél elveszíti a meccset.</dd>
+
+	<dt><b>Fő játékhurok (game loop)</b></dt>
+	<dd>A játék központi ciklusa, amely a program futása alatt másodpercenként sokszor lefut. Három dolgot csinál folyamatosan: beolvassa a játékos irányítását (egér, billentyűzet), kiszámolja a játéktér változásait (például az egységek mozgását és a harcot), majd frissíti a képernyőt.</dd>
+
+	<dt><b>FPS (képkocka/másodperc)</b></dt>
+	<dd>Azt mutatja, hányszor rajzolja újra a játék a képernyőt egy másodperc alatt. Minél nagyobb, annál simább a mozgás; 60 FPS felett a játék folyamatosnak hat.</dd>
+
+	<dt><b>Gazdaság</b></dt>
+	<dd>A játékban a termelés és a költés rendszere: amit a játékos megszerez, azt építésre és egységek kiképzésére használja fel.</dd>
+
+	<dt><b>Gépi ellenfél (MI, AI)</b></dt>
+	<dd>Számítógép által vezérelt játékos, aki a felhasználó ellen játszik. Előre megírt szabályok alapján önállóan épít bázist, gyűjt nyersanyagot, és támadja a felhasználó egységeit. A neve „mesterséges intelligencia” (MI), angolul „artificial intelligence” (AI).</dd>
+
+	<dt><b>Git / GitHub</b></dt>
+	<dd>Verziókezelő rendszer és internetes tárhely. Segítségével a csapattagok egyszerre tudnak dolgozni a programkódon és a dokumentumokon anélkül, hogy felülírnák egymás munkáját, a korábbi állapotok pedig bármikor visszaállíthatók.</dd>
+
+	<dt><b>Gyorsbillentyű</b></dt>
+	<dd>Billentyű vagy billentyűkombináció, amellyel egy parancs (például építés vagy egységképzés) a menü használata nélkül kiadható.</dd>
+
+	<dt><b>Gyülekezési pont</b></dt>
+	<dd>Az a hely a gépi ellenfél bázisán, ahol a katonáit gyűjti egy támadás előtt.</dd>
+
+	<dt><b>Hardver</b></dt>
+	<dd>A számítógép fizikai alkatrészei. A gyengébb gép kisebb teljesítményű hardverrel rendelkezik.</dd>
+
+	<dt><b>Hősegység</b></dt>
+	<dd>Különleges, a többinél erősebb egység, amelyet más stratégiai játékok használnak. A Stonehold nem tartalmaz ilyet.</dd>
+
+	<dt><b>HTML</b></dt>
+	<dd>Szabványos leírónyelv, amellyel internetes böngészőkben megnyitható, formázott szöveges dokumentumokat és weboldalakat készítünk.</dd>
+
+	<dt><b>Include (tartalmazás)</b></dt>
+	<dd>Use case diagramon azt jelöli, hogy egy use case mindig magában foglal egy másikat. Például az Ellenség megtámadása mindig az Egység kijelölésével kezdődik.</dd>
+
+	<dt><b>INI-formátum</b></dt>
+	<dd>Egyszerű szöveges fájlformátum, amiben [szakasz] fejlécek és kulcs = érték sorok vannak. Ebben tároljuk a konfigurációs fájlokat.</dd>
+
+	<dt><b>Interfész (határfelület)</b></dt>
+	<dd>Két különálló programrész (például a gazdasági rendszer és a kezelőfelület) közötti kapcsolódási pont. Meghatározza, hogyan kommunikálnak egymással az egyes modulok.</dd>
+
+	<dt><b>Játékegyensúly (game balance)</b></dt>
+	<dd>A játékbeli egységek, épületek és nyersanyagok értékeinek olyan beállítása, amely biztosítja, hogy egyik játékelem se legyen aránytalanul erős vagy gyenge a többihez képest.</dd>
+
+	<dt><b>Játékmenet</b></dt>
+	<dd>Az a mód, ahogyan a játék működik, és amit a játékos a játék közben csinál.</dd>
+
+	<dt><b>Játékmód</b></dt>
+	<dd>A játék egy változata saját szabályokkal, például az, hogy a játékos egy gépi ellenfél ellen játszik.</dd>
+
+	<dt><b>Játékmotor</b></dt>
+	<dd>Kész programrész, amely a játékok általános feladatait (megjelenítés, hang, mozgás) végzi el. A Stonehold nem használ ilyet, helyette saját keretrendszerre épül.</dd>
+
+	<dt><b>Karbantartás</b></dt>
+	<dd>A kész játék javítása és frissítése a fejlesztők által.</dd>
+
+	<dt><b>Kaszárnya</b></dt>
+	<dd>A katonák képzésére szolgáló épület.</dd>
+
+	<dt><b>Kereszt-review (keresztellenőrzés)</b></dt>
+	<dd>Minőségbiztosítási szabály. Lényege, hogy az elkészült programkódot vagy dokumentumot sosem a saját írója, hanem egy másik csapattag nézi át és hagyja jóvá a véglegesítés előtt.</dd>
+
+	<dt><b>Keretrendszer</b></dt>
+	<dd>A játék alapjául szolgáló programrészek gyűjteménye, amely a kétdimenziós képek kirajzolását, valamint az egér és a billentyűzet kezelését végzi. A Stonehold esetén ezt mi írjuk meg C++ és SDL2 segítségével.</dd>
+
+	<dt><b>Kezelőfelület (UI, HUD)</b></dt>
+	<dd>A képernyőn megjelenő információs és irányító elemek összessége, amelyeken keresztül a játékos irányítja a programot. Ide tartoznak a menük, a gombok, a nyersanyag-számlálók és a kistérkép. A HUD a játéktér fölött, játék közben látható kijelzők összessége.</dd>
+
+	<dt><b>Kistérkép (minimap)</b></dt>
+	<dd>A képernyő sarkában elhelyezkedő, lekicsinyített áttekintő térkép, amelyen a játékos egyetlen pillantással látja az egész csatateret, a saját bázisát és az egységek helyzetét.</dd>
+
+	<dt><b>Kitermelő épület</b></dt>
+	<dd>Kőfejtő, kohó vagy farm. Olyan épület, amelyben a beosztott munkások nyersanyagot termelnek.</dd>
+
+	<dt><b>Kód</b></dt>
+	<dd>A programozó által megírt utasítások összessége, amely a programot működteti.</dd>
+
+	<dt><b>Konfigurációs fájl</b></dt>
+	<dd>Szöveges fájl, amely a játék beállításait és értékeit (például az egységek életerejét, sebzését és költségét) tárolja. Módosításához nem kell a kódot újrafordítani.</dd>
+
+	<dt><b>Kulcs-érték pár</b></dt>
+	<dd>Egy beállítás neve és értéke egy sorban, például eletero = 120.</dd>
+
+	<dt><b>Lelőhely</b></dt>
+	<dd>A térkép egy pontja, ahonnan nyersanyagot lehet kitermelni (erdő, aranyér, szikla, érc). Véges mennyiségű.</dd>
+
+	<dt><b>Licencdíj</b></dt>
+	<dd>Díj, amelyet egy kész programrész (például játékmotor) használatáért kell fizetni a készítőjének.</dd>
+
+	<dt><b>Memóriaszivárgás (memory leak)</b></dt>
+	<dd>Programozási hiba, amely akkor fordul elő, ha a szoftver a már nem használt adatokat (például egy csatában elpusztult egységet) nem törli ki a számítógép memóriájából. Hosszú távon a program lelassulását vagy leállását okozhatja.</dd>
+
+	<dt><b>Mérföldkő (milestone, M1–M5)</b></dt>
+	<dd>A fejlesztési időszak előre kijelölt ellenőrzőpontjai, amelyekhez konkrét, bemutatható részeredmények (például elkészült alapmotor vagy működő harcrendszer) tartoznak.</dd>
+
+	<dt><b>MoSCoW priorizálás</b></dt>
+	<dd>Fontossági sorrendet felállító módszer. A tervezett funkciókat négy csoportba sorolja: kötelezően megvalósítandó (<i>Must have</i>), fontos, de nem kritikus (<i>Should have</i>), kiegészítő jellegű (<i>Could have</i>), és a jelenlegi félévben elhagyható (<i>Won't have</i>) elemekre.</dd>
+
+	<dt><b>Mutató (pointer) és okosmutató</b></dt>
+	<dd>C++ nyelvi elemek, amelyek a számítógép memóriájában tárolt adatok pontos helyére mutatnak. Az okosmutatók automatikusan felszabadítják a memóriát, ha az adatra már nincs szükség, így segítenek elkerülni a memóriaszivárgást.</dd>
+
+	<dt><b>Naplófájl</b></dt>
+	<dd>Szövegfájl, amibe a játék a hibákat írja, például ha hiányzik egy fájl vagy hibás egy érték.</dd>
+
+	<dt><b>Népesség</b></dt>
+	<dd>Felső határ arra, hogy hány egysége lehet egyszerre egy félnek. Lakóházakkal nő, de az egységlimitet nem lépheti túl.</dd>
+
+	<dt><b>Operáció</b></dt>
+	<dd>Egy osztály művelete, amit a többi osztály meghívhat.</dd>
+
+	<dt><b>Osztály</b></dt>
+	<dd>A program egy építőeleme, ami adatokat (attribútumokat) és műveleteket (operációkat) fog össze. Az analízis modellben a játék fogalmaiból lesznek osztályok, például az egységből vagy az épületből.</dd>
+
+	<dt><b>Osztálydiagram</b></dt>
+	<dd>UML diagram, ami az osztályokat, az adataikat, a műveleteiket és a köztük lévő kapcsolatokat mutatja.</dd>
+
+	<dt><b>Perzisztencia</b></dt>
+	<dd>Az adatok megőrzése a program bezárása után. Nálunk ilyen a beállításfájl.</dd>
+
+	<dt><b>README fájl</b></dt>
+	<dd>Rövid, közérthető szöveges útmutató, amely a szoftver elindításához, telepítéséhez és alapvető irányításához szükséges tudnivalókat tartalmazza.</dd>
+
+	<dt><b>Renderelés</b></dt>
+	<dd>Az a folyamat, amikor a számítógép a memóriában lévő adatokból (az épületek és egységek helyzetéből) összeállítja és kirajzolja a monitoron látható képet.</dd>
+
+	<dt><b>Rendszerterv</b></dt>
+	<dd>A tervezési fázis második dokumentuma. Ebben van a felhasználói felület terve, az adatok tárolása, és a use case-ek kivételes esetei is.</dd>
+
+	<dt><b>RTS (real-time strategy, valós idejű stratégiai játék)</b></dt>
+	<dd>Olyan stratégiai játékműfaj, amelyben a játékosok nem felváltva, körökre osztva lépnek, hanem az események (építkezés, nyersanyaggyűjtés, csata) folyamatosan, egy időben zajlanak.</dd>
+
+	<dt><b>Scrum-szerű ütemezés</b></dt>
+	<dd>Agilis munkaszervezési módszer. A fejlesztést rövid, esetünkben kéthetes szakaszokra bontjuk, amelyek végén működő részeredményeket mutatunk be, és megbeszéljük a következő időszak feladatait.</dd>
+
+	<dt><b>SDL2 (Simple DirectMedia Layer)</b></dt>
+	<dd>Ingyenes C/C++ programkönyvtár, amely a képernyő, a hang, az egér és a billentyűzet kezelését végzi. A játék erre épül.</dd>
+
+	<dt><b>Sprite</b></dt>
+	<dd>Kétdimenziós kép, amely egy egységet, épületet vagy tereptárgyat ábrázol a játékban. Az animációk több egymást követő sprite-ból állnak.</dd>
+
+	<dt><b>SRS (Software Requirements Specification, követelményspecifikáció)</b></dt>
+	<dd>A Vízió dokumentumra épülő részletes műszaki leírás, amely pontosan rögzíti a szoftverrel szemben támasztott összes funkcionális és minőségi elvárást.</dd>
+
+	<dt><b>Számosság</b></dt>
+	<dd>Egy kapcsolatnál megmondja, hány objektum vehet részt benne, például 1, * (akárhány) vagy 2..* (legalább kettő).</dd>
+
+	<dt><b>Szekvenciadiagram</b></dt>
+	<dd>UML diagram, ami időrendben mutatja, milyen üzeneteket küldenek egymásnak az objektumok egy folyamat közben.</dd>
+
+	<dt><b>Taktikai kihívás</b></dt>
+	<dd>Olyan helyzet a játékban, amelyben a felhasználónak ügyes tervezéssel, az egységek gondos irányításával kell legyőznie a gépi ellenfelet.</dd>
+
+	<dt><b>Támadási hullám</b></dt>
+	<dd>A gépi ellenfél egy-egy szervezett támadása a játékos bázisa ellen.</dd>
+
+	<dt><b>Technológiafa (tech tree)</b></dt>
+	<dd>Az egymásra épülő fejlesztések rendszere. Az újabb épületek és erősebb egységek csak akkor érhetők el, ha a korábbi fejlettségi szinteket már elértük.</dd>
+
+	<dt><b>Térkép</b></dt>
+	<dd>A játékterület, amelyen a bázisok és az egységek találhatók.</dd>
+
+	<dt><b>Típusszorzó</b></dt>
+	<dd>A sebzésszámításban szereplő szorzó, ami a támadó és a célpont típusától függ.</dd>
+
+	<dt><b>Túltervezés (scope creep)</b></dt>
+	<dd>Az a jelenség, amikor a fejlesztés során túl sok új ötletet és funkciót próbálunk beépíteni a programba, ami miatt a projekt kicsúszik a rendelkezésre álló időből.</dd>
+
+	<dt><b>UML (Unified Modeling Language)</b></dt>
+	<dd>Szabványos vizuális modellező nyelv. Különböző ábrák (osztály-, szekvencia- és állapotdiagramok) segítségével szemlélteti a program belső felépítését és működési folyamatait a kódolás megkezdése előtt.</dd>
+
+	<dt><b>Use case diagram</b></dt>
+	<dd>UML diagram, ami a szereplőket, a use case-eket és a köztük lévő kapcsolatokat mutatja.</dd>
+
+	<dt><b>Use case (felhasználói eset) és use case walkthrough</b></dt>
+	<dd>A <i>use case</i> egy konkrét használati folyamat leírása a játékos szemszögéből (például: „a játékos kijelöl egy munkást, és felépít egy kaszárnyát”). A <i>walkthrough</i> ennek a folyamatnak a gyakorlati végigpróbálása a tesztelés során.</dd>
+
+	<dt><b>Útvonalkeresés (pathfinding)</b></dt>
+	<dd>Algoritmus (például A*), amely kiszámolja, hogyan juthat el egy egység a térkép egyik pontjából a másikba úgy, hogy közben kikerülje a tereptárgyakat és az épületeket.</dd>
+
+	<dt><b>VS Code (Visual Studio Code)</b></dt>
+	<dd>Kódszerkesztő program, amelyben a játék C++ forráskódját és a HTML dokumentációkat írjuk.</dd>
+</dl>
+
+<h2>Osztálynevek</h2>
+
+<p>
+Az analízis modellben és a rendszertervben az osztályok neve angol. Ez a táblázat megadja a magyar megfelelőjüket, alrendszerenként, az analízis modell fejezeteinek sorrendjében.
+</p>
+
+<table border="1" cellpadding="6">
+<tr><th>Osztály</th><th>Magyarul</th><th>Mi ez</th><th>Hol van leírva</th></tr>
+<tr><td>Engine</td><td>motor</td><td>A program fő osztálya, a program elejétől a végéig él, és futtatja a fő ciklust.</td><td>ANAL 3</td></tr>
+<tr><td>Window</td><td>ablak</td><td>A játék ablaka.</td><td>ANAL 3</td></tr>
+<tr><td>Renderer</td><td>rajzoló</td><td>Mindent ez rajzol ki a képernyőre.</td><td>ANAL 3</td></tr>
+<tr><td>InputHandler</td><td>bemenetkezelő</td><td>Összegyűjti az egér- és billentyűeseményeket.</td><td>ANAL 3</td></tr>
+<tr><td>Timer</td><td>időzítő</td><td>Megmondja, hányszor kell frissíteni a játékot (fix időlépés).</td><td>ANAL 3</td></tr>
+<tr><td>ResourceManager</td><td>erőforrás-kezelő</td><td>Betölti és megőrzi a képeket és a betűtípusokat. (Nem a nyersanyagokat!)</td><td>ANAL 3</td></tr>
+<tr><td>ConfigLoader</td><td>konfigurációbetöltő</td><td>Beolvassa a konfigurációs fájlokat.</td><td>ANAL 3, RTERV 3</td></tr>
+<tr><td>Settings</td><td>beállítások</td><td>A játékos beállításai (hangerő, felbontás, teljes képernyő).</td><td>ANAL 3, RTERV 3</td></tr>
+<tr><td>Logger</td><td>naplózó</td><td>A hibákat a naplófájlba írja.</td><td>ANAL 3</td></tr>
+<tr><td>Game</td><td>játszma, mérkőzés</td><td>Egy mérkőzés a pályával, a két féllel és az összes entitással.</td><td>ANAL 3</td></tr>
+<tr><td>Map</td><td>pálya, térkép</td><td>A csempékből álló pálya.</td><td>ANAL 3</td></tr>
+<tr><td>Tile</td><td>csempe, mező</td><td>A pálya egy mezője.</td><td>ANAL 3</td></tr>
+<tr><td>Entity</td><td>entitás</td><td>Minden, ami a pályán van (épület, egység, lelőhely) közös őse.</td><td>ANAL 2, 3</td></tr>
+<tr><td>ScreenManager</td><td>képernyőkezelő</td><td>Tudja, melyik képernyő látszik, és vált közöttük.</td><td>ANAL 4</td></tr>
+<tr><td>Menu</td><td>menü</td><td>Egy menüképernyő gombokkal.</td><td>ANAL 4</td></tr>
+<tr><td>Button</td><td>gomb</td><td>Egy gomb a menükben vagy a parancsmenüben.</td><td>ANAL 4</td></tr>
+<tr><td>NewGameMenu</td><td>új játék menü</td><td>Az új játék beállításai (nehézség).</td><td>ANAL 4</td></tr>
+<tr><td>SettingsMenu</td><td>beállítások menü</td><td>A beállítások képernyő.</td><td>ANAL 4</td></tr>
+<tr><td>HelpScreen</td><td>súgóképernyő</td><td>A súgó.</td><td>ANAL 4</td></tr>
+<tr><td>HUD</td><td>kezelőfelület (játék közben)</td><td>A játék közbeni felület: felső sáv, minimap, információs panel, parancsmenü.</td><td>ANAL 4</td></tr>
+<tr><td>Minimap</td><td>kistérkép</td><td>A teljes pálya kicsiben, bal alul.</td><td>ANAL 4</td></tr>
+<tr><td>InfoPanel</td><td>információs panel</td><td>A kijelölt egység vagy épület adatai, alul középen.</td><td>ANAL 4</td></tr>
+<tr><td>CommandMenu</td><td>parancsmenü</td><td>A kijelöléstől függő gombok, jobb alul.</td><td>ANAL 4</td></tr>
+<tr><td>Selection</td><td>kijelölés</td><td>A kijelölt egységek és épület, és a parancsadás jobb klikkre.</td><td>ANAL 4</td></tr>
+<tr><td>BuildPlacement</td><td>épület lerakása</td><td>Az épület szellemképe lerakás közben.</td><td>ANAL 4</td></tr>
+<tr><td>Tooltip</td><td>eszköztipp</td><td>A gombok fölött megjelenő kis szövegdoboz.</td><td>ANAL 4</td></tr>
+<tr><td>Camera</td><td>kamera</td><td>A pálya éppen látható része.</td><td>ANAL 4</td></tr>
+<tr><td>Faction</td><td>fél, frakció</td><td>A játszma egyik oldala: a játékos vagy a gépi ellenfél.</td><td>ANAL 5</td></tr>
+<tr><td>Resources</td><td>nyersanyagkészlet</td><td>Egy fél nyersanyagai és népessége.</td><td>ANAL 5</td></tr>
+<tr><td>ResourceNode</td><td>lelőhely</td><td>Egy nyersanyag-lelőhely a pályán (erdő, aranyér, szikla, érc).</td><td>ANAL 5</td></tr>
+<tr><td>GatherTask</td><td>gyűjtési feladat</td><td>Egy munkás gyűjtési ciklusa.</td><td>ANAL 5</td></tr>
+<tr><td>Building</td><td>épület</td><td>Az épületek közös őse.</td><td>ANAL 5</td></tr>
+<tr><td>BuildingType</td><td>épülettípus</td><td>Egy épületfajta állandó adatai a konfigurációs fájlból.</td><td>ANAL 5</td></tr>
+<tr><td>DropOffBuilding</td><td>leadóhely</td><td>Főépület vagy raktár, ide viszik a munkások a nyersanyagot.</td><td>ANAL 5</td></tr>
+<tr><td>ProductionBuilding</td><td>kitermelő épület</td><td>Farm, kőfejtő vagy kohó.</td><td>ANAL 5</td></tr>
+<tr><td>House</td><td>lakóház</td><td>Növeli a népesség maximumát.</td><td>ANAL 5</td></tr>
+<tr><td>Watchtower</td><td>őrtorony</td><td>Magától lövi a közeli ellenséget.</td><td>ANAL 5</td></tr>
+<tr><td>Blacksmith</td><td>kovácsműhely</td><td>Itt lehet fejlesztéseket venni.</td><td>ANAL 5</td></tr>
+<tr><td>TechTree</td><td>technológiafa</td><td>A fejlődési szintek és a fejlesztések.</td><td>ANAL 5</td></tr>
+<tr><td>Upgrade</td><td>fejlesztés</td><td>Egy kovácsműhelyben megvehető fejlesztés.</td><td>ANAL 5</td></tr>
+<tr><td>Unit</td><td>egység</td><td>Az egységek közös őse.</td><td>ANAL 6</td></tr>
+<tr><td>Worker</td><td>munkás</td><td>Gyűjt és épít.</td><td>ANAL 6</td></tr>
+<tr><td>Soldier</td><td>katona</td><td>Közelharci katona, íjász vagy nehézegység.</td><td>ANAL 6</td></tr>
+<tr><td>UnitType</td><td>egységtípus</td><td>Egy egységfajta állandó adatai a konfigurációs fájlból.</td><td>ANAL 6</td></tr>
+<tr><td>TrainingQueue</td><td>képzési sor</td><td>Egy épület képzésre váró egységei.</td><td>ANAL 6</td></tr>
+<tr><td>Command</td><td>parancs</td><td>A parancsok közös őse.</td><td>ANAL 6</td></tr>
+<tr><td>MoveCommand</td><td>mozgásparancs</td><td>Elküldi az egységet egy mezőre.</td><td>ANAL 6</td></tr>
+<tr><td>AttackCommand</td><td>támadásparancs</td><td>Megtámadtat egy célpontot.</td><td>ANAL 6</td></tr>
+<tr><td>DamageCalculator</td><td>sebzésszámító</td><td>Kiszámolja egy ütés sebzését.</td><td>ANAL 6</td></tr>
+<tr><td>PathFinder</td><td>útvonalkereső</td><td>A*-gal utat keres az egységeknek.</td><td>ANAL 6</td></tr>
+<tr><td>PathRequest</td><td>útvonalkérés</td><td>Egy félbehagyott útkeresés.</td><td>ANAL 6</td></tr>
+<tr><td>Path</td><td>útvonal</td><td>Az út mezői, amin az egység megy.</td><td>ANAL 6</td></tr>
+<tr><td>AIController</td><td>MI-vezérlő</td><td>A gépi ellenfelet irányítja.</td><td>ANAL 7</td></tr>
+<tr><td>Difficulty</td><td>nehézségi szint</td><td>Egy nehézségi szint számai a konfigurációs fájlból.</td><td>ANAL 7</td></tr>
+<tr><td>BuildOrder</td><td>építési sorrend</td><td>Az MI ebben a sorrendben épít.</td><td>ANAL 7</td></tr>
+<tr><td>BaseBuildingBehavior</td><td>bázisépítő viselkedés</td><td>Az MI gazdasága és építkezése.</td><td>ANAL 7</td></tr>
+<tr><td>AttackBehavior</td><td>támadó viselkedés</td><td>Az MI katonái: képzés, támadás, védekezés.</td><td>ANAL 7</td></tr>
+<tr><td>AttackWave</td><td>támadási hullám</td><td>Egy együtt támadó katonacsapat.</td><td>ANAL 7</td></tr>
+</table>
+
+
+</body>
+</html>

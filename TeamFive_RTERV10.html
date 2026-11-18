@@ -69,7 +69,7 @@ Miskolci Egyetem, Informatikai Intézet
   <li>3. Adatmodellek: a konfigurációs fájlok és a beállításfájl szerkezete és formátuma, és az osztályok, amik ezeket betöltik. (Molnár Levente)</li>
   <li>4. A funkcionális modell kiegészítése: a három use case alternatív és kivételes esetei aktivitásdiagramon. (Molnár Levente)</li>
 </ul>
-<p>Az osztályneveket és a hivatkozásokat ugyanúgy használjuk, mint az analízis modellben. Ha ott egy ábrára vagy fejezetre hivatkozunk, elé írjuk, hogy ANAL (pl. ANAL 4.2. ábra), az SRS pontjai elé azt, hogy SRS. A 3. fejezetben van néhány új osztály (pl. GameData, UnitStats), ezek a betöltött számértékek tárolására kellenek, az analízis modellben még nem szerepeltek, mert ott csak a ConfigLoader volt.</p>
+<p>Az osztályneveket és a hivatkozásokat ugyanúgy használjuk, mint az analízis modellben. Ha ott egy ábrára vagy fejezetre hivatkozunk, elé írjuk, hogy ANAL (pl. ANAL 4.2. ábra), az SRS pontjai elé azt, hogy SRS.</p>
 
 
 <h2 id="f2">2. Felhasználói felület</h2>
@@ -421,17 +421,17 @@ Az adatokat témánként külön fájlba tesszük, hogy mindenki a saját terül
 
 <table border="1" cellpadding="6">
 	<tr><th>Fájl</th><th>Tartalom</th><th>Mikor olvassuk</th><th>Írja-e a játék</th></tr>
-	<tr><td>config/egysegek.ini</td><td>Egységtípusonként (munkás, közelharci katona, íjász, nehézegység): költség, népességigény, képzési idő, életerő, sebzés, védelem, hatótáv, látótáv, sebesség, támadási időköz. Külön szakaszban a sebzésszámítás típusszorzói (F-HARC-14).</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/egysegek.ini</td><td>Egységtípusonként (munkás, közelharci katona, íjász, nehézegység): név, fajta, költség, képzési idő, életerő, sebzés, védelem, hatótáv, látótáv, sebesség, támadási időköz. Külön szakaszban a sebzésszámítás típusszorzói (F-HARC-14).</td><td>induláskor</td><td>nem</td></tr>
 	<tr><td>config/epuletek.ini</td><td>Épülettípusonként (főépület, lakóház, raktár, kaszárnya, farm, kőfejtő, kohó, kovácsműhely, őrtorony, fal): költség, építési idő, életerő, szint. Kitermelő épületnél a munkások maximális száma, lakóháznál a népességnövelés, őrtoronynál a sebzés és a hatótáv.</td><td>induláskor</td><td>nem</td></tr>
 	<tr><td>config/fejlesztesek.ini</td><td>A 2. és 3. szintre lépés ára, ideje és feltétele, valamint a kovácsműhely fejlesztései: ár, idő, hatás (F-TECH-05).</td><td>induláskor</td><td>nem</td></tr>
-	<tr><td>config/mi.ini</td><td>Nehézségi szintenként (könnyű, normál) az MI paraméterei: reakcióidő, döntési időköz, munkás-célszám, a támadási hullám mérete és gyakorisága, a visszavonulási küszöb (F-MI-16, F-MI-18).</td><td>induláskor</td><td>nem</td></tr>
-	<tr><td>config/jatek.ini</td><td>Általános értékek: egységlimit (alapból 200, F-HARC-07), a pálya legnagyobb mérete.</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/mi.ini</td><td>Nehézségi szintenként (könnyű, normál) az MI paraméterei: döntési időköz (ez az MI reakcióideje), két építés közti idő, munkás-célszám, a támadási hullám mérete, két támadás közti idő, a visszavonulási küszöb és a bázis sugara (F-MI-16, F-MI-18). Külön szakaszban az MI építési sorrendje (F-MI-05).</td><td>induláskor</td><td>nem</td></tr>
+	<tr><td>config/jatek.ini</td><td>Általános értékek: egységlimit (alapból 200, F-HARC-07), a pálya legnagyobb mérete, a kamera sebessége, és hogy az útvonalkereső egy képkockán hány mezőt nézhet meg (F-UTV-08).</td><td>induláskor</td><td>nem</td></tr>
 	<tr><td>beallitasok.ini</td><td>A játékos beállításai: zene és hangeffektek hangereje, felbontás, ablakos vagy teljes képernyős mód.</td><td>induláskor</td><td>igen, ha a játékos módosítja</td></tr>
 	<tr><td>naplo.txt</td><td>Hibaüzenetek: hiányzó fájl, hibás érték, hiányzó kép.</td><td>soha</td><td>igen, folyamatosan</td></tr>
 </table>
 
 <p>
-A pályafájl (F-MOT-03) egy csemperács, ezért saját formátumot kap. Mivel a térképhez tartozik, a motor fejezetében írjuk le.</p>
+A pályafájl (F-MOT-03) egy csemperács, ezért saját formátumot kap. Ezt a Map.load() (ANAL 3.6) megírásakor rögzítjük, mert addigra derül ki, milyen tereptípusok és lelőhelyek lesznek.</p>
 
 <h3 id="f3-3">3.3. A fájlok formátuma</h3>
 
@@ -453,10 +453,11 @@ Egy részlet az egységek fájljából. A számok csak példák, a valódi ért�
 <pre>
 # Stonehold - egységek
 [kozelharci_katona]
+nev = Melee Soldier
+fajta = melee
 koltseg_fa = 20
 koltseg_arany = 10
 koltseg_etel = 30
-nepesseg_igeny = 1
 kepzesi_ido = 12
 eletero = 120
 sebzes = 10
@@ -478,165 +479,115 @@ Ha egy fájl hiányzik, a játék a beépített alapértékekkel megy tovább (F
 <h3 id="f3-4">3.4. Az adatkezelő osztályok</h3>
 
 <p>
-Az adatkezelő osztályok a Motor alrendszerbe tartoznak. A csomagdiagram szerint minden alrendszer a Motorra épül, így a betöltött adatokat mindegyik eléri. Az osztálynevek angolul vannak. A Logger szintén a motoré, a diagramon azért szerepel, mert a ConfigLoader ír bele. A Resources a Gazdaság és építkezés alrendszer osztálya.
+A konfigurációs fájlokat a ConfigLoader olvassa be, a beállításfájlt a Settings kezeli, a hibák a Loggeren keresztül kerülnek a naplóba. Mindhárom a Motor alrendszer osztálya, részletesen az ANAL 3.6 írja le őket. Új adatosztályt itt nem vezetünk be: a betöltött számokat azok az osztályok tárolják, amelyek használják őket (pl. UnitType, BuildingType, Difficulty). A csomagdiagram szerint minden alrendszer a Motorra épül, így a ConfigLoadert mindegyik eléri.
 </p>
 
 <figure>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 926" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="Az adatkezelő osztályok osztálydiagramja">
-<defs><marker id="open3" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#000"/></marker></defs>
-<rect x="15" y="20" width="275" height="132" fill="#fff" stroke="#000"/>
-<text x="152.5" y="37" text-anchor="middle" font-weight="bold">ConfigLoader</text>
-<line x1="15" y1="44" x2="290" y2="44" stroke="#000"/>
-<text x="21" y="62" font-size="12">- fileName: string</text>
-<text x="21" y="77" font-size="12">- values: section → key → value</text>
-<line x1="15" y1="86" x2="290" y2="86" stroke="#000"/>
-<text x="21" y="100" font-size="12">+ load(fileName): bool</text>
-<text x="21" y="115" font-size="12">+ getNumber(section, key, default): double</text>
-<text x="21" y="130" font-size="12">+ getString(section, key, default): string</text>
-<text x="21" y="145" font-size="12">+ sections(): list</text>
-<rect x="500" y="20" width="240" height="162" fill="#fff" stroke="#000"/>
-<text x="620.0" y="37" text-anchor="middle" font-weight="bold">Settings</text>
-<line x1="500" y1="44" x2="740" y2="44" stroke="#000"/>
-<text x="506" y="62" font-size="12">- musicVolume: int (0-100)</text>
-<text x="506" y="77" font-size="12">- effectsVolume: int (0-100)</text>
-<text x="506" y="92" font-size="12">- resolutionWidth: int</text>
-<text x="506" y="107" font-size="12">- resolutionHeight: int</text>
-<text x="506" y="122" font-size="12">- fullscreen: bool</text>
-<line x1="500" y1="131" x2="740" y2="131" stroke="#000"/>
-<text x="506" y="145" font-size="12">+ load(): bool</text>
-<text x="506" y="160" font-size="12">+ save(): bool</text>
-<text x="506" y="175" font-size="12">+ resetToDefaults()</text>
-<rect x="20" y="235" width="180" height="57" fill="#fff" stroke="#000"/>
-<text x="110.0" y="252" text-anchor="middle" font-weight="bold">Logger</text>
-<line x1="20" y1="259" x2="200" y2="259" stroke="#000"/>
-<line x1="20" y1="271" x2="200" y2="271" stroke="#000"/>
-<text x="26" y="285" font-size="12">+ log(message: string)</text>
-<rect x="262" y="200" width="250" height="192" fill="#fff" stroke="#000"/>
-<text x="387.0" y="217" text-anchor="middle" font-weight="bold">GameData</text>
-<line x1="262" y1="224" x2="512" y2="224" stroke="#000"/>
-<text x="268" y="242" font-size="12">- units: UnitStats[*]</text>
-<text x="268" y="257" font-size="12">- buildings: BuildingStats[*]</text>
-<text x="268" y="272" font-size="12">- upgrades: UpgradeStats[*]</text>
-<text x="268" y="287" font-size="12">- aiParams: AIParams[2..*]</text>
-<text x="268" y="302" font-size="12">- unitLimit: int</text>
-<line x1="262" y1="311" x2="512" y2="311" stroke="#000"/>
-<text x="268" y="325" font-size="12">+ load(): bool</text>
-<text x="268" y="340" font-size="12">+ getUnit(type): UnitStats</text>
-<text x="268" y="355" font-size="12">+ getBuilding(type): BuildingStats</text>
-<text x="268" y="370" font-size="12">+ getUpgrade(name): UpgradeStats</text>
-<text x="268" y="385" font-size="12">+ getAIParams(difficulty): AIParams</text>
-<rect x="10" y="470" width="180" height="205" fill="#fff" stroke="#000"/>
-<text x="100.0" y="487" text-anchor="middle" font-weight="bold">UnitStats</text>
-<line x1="10" y1="494" x2="190" y2="494" stroke="#000"/>
-<text x="16" y="512" font-size="12">- type: string</text>
-<text x="16" y="527" font-size="12">- cost: Resources</text>
-<text x="16" y="542" font-size="12">- populationCost: int</text>
-<text x="16" y="557" font-size="12">- trainingTime: float</text>
-<text x="16" y="572" font-size="12">- hp: int</text>
-<text x="16" y="587" font-size="12">- damage: int</text>
-<text x="16" y="602" font-size="12">- armor: int</text>
-<text x="16" y="617" font-size="12">- range: int</text>
-<text x="16" y="632" font-size="12">- sightRange: int</text>
-<text x="16" y="647" font-size="12">- speed: float</text>
-<text x="16" y="662" font-size="12">- attackInterval: float</text>
-<line x1="10" y1="671" x2="190" y2="671" stroke="#000"/>
-<rect x="200" y="470" width="180" height="145" fill="#fff" stroke="#000"/>
-<text x="290.0" y="487" text-anchor="middle" font-weight="bold">BuildingStats</text>
-<line x1="200" y1="494" x2="380" y2="494" stroke="#000"/>
-<text x="206" y="512" font-size="12">- type: string</text>
-<text x="206" y="527" font-size="12">- cost: Resources</text>
-<text x="206" y="542" font-size="12">- buildTime: float</text>
-<text x="206" y="557" font-size="12">- hp: int</text>
-<text x="206" y="572" font-size="12">- level: int (1-3)</text>
-<text x="206" y="587" font-size="12">- maxWorkers: int</text>
-<text x="206" y="602" font-size="12">- populationBonus: int</text>
-<line x1="200" y1="611" x2="380" y2="611" stroke="#000"/>
-<rect x="390" y="470" width="168" height="115" fill="#fff" stroke="#000"/>
-<text x="474.0" y="487" text-anchor="middle" font-weight="bold">UpgradeStats</text>
-<line x1="390" y1="494" x2="558" y2="494" stroke="#000"/>
-<text x="396" y="512" font-size="12">- name: string</text>
-<text x="396" y="527" font-size="12">- cost: Resources</text>
-<text x="396" y="542" font-size="12">- time: float</text>
-<text x="396" y="557" font-size="12">- requiredBuilding: string</text>
-<text x="396" y="572" font-size="12">- effect: string</text>
-<line x1="390" y1="581" x2="558" y2="581" stroke="#000"/>
-<rect x="565" y="470" width="192" height="145" fill="#fff" stroke="#000"/>
-<text x="661.0" y="487" text-anchor="middle" font-weight="bold">AIParams</text>
-<line x1="565" y1="494" x2="757" y2="494" stroke="#000"/>
-<text x="571" y="512" font-size="12">- difficulty: string</text>
-<text x="571" y="527" font-size="12">- reactionTime: float</text>
-<text x="571" y="542" font-size="12">- decisionInterval: float</text>
-<text x="571" y="557" font-size="12">- workerTarget: int</text>
-<text x="571" y="572" font-size="12">- waveSize: int</text>
-<text x="571" y="587" font-size="12">- waveInterval: float</text>
-<text x="571" y="602" font-size="12">- retreatThreshold: int</text>
-<line x1="565" y1="611" x2="757" y2="611" stroke="#000"/>
-<rect x="265" y="730" width="240" height="176" fill="#fff" stroke="#000"/>
-<text x="385.0" y="747" text-anchor="middle" font-size="11">«Gazdaság és építkezés alrendszer»</text>
-<text x="385.0" y="761" text-anchor="middle" font-weight="bold">Resources</text>
-<line x1="265" y1="768" x2="505" y2="768" stroke="#000"/>
-<text x="271" y="786" font-size="12">- wood: int</text>
-<text x="271" y="801" font-size="12">- gold: int</text>
-<text x="271" y="816" font-size="12">- stone: int</text>
-<text x="271" y="831" font-size="12">- steel: int</text>
-<text x="271" y="846" font-size="12">- food: int</text>
-<line x1="265" y1="855" x2="505" y2="855" stroke="#000"/>
-<text x="271" y="869" font-size="12">+ add(r: Resources)</text>
-<text x="271" y="884" font-size="12">+ subtract(r: Resources)</text>
-<text x="271" y="899" font-size="12">+ canAfford(r: Resources): bool</text>
-<line x1="212.5" y1="152" x2="327.0" y2="200" stroke="#000"/>
-<text x="218" y="185" font-size="11" text-anchor="start">feltölti</text>
-<text x="158" y="168" font-size="11" text-anchor="middle">1</text>
-<text x="212" y="196" font-size="11" text-anchor="middle">1</text>
-<line x1="102.5" y1="152" x2="100.0" y2="235" stroke="#000" stroke-dasharray="6,4" marker-end="url(#open3)"/>
-<text x="70" y="195" font-size="11" text-anchor="end">«használ»</text>
-<line x1="500" y1="85" x2="290" y2="85" stroke="#000" stroke-dasharray="6,4" marker-end="url(#open3)"/>
-<text x="395" y="79" font-size="11" text-anchor="middle">«használ»</text>
-<path d="M387.0,392 L394.0,402 L387.0,412 L380.0,402 Z" fill="#000"/>
-<line x1="387.0" y1="412" x2="100.0" y2="470" stroke="#000"/>
-<text x="86.0" y="464" font-size="11" text-anchor="middle">*</text>
-<line x1="387.0" y1="412" x2="290.0" y2="470" stroke="#000"/>
-<text x="276.0" y="464" font-size="11" text-anchor="middle">*</text>
-<line x1="387.0" y1="412" x2="474.0" y2="470" stroke="#000"/>
-<text x="488.0" y="464" font-size="11" text-anchor="middle">*</text>
-<line x1="387.0" y1="412" x2="661.0" y2="470" stroke="#000"/>
-<text x="675.0" y="464" font-size="11" text-anchor="middle">2..*</text>
-<line x1="100.0" y1="675" x2="325.0" y2="730" stroke="#000"/>
-<text x="315.0" y="724" font-size="11" text-anchor="middle">1</text>
-<line x1="290.0" y1="615" x2="385.0" y2="730" stroke="#000"/>
-<text x="395.0" y="724" font-size="11" text-anchor="middle">1</text>
-<line x1="474.0" y1="585" x2="445.0" y2="730" stroke="#000"/>
-<text x="455.0" y="724" font-size="11" text-anchor="middle">1</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 458" width="760" style="max-width:100%;height:auto" font-family="Arial, sans-serif" font-size="13" role="img" aria-label="Az adatkezelő osztályok osztálydiagramja">
+<defs><marker id="dep34" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#000"/></marker></defs>
+<rect x="240" y="150" width="280" height="148" fill="#fff" stroke="#000"/>
+<text x="380.0" y="165" text-anchor="middle" font-size="10">«Motor»</text>
+<text x="380.0" y="181" text-anchor="middle" font-weight="bold">ConfigLoader</text>
+<line x1="240" y1="190" x2="520" y2="190" stroke="#000"/>
+<text x="246" y="208" font-size="12">- fileName: string</text>
+<text x="246" y="223" font-size="12">- values: szakasz, kulcs, érték</text>
+<line x1="240" y1="232" x2="520" y2="232" stroke="#000"/>
+<text x="246" y="246" font-size="12">+ load(fileName: string): bool</text>
+<text x="246" y="261" font-size="12">+ getNumber(section, key, default): float</text>
+<text x="246" y="276" font-size="12">+ getString(section, key, default): string</text>
+<text x="246" y="291" font-size="12">+ sections(): List&lt;string&gt;</text>
+<rect x="10" y="190" width="170" height="56" fill="#fff" stroke="#000"/>
+<text x="95.0" y="205" text-anchor="middle" font-size="10">«Motor»</text>
+<text x="95.0" y="221" text-anchor="middle" font-weight="bold">Logger</text>
+<text x="95.0" y="237" text-anchor="middle" font-size="11">naplo.txt (ír)</text>
+<rect x="580" y="190" width="170" height="56" fill="#fff" stroke="#000"/>
+<text x="665.0" y="205" text-anchor="middle" font-size="10">«Motor»</text>
+<text x="665.0" y="221" text-anchor="middle" font-weight="bold">Settings</text>
+<text x="665.0" y="237" text-anchor="middle" font-size="11">beallitasok.ini (olvas, ír)</text>
+<rect x="10" y="20" width="175" height="56" fill="#fff" stroke="#000"/>
+<text x="97.5" y="35" text-anchor="middle" font-size="10">«Egységek és harc»</text>
+<text x="97.5" y="51" text-anchor="middle" font-weight="bold">UnitType</text>
+<text x="97.5" y="67" text-anchor="middle" font-size="11">egysegek.ini</text>
+<rect x="195" y="20" width="175" height="56" fill="#fff" stroke="#000"/>
+<text x="282.5" y="35" text-anchor="middle" font-size="10">«Egységek és harc»</text>
+<text x="282.5" y="51" text-anchor="middle" font-weight="bold">DamageCalculator</text>
+<text x="282.5" y="67" text-anchor="middle" font-size="11">egysegek.ini (szorzók)</text>
+<rect x="380" y="20" width="175" height="56" fill="#fff" stroke="#000"/>
+<text x="467.5" y="35" text-anchor="middle" font-size="10">«Gazdaság és építkezés»</text>
+<text x="467.5" y="51" text-anchor="middle" font-weight="bold">BuildingType</text>
+<text x="467.5" y="67" text-anchor="middle" font-size="11">epuletek.ini</text>
+<rect x="565" y="20" width="175" height="56" fill="#fff" stroke="#000"/>
+<text x="652.5" y="35" text-anchor="middle" font-size="10">«Gazdaság és építkezés»</text>
+<text x="652.5" y="51" text-anchor="middle" font-weight="bold">TechTree</text>
+<text x="652.5" y="67" text-anchor="middle" font-size="11">fejlesztesek.ini</text>
+<rect x="10" y="368" width="141" height="56" fill="#fff" stroke="#000"/>
+<text x="80.5" y="383" text-anchor="middle" font-size="10">«Gépi ellenfél»</text>
+<text x="80.5" y="399" text-anchor="middle" font-weight="bold">Difficulty</text>
+<text x="80.5" y="415" text-anchor="middle" font-size="11">mi.ini</text>
+<rect x="159" y="368" width="141" height="56" fill="#fff" stroke="#000"/>
+<text x="229.5" y="383" text-anchor="middle" font-size="10">«Gépi ellenfél»</text>
+<text x="229.5" y="399" text-anchor="middle" font-weight="bold">BuildOrder</text>
+<text x="229.5" y="415" text-anchor="middle" font-size="11">mi.ini (sorrend)</text>
+<rect x="308" y="368" width="141" height="56" fill="#fff" stroke="#000"/>
+<text x="378.5" y="383" text-anchor="middle" font-size="10">«Motor»</text>
+<text x="378.5" y="399" text-anchor="middle" font-weight="bold">Game</text>
+<text x="378.5" y="415" text-anchor="middle" font-size="11">jatek.ini</text>
+<rect x="457" y="368" width="141" height="56" fill="#fff" stroke="#000"/>
+<text x="527.5" y="383" text-anchor="middle" font-size="10">«Egységek és harc»</text>
+<text x="527.5" y="399" text-anchor="middle" font-weight="bold">PathFinder</text>
+<text x="527.5" y="415" text-anchor="middle" font-size="11">jatek.ini</text>
+<rect x="606" y="368" width="141" height="56" fill="#fff" stroke="#000"/>
+<text x="676.5" y="383" text-anchor="middle" font-size="10">«Kezelőfelület»</text>
+<text x="676.5" y="399" text-anchor="middle" font-weight="bold">Camera</text>
+<text x="676.5" y="415" text-anchor="middle" font-size="11">jatek.ini</text>
+<line x1="97.5" y1="76" x2="290" y2="150" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="282.5" y1="76" x2="350" y2="150" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="467.5" y1="76" x2="410" y2="150" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="652.5" y1="76" x2="470" y2="150" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="80.5" y1="368" x2="270" y2="298" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="229.5" y1="368" x2="325" y2="298" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="378.5" y1="368" x2="380" y2="298" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="527.5" y1="368" x2="435" y2="298" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="676.5" y1="368" x2="490" y2="298" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="240" y1="218.0" x2="180" y2="218.0" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<line x1="580" y1="218.0" x2="520" y2="218.0" stroke="#000" stroke-dasharray="6,4" marker-end="url(#dep34)"/>
+<text x="380" y="446" text-anchor="middle" font-size="11">A szaggatott nyilak «használ» függőségek. Az osztályok alatt az a fájl áll, amelyből az adataikat betöltik.</text>
 </svg>
 <figcaption>3.1. ábra: Az adatkezelő osztályok osztálydiagramja</figcaption>
 </figure>
 
+<p>Melyik fájlt melyik osztály tölti be:</p>
+
+<table border="1" cellpadding="6">
+	<tr><th>Fájl</th><th>Betöltő osztály</th><th>Hogyan</th><th>Leírás</th></tr>
+	<tr><td>config/egysegek.ini</td><td>UnitType, DamageCalculator</td><td>UnitType.load(cfg) az egységtípusokat, DamageCalculator.load(cfg) a típusszorzókat</td><td>ANAL 6.6</td></tr>
+	<tr><td>config/epuletek.ini</td><td>BuildingType</td><td>BuildingType.load(config)</td><td>ANAL 5.6</td></tr>
+	<tr><td>config/fejlesztesek.ini</td><td>TechTree, Upgrade</td><td>a TechTree a ConfigLoaderből olvassa a szintlépések és a fejlesztések adatait</td><td>ANAL 5.6</td></tr>
+	<tr><td>config/mi.ini</td><td>Difficulty, BuildOrder</td><td>Difficulty.load(cfg, name) a kért szintet, a BuildOrder az építési sorrendet</td><td>ANAL 7.6</td></tr>
+	<tr><td>config/jatek.ini</td><td>Game, PathFinder, Camera</td><td>Game.unitLimit, PathFinder.budgetPerFrame, Camera.speed</td><td>ANAL 3.6, 6.6, 4.6</td></tr>
+	<tr><td>beallitasok.ini</td><td>Settings</td><td>Settings.load(), save()</td><td>ANAL 3.6</td></tr>
+	<tr><td>naplo.txt</td><td>Logger</td><td>Logger.log()</td><td>ANAL 3.6</td></tr>
+</table>
+
 <p><b>ConfigLoader</b><br>
-Beolvas egy fájlt, és szakaszonként eltárolja a kulcs-érték párokat. A getNumber() és a getString() hívásnak mindig meg kell adni egy alapértéket is, ezt kapjuk vissza, ha a kulcs hiányzik vagy hibás. Írni nem tud.</p>
-
-<p><b>GameData</b><br>
-Induláskor a ConfigLoader segítségével beolvassa az összes config fájlt, és feltölti belőlük az adatobjektumokat. Ha a játékban valakinek kell egy egység életereje vagy egy épület ára, innen kérdezi le. Futás közben nem változik.</p>
-
-<p><b>UnitStats, BuildingStats, UpgradeStats, AIParams</b><br>
-Egyszerű adatosztályok, műveletük nincs. Egy példány a fájl egy szakaszának felel meg. Az ár az első háromnál Resources típusú. A UnitStats-ban ezen kívül egy népességigény (populationCost) is van, ami megmondja, hány helyet foglal az egység a népességből (alapból 1).</p>
-
-<p><b>Resources</b><br>
-Ez a Gazdaság és építkezés alrendszer osztálya, itt csak azért szerepel, mert az árak is ezt használják. Öt nemnegatív egész szám: fa, arany, kő, acél és étel. Ugyanez az osztály tárolja a frakció készletét és egy egység, épület vagy fejlesztés árát is, így a subtract() és az add() egyszerűen az árat vonja le vagy adja vissza, a canAfford() pedig megmondja, elég-e a készlet. A népesség nincs benne, mert az nem nyersanyag, hanem korlát: a jelenlegi és a maximális népességet a Faction tárolja.</p>
+Beolvas egy fájlt, és szakaszonként eltárolja a kulcs-érték párokat. A getNumber() és a getString() hívásnak mindig meg kell adni egy alapértéket is, ezt kapjuk vissza, ha a kulcs hiányzik vagy hibás, és ilyenkor a Loggerrel naplóz is. Írni nem tud. A sections() a szakaszok nevét adja vissza, ebből tudja pl. a UnitType, hány egységtípus van.</p>
 
 <p><b>Settings</b><br>
 Induláskor a ConfigLoader segítségével olvassa be a beallitasok.ini fájlt. Ha nincs ilyen fájl, 1280x720-as ablakban indul a játék (F-MOT-01). Amikor a játékos a beállítások menüben átállít valamit, a save() ugyanabban a formában írja vissza a fájlt.</p>
+
+<p>Az árak a Gazdaság és építkezés alrendszer ResourceCost típusával vannak megadva, a készletet a Resources tárolja (ANAL 5.6).</p>
 
 
 <h2 id="f4">4. A funkcionális modell kiegészítése</h2>
 
 <p>
-Az analízis modell a use case-ek szokásos menetét mutatja. Itt azt rajzoltam le, mi történik, ha valami közbejön, vagyis az alternatív és kivételes eseteket. Use case-enként egy aktivitásdiagram készült. A szokásos ágat is rajta hagytam, hogy látszódjon, melyik lépésnél ágazik el a folyamat.
+Az analízis modell a use case-ek szokásos menetét mutatja. Itt azt rajzoltam le, mi történik, ha valami közbejön, vagyis az alternatív és kivételes eseteket. Use case-enként egy aktivitásdiagram készült. A szokásos ágat is rajta hagytam, hogy látszódjon, melyik lépésnél ágazik el a folyamat. A játék angolul írja ki az üzeneteket (2.6 pont), ezért itt is angolul idézzük őket, bár az SRS use case-eiben még magyarul szerepeltek.
 </p>
 
 <h3 id="f4-1">4.1. UC-01: Épület lerakása</h3>
 
 <p>
-Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja, hogy "Nincs elég nyersanyag" (F-EPIT-02). Foglalt helyen a szellemkép piros lesz, a kattintás nem csinál semmit, és a játékos kereshet másik helyet (F-EPIT-03). Jobb klikkel vagy ESC-vel bármikor ki lehet lépni a lehelyezésből, ilyenkor semmi nem vonódik le (F-EPIT-04). A költséget a rendszer csak akkor vonja le, amikor az épület tényleg lekerül a pályára (F-EPIT-05).
+Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja az első hiányzó nyersanyagot, pl. "Not enough wood!" (F-EPIT-02). Foglalt helyen a szellemkép piros lesz, a kattintásra csak a "Can't build here!" üzenet jelenik meg, és a játékos kereshet másik helyet (F-EPIT-03). Jobb klikkel vagy ESC-vel bármikor ki lehet lépni a lehelyezésből, ilyenkor semmi nem vonódik le (F-EPIT-04). A költséget a rendszer csak akkor vonja le, amikor az épület tényleg lekerül a pályára (F-EPIT-05).
 </p>
 
 <figure>
@@ -651,7 +602,7 @@ Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja, ho
 <path d="M300,208 L330,230 L300,252 L270,230 Z" fill="#fff" stroke="#000"/>
 <rect x="470.0" y="205.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="580" y="227" text-anchor="middle">A gomb szürke, üzenet:</text>
-<text x="580" y="243" text-anchor="middle">"Nincs elég nyersanyag"</text>
+<text x="580" y="243" text-anchor="middle">"Not enough wood!" (stb.)</text>
 <circle cx="580" cy="300" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="580" cy="300" r="7" fill="#000"/>
 <rect x="190.0" y="280.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="300" y="302" text-anchor="middle">Az épület szellemképe</text>
@@ -664,7 +615,7 @@ Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja, ho
 <path d="M300,433 L330,455 L300,477 L270,455 Z" fill="#fff" stroke="#000"/>
 <rect x="10.0" y="430.0" width="170" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="95" y="452" text-anchor="middle">Szellemkép piros,</text>
-<text x="95" y="468" text-anchor="middle">nem történik semmi</text>
+<text x="95" y="468" text-anchor="middle">"Can't build here!"</text>
 <rect x="190.0" y="510.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="300" y="532" text-anchor="middle">Költség levonása, félkész</text>
 <text x="300" y="548" text-anchor="middle">épület lerakása</text>
@@ -700,7 +651,7 @@ Ha nincs elég nyersanyag, az épület gombja szürke, és a játék kiírja, ho
 <h3 id="f4-2">4.2. UC-02: Egység kiképzése</h3>
 
 <p>
-Mielőtt a képzés elindul, a rendszer megnézi, van-e elég nyersanyag (F-HARC-06), és belefér-e még egy egység a népességbe és az egységlimitbe (F-GAZD-06, F-HARC-07). Ha valamelyik nem stimmel, kiír egy üzenetet, és a képzés el sem indul. Ha képzés közben lerombolják a kaszárnyát, a katona nem jön létre, a nyersanyag pedig visszakerül a játékoshoz.
+Mielőtt a képzés elindul, a rendszer megnézi, van-e elég nyersanyag (F-HARC-06), és belefér-e még egy egység a népességbe és az egységlimitbe (F-GAZD-06, F-HARC-07). Ha valamelyik nem stimmel, a képzés el sem indul, és a játék kiírja, hogy "Not enough wood!" (vagy a hiányzó nyersanyag neve), illetve "Population limit reached". Ha képzés közben lerombolják a kaszárnyát, a katona nem jön létre, a nyersanyag visszakerül a játékoshoz, és megjelenik a "Training cancelled, resources refunded" üzenet.
 </p>
 
 <figure>
@@ -713,13 +664,13 @@ Mielőtt a képzés elindul, a rendszer megnézi, van-e elég nyersanyag (F-HARC
 <text x="260" y="160" text-anchor="middle">Egységtípus kiválasztása</text>
 <path d="M260,208 L290,230 L260,252 L230,230 Z" fill="#fff" stroke="#000"/>
 <rect x="470.0" y="205.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
-<text x="580" y="227" text-anchor="middle">Üzenet: nincs elég</text>
-<text x="580" y="243" text-anchor="middle">nyersanyag</text>
+<text x="580" y="227" text-anchor="middle">Üzenet:</text>
+<text x="580" y="243" text-anchor="middle">"Not enough wood!" (stb.)</text>
 <circle cx="728" cy="230" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="230" r="7" fill="#000"/>
 <path d="M260,293 L290,315 L260,337 L230,315 Z" fill="#fff" stroke="#000"/>
 <rect x="470.0" y="290.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
-<text x="580" y="312" text-anchor="middle">Üzenet: "Elérted a</text>
-<text x="580" y="328" text-anchor="middle">maximális populációt"</text>
+<text x="580" y="312" text-anchor="middle">Üzenet: "Population</text>
+<text x="580" y="328" text-anchor="middle">limit reached"</text>
 <circle cx="728" cy="315" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="315" r="7" fill="#000"/>
 <rect x="150.0" y="370.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="260" y="392" text-anchor="middle">Költség levonása,</text>
@@ -729,8 +680,8 @@ Mielőtt a képzés elindul, a rendszer megnézi, van-e elég nyersanyag (F-HARC
 <text x="260" y="478" text-anchor="middle">(töltődő csík)</text>
 <path d="M260,518 L290,540 L260,562 L230,540 Z" fill="#fff" stroke="#000"/>
 <rect x="470.0" y="515.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
-<text x="580" y="537" text-anchor="middle">A képzés megszakad,</text>
-<text x="580" y="553" text-anchor="middle">a nyersanyag visszajár</text>
+<text x="580" y="537" text-anchor="middle">A nyersanyag visszajár, üzenet:</text>
+<text x="580" y="553" text-anchor="middle">"Training cancelled..."</text>
 <circle cx="728" cy="540" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><circle cx="728" cy="540" r="7" fill="#000"/>
 <rect x="150.0" y="590.0" width="220" height="50" rx="14" fill="#fff" stroke="#000"/>
 <text x="260" y="612" text-anchor="middle">Az egység megjelenik</text>
